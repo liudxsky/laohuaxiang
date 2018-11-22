@@ -227,9 +227,9 @@ void check_warning(void)
 
 
 //温度测量
-void temp_detection(void)
+void temp_detection(float dispTemper)
 {
-	showtextvalue.current_temp_vlaue = adjusttemp2 + (float)Max6675_Read_Tem()*0.25;						//实时温度显示
+	showtextvalue.current_temp_vlaue = adjusttemp2 + dispTemper;						//实时温度显示
 	if(thermocouple_flag)
 	{
 		SetTextValueFloat(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_CURRENT_TEMP_ID, 999.9);	
