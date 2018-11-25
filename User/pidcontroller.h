@@ -1,6 +1,7 @@
 #include "arm_math.h"
 #include "stdio.h"
 #include "string.h"
+
 #define PIDKP 42
 #define PIDKI 0.000073
 #define PIDKD 39230
@@ -37,6 +38,27 @@ int cycles[2048]={0};
 int maxbuff[2048]={0};
 int minbuff[2048]={0};
 int m_max=0,m_min=0;
+struct AutoTuningParamStruct
+{
+	int a;
+	int b;
+	int pc_auto;
+	float kc_auto;
+			
+	float Ti_auto;
+	float Td_auto;
+			
+	float Kp_auto;
+	float Ki_auto;
+	float Kd_auto;
+	
+	int f_autoTuningDone;
+	int f_autoTuning;
+	int SetPoint;
+	unsigned long long elapse_time;
+	int AutoTuneStatus;
+};
+struct AutoTuningParamStruct autoTuningParam;
 int PIDInit()
 {
 	PID.Kp=PIDKP;
@@ -47,13 +69,15 @@ int PIDInit()
 	errorLast=0;
 	temperLast=0;
 	memset(temperbuff,0,T_BUFFLEN);
+	memset(&autoTuningParam,0,sizeof(autoTuningParam));
 	//arm_fir_init_f32(&S, NUM_TAPS, (float32_t *)&firCoeffs32[0], &firStateF32[0], T_BUFFLEN);
 	return 1;
 }
-double pidCalc(float temperNow,float sp)
+double pidCalc(float e)
 {
 	//
-	float errorNow=sp-temperNow;
+	
+	float errorNow=e;
 	double out=0;
 	float  duty=0;
 	errorSum=errorSum+errorNow;
@@ -62,7 +86,7 @@ double pidCalc(float temperNow,float sp)
 	duty=arm_pid_f32(&PID, errorNow);//use arm lib
 	if(f_showPidParam)
 	{
-		printf("temperNow:%f ,errorNow: %f, errorSum: %f",temperNow,errorNow,errorSum);
+		printf("errorNow: %f, errorSum: %f",errorNow,errorSum);
 		printf("pidout: %f \n calcout: %f",duty,out);
 	}
 	if(out<0)
@@ -96,24 +120,16 @@ float getFilterTemper(float in)
 	return outtemp2;
 }
 
-int autoTuning(float errornow,int * pwm_out,int* autoTuningDone)
+int autoTuning(float errornow,int * pwm_out,struct AutoTuningParamStruct* ats)
 {
+	int i=1;
 	int out=0;
 	int pc_auto=0;
-	int a=0;
-	int i=1;
-	int b;
-	float kc_auto;
-			
-	float Ti_auto;
-	float Td_auto;
-			
-	float Kp_auto;
-	float Ki_auto;
-	float Kd_auto;
 	
+	int f_autoTuning=autoTuningParam.f_autoTuning;
 	if(!f_autoTuning)
 		return 0;
+	autoTuningParam.elapse_time++;
 	if(f_autoTuning&&errornow<10)
 	{
 		if(errornow>0)
@@ -158,7 +174,7 @@ int autoTuning(float errornow,int * pwm_out,int* autoTuningDone)
 				
 		}
 		if(tbuffidx>5)
-		{
+		{//auto tuning finish
 			
 			int temp=(tbuffidx-1)/2;
 			for(i=1;i<temp;i++)
@@ -168,36 +184,50 @@ int autoTuning(float errornow,int * pwm_out,int* autoTuningDone)
 			
 			
 			arm_mean_q31(cycles,i,&pc_auto);//q31,int compare
-
-			a=abs(m_max)+abs(m_min)/2;
-			b=AutoTuneOutput/2;
-			kc_auto=4/3.14/b/a;
+			autoTuningParam.pc_auto=pc_auto;
 			
-			Ti_auto=0.5*pc_auto;
-			Td_auto=0.3*pc_auto;
+			autoTuningParam.a=abs(m_max)+abs(m_min)/2;
+			autoTuningParam.b=AutoTuneOutput/2;
 			
-			Kp_auto=0.4*kc_auto;
-			Ki_auto=Kp_auto*0.01/Ti_auto;
-			Kd_auto=Kp_auto*Td_auto/Ts;
+			autoTuningParam.kc_auto=4/3.14/autoTuningParam.b/autoTuningParam.a;
 			
+			autoTuningParam.Ti_auto=0.5*pc_auto;
+			autoTuningParam.Td_auto=0.3*pc_auto;
+			
+			autoTuningParam.Kp_auto=0.4*autoTuningParam.kc_auto;
+			autoTuningParam.Ki_auto=autoTuningParam.Kp_auto*0.01/autoTuningParam.Ti_auto;
+			autoTuningParam.Kd_auto=autoTuningParam.Kp_auto*autoTuningParam.Td_auto/Ts;
 			f_autoTuning=0;
-			*autoTuningDone=1;
+			autoTuningParam.f_autoTuning=0;
+			autoTuningParam.f_autoTuningDone=1;
+			memcpy(ats,&autoTuningParam,sizeof(autoTuningParam));
 		}
 			
 	}
-	else if(f_autoTuning&&errornow>10&&AutoTuneStatus==1)
+	else if(f_autoTuning&&errornow>10)
 	{
-		if(tbuffidx<3)
+		out=1000;
+		if(AutoTuneStatus==1)
 		{
-			AutoTuneStatus=2;
-			AutoTuneOutput=AutoTuneOutput+100;
+			if(tbuffidx<4)
+			{
+				autoTuningParam.AutoTuneStatus=-2;
+				AutoTuneOutput=AutoTuneOutput+100;
+			}
+			else
+			{
+				autoTuningParam.AutoTuneStatus=-3;
+				AutoTuneOutput=AutoTuneOutput-100;
+			}
 		}
-		else
-		{
-			AutoTuneStatus=3;
-			AutoTuneOutput=AutoTuneOutput-100;
-		}
+	}
+	if(autoTuningParam.elapse_time>(5*60/Ts))
+	{//time out, 5 hours
+		AutoTuneStatus=-4;
+		autoTuningParam.f_autoTuningDone=1;
+		autoTuningParam.f_autoTuning=0;
+		f_autoTuning=0;
 	}
 	*pwm_out=out;
-	
+	return 1;
 }

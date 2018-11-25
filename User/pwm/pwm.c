@@ -17,6 +17,16 @@ extern dev_info_t dev_info;
   * @param  无
   * @retval 无
   */
+void SetPwmValue(int a)
+{
+	dev_info.pwmvalue=a;
+	TIM_PWMOUTPUT_Config();
+}
+void SetPwmScope(int a)
+{
+	dev_info.pwmscope=a;
+	TIM_PWMOUTPUT_Config();
+}
 static void TIMx_GPIO_Config(void) 
 {
 	/*定义一个GPIO_InitTypeDef类型的结构体*/

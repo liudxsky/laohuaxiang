@@ -31,7 +31,8 @@ extern RtcTime rtctime;
 extern uint8_t cmd_buffer[CMD_MAX_SIZE];		//指令缓存
 extern uint8_t press_flag;
 extern MainShowTextValue	showtextvalue;	//主页面文本控件缓存值
-
+int runstatus=0;
+extern arm_pid_instance_f32 PID;
 /* ----------------------- Defines ------------------------------------------*/
 
 //输入寄存器内容
@@ -67,6 +68,11 @@ int main( void )
 {
 	float temperRaw=0;
 	float temperFilter=0;
+	int SetPoint=0;
+	float error=0;
+	int pwmOut=0;
+	int AutoTuningDone=0;
+	struct AutoTuningParamStruct autoTuneParam;
     eMBErrorCode    eStatus;
 	qsize  size = 0;
 	System_Init();												//系统初始化设置
@@ -81,20 +87,65 @@ int main( void )
 
 	while(1)
     {
-        eMBPoll(  );											//查询数据帧 
-        size = queue_find_cmd(cmd_buffer,CMD_MAX_SIZE); 		//从缓冲区中获取一条指令        
+      eMBPoll(  );											//查询数据帧 
+      size = queue_find_cmd(cmd_buffer,CMD_MAX_SIZE); 		//从缓冲区中获取一条指令        
 		if(size>0)												//接收到指令
 		{
 			ProcessMessage((PCTRL_MSG)cmd_buffer, size);//指令处理
 		}
-		
+
 		if(getMsCounter()-t_thread500>500)
 		{
+			t_thread500=getMsCounter();
+			
 			temperRaw=(float)Max6675_Read_Tem()*0.25;
+			SetPoint=showtextvalue.setting_temp;
 			
 			temperFilter=getFilterTemper(temperRaw);
-			t_thread500=getMsCounter();
+			error=SetPoint-temperFilter;
+			autoTuneParam.SetPoint=SetPoint;
+			//runstatus is debug flag. Also use button to change status
+			if(runstatus==2) //button event to set tuning flag
+			{
+				autoTuneParam.f_autoTuning=1;
+			}
+			if(autoTuneParam.f_autoTuning)//(autoTuning(error,&pwmOut,&autoTuneParam))
+			{
+				autoTuning(error,&pwmOut,&autoTuneParam);
+				if(autoTuneParam.f_autoTuningDone)
+				{
+					//auto tune finished
+					//new parameters,should stop and re-run process
+					printf("auto tune status:%d",autoTuneParam.AutoTuneStatus);
+					if(autoTuneParam.AutoTuneStatus>0)//auto tune success
+					{
+						PID.Kp=autoTuneParam.Kp_auto;
+						PID.Ki=autoTuneParam.Ki_auto;
+						PID.Kd=autoTuneParam.Kd_auto;
+						
+					}
+					else
+					{
+						//auto tune failed
+					}
+					
+					
+				}
+				else
+				{
+					//auto-tuning still runing 
+				}
+			}
+			else
+			{
+				pwmOut=pidCalc(error);
+			}
+			if(runstatus==1)//start heating
+			{
+				SetPwmValue(pwmOut);
+			}
 		}
+		
 		if(getMsCounter() - timer_tick_count > 1000)
 		{
 			timer_tick_count = getMsCounter();
@@ -111,8 +162,9 @@ int main( void )
 			temp_curve_save();								//温度曲线存储	
 			Check_All_Status();
 		}
+		
 		device_timing_selfcheck();
-    }
+		}
 }
 
 

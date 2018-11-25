@@ -11,6 +11,7 @@
 #define SET_PWMVLAUE				2
 #define SET_ANGLE					3
 #define HELP						4
+#define RUN 5
 
 
 typedef struct

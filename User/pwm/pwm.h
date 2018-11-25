@@ -26,7 +26,8 @@
 void TIM_PWMOUTPUT_Config(void);
 
 void TIMx_Configuration(void);
-
+void SetPwmScope(int a);
+void SetPwmValue(int a);
 
 void Pwm_Output(FunctionalState NewState);
 

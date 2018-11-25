@@ -185,16 +185,17 @@ uint8_t RxBuffer[RxBufferSize];
 __IO uint8_t RxCounter = 0x00;
 extern dev_info_t dev_info;
 extern MainShowTextValue showtextvalue;	//主页面文本控件缓存值
+extern int runstatus;//0 stop, 1 start, 2, autotune
 
 
-
-const uart_cmd_t uart_cmd[UART_CMD_NUM] = 
+const uart_cmd_t uart_cmd[] = 
 {
 	{"show_value", 10},
 	{"set_pwmscope",12},
 	{"set_pwmvalue",12},
 	{"set_angle",9},
-	{"help", 4}
+	{"help", 4},
+	{"run",3}
 };
 
 //串口1中断函数
@@ -217,9 +218,10 @@ void RS232_USART_IRQHandler(void)
 				memset((void *)dst_vale,0,5);
 				strncpy(dst_vale,(char *)&RxBuffer[index],RxCounter-index);
 				dev_info.valid_flag = true;
-				dev_info.pwmscope = atoi(dst_vale);
+				SetPwmScope(atoi(dst_vale));
+				//dev_info.pwmscope = atoi(dst_vale);
 //				FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
-				TIM_PWMOUTPUT_Config();
+				//TIM_PWMOUTPUT_Config();
 				printf("\r\ncurrent PWM Scope is  0 -- %d \r\n",dev_info.pwmscope);
 			}
 			else if(strstr((char *)RxBuffer,uart_cmd[SET_PWMVLAUE].cmd)) 	
@@ -228,9 +230,10 @@ void RS232_USART_IRQHandler(void)
 				memset((void *)dst_vale,0,5);
 				strncpy(dst_vale,(char *)&RxBuffer[index],RxCounter-index);
 				dev_info.valid_flag = true;
-				dev_info.pwmvalue = atoi(dst_vale);
+				SetPwmValue(atoi(dst_vale));
+				//dev_info.pwmvalue = atoi(dst_vale);
 //				FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));			
-				TIM_PWMOUTPUT_Config();
+				//TIM_PWMOUTPUT_Config();
 				printf("\r\n\r\npwmvalue is set: \r\n------dec: %d\r\n------hex: 0x%x\r\n",dev_info.pwmvalue,dev_info.pwmvalue);
 				printf("\r\n\r\ncurrent temperature is : %.2lf\r\n",showtextvalue.current_temp_vlaue);
 			}
@@ -264,6 +267,13 @@ void RS232_USART_IRQHandler(void)
 				printf("3  ->set_pwmvalue (set pwm/temperature parameter value)\r\n");
 				printf("2  ->set_angle (set air valve angle value)\r\n");
 				printf("\r\n");
+			}
+			if(strstr((char *)RxBuffer,uart_cmd[RUN].cmd))
+			{
+				index = uart_cmd[RUN].len;
+				memset((void *)dst_vale,0,5);
+				strncpy(dst_vale,(char *)&RxBuffer[index],RxCounter-index);
+				runstatus=atoi(dst_vale);
 			}
 			else
 			{
