@@ -12,7 +12,8 @@
 #define SET_ANGLE					3
 #define HELP						4
 #define RUN 5
-
+#define DEBUG 6
+#define SETPOINT 7
 
 typedef struct
 {

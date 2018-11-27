@@ -19,10 +19,9 @@ float temperbuff[T_BUFFLEN];
 //float outputF32[T_BUFFLEN];
 double errorSum;
 double errorLast;
-float temperLast;
 int tb_idx=0;	
 arm_pid_instance_f32 PID;
-int f_showPidParam=0;
+extern int debuginfo;
 //arm_fir_instance_f32 S;
 //static float32_t firStateF32[BLOCK_SIZE + NUM_TAPS - 1];
 
@@ -67,9 +66,9 @@ int PIDInit()
 	arm_pid_init_f32(&PID, 1);
 	errorSum=0;
 	errorLast=0;
-	temperLast=0;
 	memset(temperbuff,0,T_BUFFLEN);
 	memset(&autoTuningParam,0,sizeof(autoTuningParam));
+	printf("Kp:%5f, Ki:%5f, Kd:%5f\n",PID.Kp,PID.Ki,PID.Kd);
 	//arm_fir_init_f32(&S, NUM_TAPS, (float32_t *)&firCoeffs32[0], &firStateF32[0], T_BUFFLEN);
 	return 1;
 }
@@ -78,26 +77,30 @@ double pidCalc(float e)
 	//
 	
 	float errorNow=e;
-	double out=0;
 	float  duty=0;
-	errorSum=errorSum+errorNow;
-	out=PID.Kp*errorNow+PID.Ki*errorSum+PID.Kd*(errorNow-errorLast);
-	errorLast=errorNow;
+	float outKp,outKi,outKd;
+	//out=PID.Kp*errorNow+PID.Ki*errorSum+PID.Kd*(errorNow-errorLast);
 	duty=arm_pid_f32(&PID, errorNow);//use arm lib
-	if(f_showPidParam)
+	if(debuginfo)
 	{
-		printf("errorNow: %f, errorSum: %f",errorNow,errorSum);
-		printf("pidout: %f \n calcout: %f",duty,out);
+		printf("errorNow: %5f, errorSum: %5f, Out: %5f\n",errorNow,errorSum,duty);
+		
+		errorSum=errorSum+errorNow;
+		outKp=PID.Kp*errorNow;
+		outKi=PID.Ki*errorSum;
+		outKd=PID.Kd*(errorNow-errorLast);
+		printf("outKp: %5f, outKi: %5f,outKd: %5f  \n",outKp,outKi,outKd);
+		errorLast=errorNow;
 	}
-	if(out<0)
+	if(duty<0)
 	{
-		out=0;
+		duty=0;
 	}
-	if(out>PWMOUTLIMIT)
+	if(duty>PWMOUTLIMIT)
 	{
-		out=PWMOUTLIMIT;
+		duty=PWMOUTLIMIT;
 	}
-	return out;
+	return duty;
 }
 float getFilterTemper(float in)
 {
@@ -109,14 +112,14 @@ float getFilterTemper(float in)
 		tb_idx=0;
 	temperbuff[tb_idx]=in;
 	tb_idx++;
-	for(i=0;i<T_BUFFLEN;i++)
-	{
-		tempsum=tempsum+temperbuff[i];
-		
-	}
-	outtemp1=tempsum/T_BUFFLEN;
+//	for(i=0;i<T_BUFFLEN;i++)
+//	{
+//		tempsum=tempsum+temperbuff[i];
+//		
+//	}
+	//outtemp1=tempsum/T_BUFFLEN;
 	arm_mean_f32(temperbuff,T_BUFFLEN,&outtemp2);
-	printf("calc outtemp1: %f, armLib mean:%f",outtemp1,outtemp2);
+	//printf("calc outtemp1: %f, armLib mean:%f",outtemp1,outtemp2);
 	return outtemp2;
 }
 

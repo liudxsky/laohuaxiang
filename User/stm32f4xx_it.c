@@ -186,7 +186,7 @@ __IO uint8_t RxCounter = 0x00;
 extern dev_info_t dev_info;
 extern MainShowTextValue showtextvalue;	//主页面文本控件缓存值
 extern int runstatus;//0 stop, 1 start, 2, autotune
-
+extern int debuginfo;
 
 const uart_cmd_t uart_cmd[] = 
 {
@@ -195,7 +195,9 @@ const uart_cmd_t uart_cmd[] =
 	{"set_pwmvalue",12},
 	{"set_angle",9},
 	{"help", 4},
-	{"run",3}
+	{"run",3},
+	{"debug",5},
+	{"setpoint",8}
 };
 
 //串口1中断函数
@@ -268,9 +270,23 @@ void RS232_USART_IRQHandler(void)
 				printf("2  ->set_angle (set air valve angle value)\r\n");
 				printf("\r\n");
 			}
-			if(strstr((char *)RxBuffer,uart_cmd[RUN].cmd))
+			else if(strstr((char *)RxBuffer,uart_cmd[RUN].cmd))
 			{
 				index = uart_cmd[RUN].len;
+				memset((void *)dst_vale,0,5);
+				strncpy(dst_vale,(char *)&RxBuffer[index],RxCounter-index);
+				debuginfo=atoi(dst_vale);
+			}
+			else if(strstr((char *)RxBuffer,uart_cmd[DEBUG].cmd))
+			{
+				index = uart_cmd[DEBUG].len;
+				memset((void *)dst_vale,0,5);
+				strncpy(dst_vale,(char *)&RxBuffer[index],RxCounter-index);
+				runstatus=atoi(dst_vale);
+			}
+			else if(strstr((char *)RxBuffer,uart_cmd[SETPOINT].cmd))
+			{
+				index = uart_cmd[SETPOINT].len;
 				memset((void *)dst_vale,0,5);
 				strncpy(dst_vale,(char *)&RxBuffer[index],RxCounter-index);
 				runstatus=atoi(dst_vale);

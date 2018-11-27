@@ -32,6 +32,7 @@ extern uint8_t cmd_buffer[CMD_MAX_SIZE];		//指令缓存
 extern uint8_t press_flag;
 extern MainShowTextValue	showtextvalue;	//主页面文本控件缓存值
 int runstatus=0;
+int debuginfo=1;
 extern arm_pid_instance_f32 PID;
 /* ----------------------- Defines ------------------------------------------*/
 
@@ -68,12 +69,13 @@ int main( void )
 {
 	float temperRaw=0;
 	float temperFilter=0;
-	int SetPoint=0;
+	int SetPoint=100;
 	float error=0;
 	int pwmOut=0;
 	int AutoTuningDone=0;
 	struct AutoTuningParamStruct autoTuneParam;
-    eMBErrorCode    eStatus;
+	uint16_t Ktemperature = 0;
+  eMBErrorCode    eStatus;
 	qsize  size = 0;
 	System_Init();												//系统初始化设置
 
@@ -83,7 +85,7 @@ int main( void )
 	SetBackLight(20);											//初始屏幕背光亮度
 	
 	startscreen();												//start screen
-	PIDInit();
+	PIDInit();//need to be reset after chage setpoint
 
 	while(1)
     {
@@ -97,11 +99,13 @@ int main( void )
 		if(getMsCounter()-t_thread500>500)
 		{
 			t_thread500=getMsCounter();
+			Ktemperature=Max6675_Read_Tem();
+			temperRaw=Ktemperature*0.25;
 			
-			temperRaw=(float)Max6675_Read_Tem()*0.25;
-			SetPoint=showtextvalue.setting_temp;
-			
+			//SetPoint=showtextvalue.setting_temp;
+			SetPoint=100;
 			temperFilter=getFilterTemper(temperRaw);
+			printf("RAW:%.2lf, filter:% .2lf\n",temperRaw,temperFilter);
 			error=SetPoint-temperFilter;
 			autoTuneParam.SetPoint=SetPoint;
 			//runstatus is debug flag. Also use button to change status
