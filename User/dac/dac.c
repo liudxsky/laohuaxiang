@@ -61,30 +61,6 @@ void Dac_Select_Init(void)
 	GPIO_Init(DAC_SELECT_GPIO_PORT, &GPIO_InitStructure); 
 }
 
-uint8_t Check_ControlWay(void)
-{
-	uint8_t select;
-	select = GPIO_ReadInputDataBit(DAC_SELECT_GPIO_PORT,DAC_SELECT2_GPIO_PIN);
-	if(select)
-	{
-		return Bit_SET;			//电流控制
-	}
-	else
-	{
-		return Bit_RESET;		//电压控制
-	}
-}
-
-
-
-
-
-
-
-
-
-
-
 
 
 

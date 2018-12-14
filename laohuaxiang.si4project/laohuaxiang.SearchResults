@@ -1,0 +1,4 @@
+---- led_blink Matches (3 in 3 files) ----
+gpio.c (User\gpio) line 98 : void led_blink(uint8_t num)
+gpio.h (User\gpio) line 101 : void led_blink(uint8_t num);
+check_screen_connect in status.c (User\status) : 		led_blink(3);

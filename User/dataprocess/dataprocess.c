@@ -18,6 +18,8 @@ extern uint16_t     usRegInputBuf[REG_INPUT_NREGS];				//ÊäÈë¼Ä´æÆ÷      ²Ù×÷Âë£
 extern uint16_t		usRegHoldingBuf[REG_HOLDING_NREGS];			//±£³Ö¼Ä´æÆ÷	²Ù×÷Âë£º03,06,16
 extern uint16_t		ucRegCoilsBuf[REG_COILS_SIZE];					//ÏßÈ¦¼Ä´æÆ÷	²Ù×÷Âë£º01,05,15
 extern uint16_t		ucRegDiscreteBuf[REG_DISCRETE_SIZE];		//¿ª¹ØÊäÈë¼Ä´æÆ÷	²Ù×÷Âë£º02
+
+
 extern MainShowTextValue showtextvalue;									//Ö÷Ò³ÃæÎÄ±¾¿Ø¼þ»º´æÖµ
 extern uint8_t cmd_buffer[CMD_MAX_SIZE];								//Ö¸Áî»º´æ
 extern BIG_SCREEN_ID_TAB biglanguage_screen;;							//½çÃæÓïÑÔÑ¡Ôñ
@@ -39,28 +41,28 @@ uint8_t temp[COILNUM] = {0};
 #define READ_GPIO_VALUE_TABLE(_i, _port, _pin)   do { temp[(_i)] = GPIO_ReadOutputDataBit((_port),(_pin)); } while(0)
 
 
-GpioTableIndex gpiotable[GPIO_TABLE_SIZE] = {0};
 
 
 
-//¶ÁÏßÈ¦×´Ì¬
+//¶ÁÏßÈ¦×´Ì¬,0ÎªON,1ÎªOFF
 void  read_coil(void)
 {
 	
-	READ_GPIO_VALUE_TABLE(0,DRIVER_GPIO_PORT,HEAT_CONTROL_PIN);
-	READ_GPIO_VALUE_TABLE(1,DRIVER_GPIO_PORT,SPINNER_RACK_CONTROL_PIN);
-	READ_GPIO_VALUE_TABLE(2,DRIVER_GPIO_PORT,CIRCULATING_FUN_CONTROL_PIN);
-	READ_GPIO_VALUE_TABLE(3,DRIVER_GPIO_PORT,ALARM_CONTROL1_PIN);
-	READ_GPIO_VALUE_TABLE(4,DRIVER_GPIO_PORT,ALARM_CONTROL2_PIN);
-	READ_GPIO_VALUE_TABLE(5,BOX_DOOR_GPIO_PORT,BOX_DOOR_PIN);
+	READ_GPIO_VALUE_TABLE(0,DRIVER_GPIO_PORT,HEAT_CONTROL_PIN);					//¼ÓÈÈ
+	READ_GPIO_VALUE_TABLE(1,DRIVER_GPIO_PORT,SPINNER_RACK_CONTROL_PIN);			//Ðý×ª¼Ü
+	READ_GPIO_VALUE_TABLE(2,DRIVER_GPIO_PORT,CIRCULATING_FUN_CONTROL_PIN);		//·ç»ú
+	READ_GPIO_VALUE_TABLE(3,DRIVER_GPIO_PORT,ALARM_CONTROL1_PIN);				//ÎÂ¶È±¨¾¯1
+	READ_GPIO_VALUE_TABLE(4,DRIVER_GPIO_PORT,ALARM_CONTROL2_PIN);				//ÎÂ¶È±¨¾¯2
+	READ_GPIO_VALUE_TABLE(5,BOX_DOOR_GPIO_PORT,BOX_DOOR_PIN);					//ÏäÃÅ
 	
 	ucRegCoilsBuf[0] = temp[0]|temp[1]<<1|temp[2]<<2|temp[3]<<3|temp[4]<<4|temp[5]<<5;
 }
 
 
 //Ð´ÏßÈ¦×´Ì¬
-void  write_coil(void)
+void  write_coil(uint8_t coilvalue)
 {
+	ucRegCoilsBuf[0] |= coilvalue;
 	GPIO_WriteBit(DRIVER_GPIO_PORT,HEAT_CONTROL_PIN,ucRegCoilsBuf[0] & 0x01);
 	GPIO_WriteBit(DRIVER_GPIO_PORT,SPINNER_RACK_CONTROL_PIN,ucRegCoilsBuf[0] & 0x02);
 	GPIO_WriteBit(DRIVER_GPIO_PORT,CIRCULATING_FUN_CONTROL_PIN,ucRegCoilsBuf[0] & 0x04);
@@ -69,27 +71,22 @@ void  write_coil(void)
 	GPIO_WriteBit(DRIVER_GPIO_PORT,BOX_DOOR_PIN,ucRegCoilsBuf[0] & 0x20);
 }
 
+extern uint8_t thermalbuff[38];
 
 //¶ÁÊäÈë¼Ä´æÆ÷
 void read_input_register(void)
 {
 	uint8_t i = 0;
 	//¼´Ê±ÎÂ¶È
-//	usRegInputBuf[0] = 	Ktemperature;
-	for(i = 0;i < TIMERECORDNUM;i++)
-	{
-//		usRegInputBuf[7*i+1] = heattime_log.opendoor_year<<8|heattime_log.opendoor_month;
-//		usRegInputBuf[7*i+2] = heattime_log.opendoor_day<<8|heattime_log.opendoor_hour;
-//		usRegInputBuf[7*i+3] = heattime_log.opendoor_minute<<8|heattime_log.opendoor_second;
-//		usRegInputBuf[7*i+4] = heattime_log.set_temp;
-//		usRegInputBuf[7*i+5] = heattime_log.close_temp;
-//		usRegInputBuf[7*i+6] = heattime_log.opendoor_duration;
-//		usRegInputBuf[7*i+7] = heattime_log.regain_set_temp_time;
-	}
+	usRegInputBuf[0] = 	(uint16_t)showtextvalue.current_temp_vlaue;
+//	for(i = 0;i < TIMERECORDNUM;i++)
+//	{
+//		usRegInputBuf[38*i] = thermalbuff[i];
+//	}
 	
-//	usRegInputBuf[141] = changetime.Year<<8|changetime.Mon;
-//	usRegInputBuf[142] = changetime.Day<<8|changetime.Hour;
-//	usRegInputBuf[143] = changetime.Min<<8|changetime.Sec;
+//	usRegInputBuf[381] = heattime_log.heattime.Year<<8|heattime_log.heattime.Mon;
+//	usRegInputBuf[382] = heattime_log.heattime.Day<<8|heattime_log.heattime.Hour;
+//	usRegInputBuf[383] = heattime_log.heattime.Min<<8|heattime_log.heattime.Sec;
 }
 
 
@@ -98,14 +95,13 @@ void read_input_register(void)
 //¶Á±£³Ö¼Ä´æÆ÷Öµ
 void read_coilregister(void)
 {
-//	usRegHoldingBuf[0] = coilsavevalue.test_duration;
+	usRegHoldingBuf[0] = 56;
 //	usRegHoldingBuf[1] = coilsavevalue.test_duration;
 //	usRegHoldingBuf[2] = coilsavevalue.test_temp;
 //	usRegHoldingBuf[3] = coilsavevalue.warning1_up;
 //	usRegHoldingBuf[4] = coilsavevalue.warning1_down;
 //	usRegHoldingBuf[5] = coilsavevalue.warning2_up;
 //	usRegHoldingBuf[6] = coilsavevalue.warning2_down;
-//	usRegHoldingBuf[7] = coilsavevalue.analog_output;
 //	usRegHoldingBuf[8] = coilsavevalue.menu_password&0x0000ffff;
 //	usRegHoldingBuf[9] = coilsavevalue.menu_password>>16;
 //	usRegHoldingBuf[10] = coilsavevalue.secondtime_password&0x0000ffff;
@@ -118,17 +114,17 @@ void read_coilregister(void)
 
 
 
-//Ð´Èë±£³Ö¼Ä´æÆ÷Öµ
+//Ð´Èë±£³Ö¼Ä´æÆ÷Öµ£¬×Ô¼º¶¨ÒåÊäÈëÀàÐÍ
 void  writer_register(void)
 {
-	uint8_t i;
-	
-	uint8_t tempbuff[10],temp_cmdbuff[CMD_MAX_SIZE];
-	uint16_t cmdvalue16;
-	uint32_t cmdvalue32;
 
-	cmdvalue16 = PTR2U16(tempmessage->param);				//´Ó»º³åÇøÖÐÈ¡16Î»Êý¾Ý
-	cmdvalue32 = PTR2U32(tempmessage->param);				//´Ó»º³åÇøÖÐÈ¡32Î»Êý¾Ý
+	usRegHoldingBuf[0]  = 34;
+
+//	uint16_t cmdvalue16;
+//	uint32_t cmdvalue32;
+
+//	cmdvalue16 = PTR2U16(tempmessage->param);				//´Ó»º³åÇøÖÐÈ¡16Î»Êý¾Ý
+//	cmdvalue32 = PTR2U32(tempmessage->param);				//´Ó»º³åÇøÖÐÈ¡32Î»Êý¾Ý
 	
 //	//ÊÔÑéÊ±¼ä
 //	if((tempmessage.screen_id == language_screen.SCREAT_PROTECT_SCREEN) && tempmessage.control_id == TEST_TIME_VALUE && tempmessage.ctrl_msg == 0x11 )
@@ -272,7 +268,15 @@ void readgpiostatus(void)
 
 
 
+void modbus_register_handle(void)
+{
+	read_coil();		//¶ÁÏßÈ¦
+//	write_coil();		//Ð´ÏßÈ¦
 
+	read_input_register();	//¶ÁÊäÈë¼Ä´æÆ÷
+	read_coilregister();	//¶Á±£³Ö¼Ä´æÆ÷Öµ
+	read_coilregister();	//Ð´Èë±£³Ö¼Ä´æÆ÷Öµ£¬×Ô¼º¶¨ÒåÊäÈëÀàÐÍ
+}
 
 
 

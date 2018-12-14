@@ -52,8 +52,8 @@
 
 void DAC1_Init(void);
 void Dac1_Set_Vol(double vol);
+void Dac_Select_Init(void);
 
-uint8_t Check_ControlWay(void);
 
 #endif /* __DAC_H */
 

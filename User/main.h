@@ -25,7 +25,7 @@
 //线圈寄存器起始地址
 #define 	REG_COILS_START 		0x0000
 //线圈寄存器数量
-#define 	REG_COILS_SIZE 		1
+#define 	REG_COILS_SIZE 			8
 
 
 //开关输入寄存器起始地址

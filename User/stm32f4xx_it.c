@@ -340,7 +340,7 @@ void SCREEN_USART_IRQHandler(void)
     {
         uint8_t data = USART_ReceiveData(SCREEN_USART);
         queue_push(data);
-		screen_flag = 1;
+			screen_flag = 1;
     }  
 // USART_ClearITPendingBit(SCREEN_USART, USART_IT_RXNE);   //清除中断标志位
 }

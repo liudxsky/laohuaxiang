@@ -6,7 +6,7 @@
 #include "./delaytime/delaytime.h"
 #include "./pwm/pwm.h"
 #include "./flash/deviceinfo.h"
-
+#include "./dac/dac.h"
 
 extern BIG_SCREEN_ID_TAB bigchinese_screen ;
 extern BIG_SCREEN_ID_TAB bigenglish_screen; 
@@ -39,7 +39,7 @@ uint32_t door_openstatus = 0,door_closestatus = 0;
 
 ThermalLag heattime_log;						//热滞后时间记录结构体
 uint8_t  control_mode[2][8] = {"4-20mA","2-10V"};
-uint8_t  Rs485Status = 2;  						//0表示通信正常，1表示通信异常，2表示485通信未连接
+uint8_t  Rs485TX = 0,Rs485RX = 0,Rs485Status = 2;  						//0表示通信正常，1表示通信异常，2表示485通信未连接
 
 
 
@@ -84,36 +84,14 @@ void check_screen_connect(void)
 		if(current_screen_id == biglanguage_screen.BIG_START_INIT_SCREEN)
 		{
 			
-//			SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_TEST_TEMP_VALUE,textvalue.coilsavevalue.test_temp);
-//			delay_ms(100);
-//			SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_SOFT_VER_ID,soft_ver);
-//			delay_ms(100);
-//			SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_START_TIME_ID,textvalue.textvaluebuff.start_time);
-//			delay_ms(100);
-//			SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_END_TIME_ID,textvalue.textvaluebuff.end_time); 	
-//			delay_ms(100);
-//			SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TIME_LEFT_ID,textvalue.textvaluebuff.left_time);
-//			delay_ms(100);
-//			SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_TEST_TIME_VALUE,textvalue.coilsavevalue.test_duration);
-//			delay_ms(100);
-//			SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_CHANGE_AIR_TIME,textvalue.coilsavevalue.change_air_time);
-//			delay_ms(100);
-
-
-
-
-			
 			MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);
-//			check_pwmicon();
-//			Check_Rs485();
-//			door_open_status();
 		}
 	}
 	else
 	{
 		screen_flag = 0;
 //		led_blink(3);
-		delay_s(1);	
+//		delay_ms(100);	
 	}
 }
 
@@ -160,7 +138,18 @@ void check_pwmicon(void)
 //检测485通信状态
 void Check_Rs485(void)
 {
-	
+	if(Rs485TX&Rs485RX)
+	{
+		Rs485Status = 0;
+	}
+	else if(Rs485TX|Rs485RX)
+	{
+		Rs485Status = 1;
+	}
+	else
+	{
+		Rs485Status = 2;
+	}
 	switch (Rs485Status)
 	{
 		case 0:
@@ -455,9 +444,8 @@ void door_open_status(void)
 //阀门控制方式选择
 void control_mode_select(void)
 {	
-	uint8_t controlmode = 0;
-	controlmode = Check_ControlWay();
-	if(!controlmode)
+	uint8_t controlflag = GPIO_ReadInputDataBit(DAC_SELECT_GPIO_PORT,DAC_SELECT2_GPIO_PIN);	;
+	if(controlflag)
 	{
 		SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_ANALOG_OUTPUT,control_mode[0]);
 	}

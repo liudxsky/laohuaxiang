@@ -21,7 +21,7 @@
 
 uint16_t current_screen_id = 0;
 volatile uint32_t  timer_tick_count = 0; //定时器节拍
-
+uint32_t countnum2 = 0,start = 0,end = 0,starttime,endtime;
 extern uint16_t ADC_ConvertedValue[ADC_NOFCHANEL];
 //extern BIG_SCREEN_ID_TAB biglanguage_screen;
 //extern BIG_SCREEN_ID_TAB bigchinese_screen;
@@ -35,15 +35,15 @@ extern MainShowTextValue	showtextvalue;	//主页面文本控件缓存值
 /* ----------------------- Defines ------------------------------------------*/
 
 //输入寄存器内容
-uint16_t    usRegInputBuf[REG_INPUT_NREGS];
+uint16_t    usRegInputBuf[REG_INPUT_NREGS]= {0};
 
 
 //保持寄存器内容
-uint16_t	usRegHoldingBuf[REG_HOLDING_NREGS] = {0x147b,0x3f8e,0x147b,0x400e,0x1eb8,0x4055,0x147b,0x408e};
+uint16_t	usRegHoldingBuf[REG_HOLDING_NREGS] = {0};
 
 
 //线圈寄存器内容
-uint16_t	ucRegCoilsBuf[REG_COILS_SIZE] = {0};
+uint16_t	ucRegCoilsBuf[REG_COILS_SIZE] = {8};
 
 
 //开关输入寄存器内容
@@ -88,9 +88,9 @@ int main( void )
 		if(getMsCounter() - timer_tick_count > 1500)
 		{
 			timer_tick_count = getMsCounter();
-			ReadRtcTime();
+			ReadRtcTime();		
 			start_endtime_set();							//起始结束时间设置
-			temp_detection();								//温度测量
+			temp_detection();								//温度测量，2.5ms
 			if(press_flag)
 			{
 				get_combo_button_times();					//连击按钮跳转界面函数
@@ -98,10 +98,11 @@ int main( void )
 				touchtimes.menu_click_times = 0;
 				press_flag = 0;
 			}
+				
 			temp_curve_save();								//温度曲线存储	
-			Check_All_Status();
+			Check_All_Status();			
 		}
-		device_timing_selfcheck();
+			device_timing_selfcheck();
     }
 }
 
@@ -125,6 +126,7 @@ void System_Init(void)
 	
 	Analog_Init();									//adc初始化配置
 	DAC1_Init();									//DAC初始化配置
+	Dac_Select_Init();
 	Max6675_Gpio_Init();							//热电偶GPIO初始化	 
 	control_mode_select();							//阀门控制选择
 	screen_init();									//屏幕内容初始化
@@ -160,7 +162,6 @@ eMBRegInputCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs )
 {
     eMBErrorCode    eStatus = MB_ENOERR;
    	int16_t iRegIndex;
-
 	/*查询是否在寄存器范围内.为了避免警告，修改为有符号整数*/
 	if( ( (int16_t)usAddress >= REG_INPUT_START ) \
 	&& ( usAddress + usNRegs <= REG_INPUT_START + REG_INPUT_NREGS ) )

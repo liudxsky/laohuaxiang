@@ -26,6 +26,7 @@
 #include "mbport.h"
 #include "./gpio/gpio.h"
 
+extern uint8_t  Rs485RX,Rs485TX;
 
 /* ----------------------- Start implementation -----------------------------*/
 void
@@ -101,6 +102,7 @@ void prvvUARTTxReadyISR( void )
 	RS485_TX_EN();
     pxMBFrameCBTransmitterEmpty(  );
 	RS485_RX_EN();
+	Rs485TX = 1;
 }
 
 /* Create an interrupt handler for the receive interrupt for your target
@@ -111,5 +113,5 @@ void prvvUARTTxReadyISR( void )
 void prvvUARTRxISR( void )
 {
     pxMBFrameCBByteReceived(  );
-
+	Rs485RX = 1;
 }

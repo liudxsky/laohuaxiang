@@ -1,6 +1,7 @@
 #include "./queue/queue.h"
 
-#ifdef 1
+#if 0
+
 //队列初始化
 uint16_t QueueInit(MyQueue *q)
 {
@@ -32,11 +33,10 @@ uint16_t EmptyQueue(MyQueue *q)
 //入队
 uint16_t EnterQueue(MyQueue *q,uint8_t index,uint16_t data)
 {
-	uint32_t intime;
 	if(FullQueue(q))
 		return ERROR;
-	q->pData[q->rear].value = data;
-	q->pData[q->rear].event = index;
+	q->pData[q->rear] = data;
+	q->pData[q->rear] = index;
 	q->rear = (q->rear + 1) % QUEMAXSIZE;
 
 	return OK;
@@ -76,10 +76,7 @@ void PrintQueue(MyQueue *pQueue)
 
 
 
-
-
 #endif
-
 
 
 
