@@ -14,14 +14,14 @@
 #include "hmi_user_uart.h"
 #include "./adc/adc.h"
 #include "./flash/deviceinfo.h"
-#include "./rtc/rtc.h"
 #include "time.h"
 #include <ctime>
 #include "./status/status.h"
+#include "pidcontroller.h"
 
 uint16_t current_screen_id = 0;
 volatile uint32_t  timer_tick_count = 0; //定时器节拍
-uint32_t countnum2 = 0,start = 0,end = 0,starttime,endtime;
+volatile uint32_t t_thread500=0;
 extern uint16_t ADC_ConvertedValue[ADC_NOFCHANEL];
 //extern BIG_SCREEN_ID_TAB biglanguage_screen;
 //extern BIG_SCREEN_ID_TAB bigchinese_screen;
@@ -31,7 +31,9 @@ extern RtcTime rtctime;
 extern uint8_t cmd_buffer[CMD_MAX_SIZE];		//指令缓存
 extern uint8_t press_flag;
 extern MainShowTextValue	showtextvalue;	//主页面文本控件缓存值
-
+int runstatus=0;
+int debuginfo=1;
+extern arm_pid_instance_f32 PID;
 /* ----------------------- Defines ------------------------------------------*/
 
 //输入寄存器内容
@@ -43,7 +45,7 @@ uint16_t	usRegHoldingBuf[REG_HOLDING_NREGS] = {0};
 
 
 //线圈寄存器内容
-uint16_t	ucRegCoilsBuf[REG_COILS_SIZE] = {8};
+uint16_t	ucRegCoilsBuf[REG_COILS_SIZE] = {0};
 
 
 //开关输入寄存器内容
@@ -58,14 +60,23 @@ extern float adjusttemp;
 extern Touch_Times touchtimes;
 
 extern MainShowTextValue showtextvalue;	//主页面文本控件缓存值
-
+float temper_usart;
 
 
 
 /* ----------------------- Start implementation -----------------------------*/
 int main( void )
 {
-    eMBErrorCode    eStatus;
+	float temperRaw=0;
+	float temperFilter=0;
+	float SetPoint=100;
+	float error=0;
+	int pwmOut=0;
+	int AutoTuningDone=0;
+	struct AutoTuningParamStruct autoTuneParam;
+	long t_thread100=0;
+	uint16_t Ktemperature = 0;
+  eMBErrorCode    eStatus;
 	qsize  size = 0;
 	System_Init();												//系统初始化设置
 
@@ -75,7 +86,8 @@ int main( void )
 	SetBackLight(20);											//初始屏幕背光亮度
 	
 	startscreen();												//start screen
-	
+	//SetPoint=showtextvalue.setting_temp;
+	PIDInit(PIDKP,PIDKI,PIDKD,SetPoint);//need to be reset after chage setpoint
 
 	while(1)
     {
@@ -85,12 +97,74 @@ int main( void )
 		{
 			ProcessMessage((PCTRL_MSG)cmd_buffer, size);//指令处理
 		}
-		if(getMsCounter() - timer_tick_count > 1500)
+		if(getMsCounter()-t_thread100>200)
+		{
+			t_thread100=getMsCounter();
+			ledBlinkThread();
+		}
+		if(getMsCounter()-t_thread500>500)
+		{
+			t_thread500=getMsCounter();
+		//	printf("global T:%d", t_thread500);
+			Ktemperature=Max6675_Read_Tem();
+			temperRaw=Ktemperature*0.25;
+			//SetPoint=100;
+			temperFilter=getFilterTemper(temperRaw);
+			printf("%f\n",temperFilter);
+			//temperFilter=temper_usart;
+			error=SetPoint-temperFilter;
+			if(debuginfo)
+			printf("Setpoint:%.2lf\n",SetPoint);
+			//use button to change status
+			if(runstatus==2) //button event to set tuning flag
+			{
+				autoTuneParam.f_autoTuning=1;
+				runstatus=3;
+			}
+			if(autoTuneParam.f_autoTuning)//(autoTuning(error,&pwmOut,&autoTuneParam))
+			{
+				autoTuning(error,&pwmOut,&autoTuneParam);
+				if(autoTuneParam.f_autoTuningDone)
+				{
+					//auto tune finished
+					//new parameters,should stop and re-run process
+					printf("auto tune status:%d",autoTuneParam.AutoTuneStatus);
+					if(autoTuneParam.AutoTuneStatus>0)
+					{
+						//auto tune success
+						PID.Kp=autoTuneParam.Kp_auto;
+						PID.Ki=autoTuneParam.Ki_auto;
+						PID.Kd=autoTuneParam.Kd_auto;
+						printf("Kp:%f,Ki:%f,Kd%f\n",PID.Kp,PID.Ki,PID.Kd);
+					}
+					else
+					{
+						//autotune failed
+					}
+					SetPwmValue(0);
+					runstatus=0;
+				}
+				else
+				{
+					//auto-tuning still runing 
+				}
+			}
+			else//normal pid runing
+			{
+				pwmOut=pidCalc(error);
+			}
+			if(runstatus>0)//start heating
+			{
+				SetPwmValue(pwmOut);
+			}
+		}
+		
+		if(getMsCounter() - timer_tick_count > 1000)
 		{
 			timer_tick_count = getMsCounter();
 			ReadRtcTime();		
 			start_endtime_set();							//起始结束时间设置
-			temp_detection();								//温度测量，2.5ms
+			temp_detection(temperFilter);								//温度测量
 			if(press_flag)
 			{
 				get_combo_button_times();					//连击按钮跳转界面函数

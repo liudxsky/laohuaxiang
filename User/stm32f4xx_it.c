@@ -185,29 +185,39 @@ uint8_t RxBuffer[RxBufferSize];
 __IO uint8_t RxCounter = 0x00;
 extern dev_info_t dev_info;
 extern MainShowTextValue showtextvalue;	//主页面文本控件缓存值
-
-
-
-const uart_cmd_t uart_cmd[UART_CMD_NUM] = 
+extern int runstatus;//0 stop, 1 start, 2, autotune
+extern int debuginfo;
+extern float temper_usart;
+const uart_cmd_t uart_cmd[] = 
 {
 	{"show_value", 10},
 	{"set_pwmscope",12},
 	{"set_pwmvalue",12},
 	{"set_angle",9},
-	{"help", 4}
+	{"help", 4},
+	{"run",3},
+	{"debug",5},
+	{"setpoint",8},
+	{"simtemp",7}
 };
 
 //串口1中断函数
 void RS232_USART_IRQHandler(void)
 {
 	char dst_vale[5];
+	char floatbuff[32];
 	uint8_t i = 0;
 	uint8_t index = 0;
+	if(USART_GetITStatus(RS232_USART, USART_FLAG_ORE)!=RESET)
+	{
+		USART_ClearITPendingBit(RS232_USART, USART_FLAG_ORE);
+	}
+	
 	if(USART_GetITStatus(RS232_USART, USART_IT_RXNE) != RESET)  //接收中断
 	{
 		RxBuffer[RxCounter] =USART_ReceiveData(RS232_USART);	 //读取收到的数据
 		//回显
-		printf("%c",RxBuffer[RxCounter]);
+		//printf("%c",RxBuffer[RxCounter]);
 		//0x0d 回车
 		if(RxBuffer[RxCounter]==0x0d||RxBuffer[RxCounter]==0x0a)
 		{
@@ -217,9 +227,10 @@ void RS232_USART_IRQHandler(void)
 				memset((void *)dst_vale,0,5);
 				strncpy(dst_vale,(char *)&RxBuffer[index],RxCounter-index);
 				dev_info.valid_flag = true;
-				dev_info.pwmscope = atoi(dst_vale);
+				SetPwmScope(atoi(dst_vale));
+				//dev_info.pwmscope = atoi(dst_vale);
 //				FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
-				TIM_PWMOUTPUT_Config();
+				//TIM_PWMOUTPUT_Config();
 				printf("\r\ncurrent PWM Scope is  0 -- %d \r\n",dev_info.pwmscope);
 			}
 			else if(strstr((char *)RxBuffer,uart_cmd[SET_PWMVLAUE].cmd)) 	
@@ -228,9 +239,10 @@ void RS232_USART_IRQHandler(void)
 				memset((void *)dst_vale,0,5);
 				strncpy(dst_vale,(char *)&RxBuffer[index],RxCounter-index);
 				dev_info.valid_flag = true;
-				dev_info.pwmvalue = atoi(dst_vale);
+				SetPwmValue(atoi(dst_vale));
+				//dev_info.pwmvalue = atoi(dst_vale);
 //				FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));			
-				TIM_PWMOUTPUT_Config();
+				//TIM_PWMOUTPUT_Config();
 				printf("\r\n\r\npwmvalue is set: \r\n------dec: %d\r\n------hex: 0x%x\r\n",dev_info.pwmvalue,dev_info.pwmvalue);
 				printf("\r\n\r\ncurrent temperature is : %.2lf\r\n",showtextvalue.current_temp_vlaue);
 			}
@@ -265,6 +277,35 @@ void RS232_USART_IRQHandler(void)
 				printf("2  ->set_angle (set air valve angle value)\r\n");
 				printf("\r\n");
 			}
+			else if(strstr((char *)RxBuffer,uart_cmd[RUN].cmd))
+			{
+				index = uart_cmd[RUN].len;
+				memset((void *)dst_vale,0,5);
+				strncpy(dst_vale,(char *)&RxBuffer[index],RxCounter-index);
+				runstatus=atoi(dst_vale);
+			}
+			else if(strstr((char *)RxBuffer,uart_cmd[DEBUG].cmd))
+			{
+				index = uart_cmd[DEBUG].len;
+				memset((void *)dst_vale,0,5);
+				strncpy(dst_vale,(char *)&RxBuffer[index],RxCounter-index);
+				debuginfo=atoi(dst_vale);
+			}
+			else if(strstr((char *)RxBuffer,uart_cmd[SETPOINT].cmd))
+			{
+				index = uart_cmd[SETPOINT].len;
+				memset((void *)dst_vale,0,5);
+				strncpy(dst_vale,(char *)&RxBuffer[index],RxCounter-index);
+				showtextvalue.setting_temp=atoi(dst_vale);
+			}
+			else if(strstr((char *)RxBuffer,uart_cmd[SIMTEMP].cmd))
+			{
+				index = uart_cmd[SIMTEMP].len;
+				memset((void *)floatbuff,0,32);
+				strncpy(floatbuff,(char *)&RxBuffer[index],RxCounter-index);
+				temper_usart=atof(floatbuff);
+				printf("%d\n",dev_info.pwmvalue);
+			}
 			else
 			{
 				printf("\r\nCmd Error! please input again!\r\n");		
@@ -274,7 +315,7 @@ void RS232_USART_IRQHandler(void)
 			{		
 				RxBuffer[i] = 0x00;
 			}
-			printf("\r\n******End!******\r\n\r\n");
+			//printf("\r\n******End!******\r\n\r\n");
 		}
 		else
 		{

@@ -11,8 +11,10 @@
 #define SET_PWMVLAUE				2
 #define SET_ANGLE					3
 #define HELP						4
-
-
+#define RUN 						5
+#define DEBUG 						6
+#define SETPOINT 					7
+#define SIMTEMP 					8
 typedef struct
 {
 	char* cmd;

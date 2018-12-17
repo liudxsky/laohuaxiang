@@ -29,9 +29,10 @@
 #define ADDR_FLASH_SECTOR_23 ((uint32_t)0x081E0000)
 
 
+//16K
+
 #define FLASH_USER_START_ADDR 			ADDR_FLASH_SECTOR_3
 #define FLASH_USER_END_ADDR 			ADDR_FLASH_SECTOR_4
-
 
 int8_t FLASH_Write_Nbytes(uint8_t *WriteAddress,uint8_t *WriteBuf,uint16_t Len);
 void FLASH_Read_Nbytes(uint8_t *ReadAddress, uint8_t *ReadBuf, uint16_t Len);

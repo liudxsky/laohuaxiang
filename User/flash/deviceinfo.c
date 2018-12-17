@@ -7,7 +7,7 @@
 
 
 uint8_t ChipUniqueID[12] = {0};
-uint32_t * const  p = (uint32_t *)(0x0800C000); 
+uint32_t * const  p = (uint32_t *)(0x0800F000); 
 #define INVALID_INFO		0xFFFF
 dev_info_t dev_info;
 extern uint8_t SCREENSIZE;
@@ -24,7 +24,6 @@ void DeviceInfo_Init(void)
 		dev_info.pwmvalue = 0;
 		dev_info.airvalveangle = 0;
 		dev_info.biglanguagestatus = 1;
-		dev_info.smalllanguagestatus = 0;
 		for (i = 0; i < 19; ++i)
 		{
 			dev_info.change_air_time[i] = 0;
@@ -51,7 +50,8 @@ void DeviceInfo_Init(void)
 		/*串口打印信息	*/
 		printf("\r\n device curren pwm scope is %d \r\n",dev_info.pwmscope);
 		printf("\r\n device current pwm value is %d \r\n",dev_info.pwmvalue);
-		printf("\r\n device curren air valve angle value is %d \r\n",dev_info.airvalveangle);
+		printf("\r\n device current air valve angle value is %d \r\n",dev_info.airvalveangle);
+		printf("\r\n device current Pid value is : \r\nP :%.2f\r\nI :%.4f\r\n D : %.2f\r\n",dev_info.pidvalue.PID_P,dev_info.pidvalue.PID_I,dev_info.pidvalue.PID_D);
 		printf("\r\n device current change air times is :\r\n");
 		for (i = 0; i < 19; ++i)
 		{

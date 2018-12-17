@@ -1,7 +1,9 @@
 #include "./gpio/gpio.h"
 #include "./delaytime/delaytime.h"
 
-
+int timer100;
+int blinkcnt=0;
+int ledstatus=0;
 //LED灯初始化配置
 void led_init(void)
 {
@@ -18,6 +20,7 @@ void led_init(void)
 	GPIO_Init(LED_GPIO_PORT, &GPIO_InitStructure); 
 	
 	GPIO_ResetBits(LED_GPIO_PORT,LED_PIN);						 //熄灭LED
+	timer100=0;
 }
 
 //驱动开关触点和反馈引脚初始化配置
@@ -65,6 +68,23 @@ void Gpio_Init(void)
 	driver_gpio_init();
 	door_gpio_init();
 }
+void ledBlinkThread()
+{
+	if(blinkcnt>0)
+	{
+		//blinkcnt--;
+		if(ledstatus==0)
+		{
+			LED_ON;
+			ledstatus=1;
+		}
+		else
+		{
+			LED_OFF;
+			ledstatus=0;
+		}
+	}	
+}
 
 void test(void)
 {
@@ -97,14 +117,7 @@ void test(void)
 
 void led_blink(uint8_t num)
 {
-	uint8_t i;
-	for(i=0;i<num;i++)
-	{
-		LED_ON;
-		delay_ms(200);
-		LED_OFF;
-		delay_ms(200);
-	}
+	blinkcnt=num;
 }
 
 

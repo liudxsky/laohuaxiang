@@ -592,7 +592,12 @@ typedef struct
 }Touch_Times;
 
 
-
+typedef struct
+{
+	float PID_P;
+	float PID_I;
+	float PID_D;
+}Pid_Value;
 
 
 #pragma pack(pop)
@@ -758,6 +763,7 @@ void addup_testtime(void);
 
 void change_air_times(void);
 
+void check_pidstatus(void);
 
 
 

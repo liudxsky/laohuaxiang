@@ -129,8 +129,7 @@ uint16_t Max6675_Read_Tem(void)
  uint16_t Max6675_Read_Tem(void)
 {
 	uint16_t temp = 0;
-	uint8_t i;
-
+	
 	SPI_MAX6675_CS_LOW();
 
 	temp =  SPI2_ReadWriteByte(0xff);

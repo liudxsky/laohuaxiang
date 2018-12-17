@@ -51,7 +51,7 @@ void check_powertime(void);
 
 void check_warning(void);
 
-void temp_detection(void);
+void temp_detection(float dispTemper);
 
 void device_selfcheck(void);
 

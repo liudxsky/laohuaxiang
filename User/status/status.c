@@ -22,7 +22,7 @@ extern TextValueTab  textvalue;					//文本控件保存值
 extern MainShowTextValue	showtextvalue;		//主页面文本控件缓存值
 extern uint8_t SCREENSIZE; 
 extern CoilValue  coilvalue;				//设置界面值
-extern float adjusttemp2;
+extern float adjusttemp;
 extern uint8_t slidervalue;					//滑动进度条值
 extern uint16_t autonopowerpassword;
 extern AutoNoPowerTime  nopowertime;		//自动断电时间	
@@ -84,14 +84,31 @@ void check_screen_connect(void)
 		if(current_screen_id == biglanguage_screen.BIG_START_INIT_SCREEN)
 		{
 			
+//			SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_TEST_TEMP_VALUE,textvalue.coilsavevalue.test_temp);
+//			delay_ms(100);
+//			SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_SOFT_VER_ID,soft_ver);
+//			delay_ms(100);
+//			SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_START_TIME_ID,textvalue.textvaluebuff.start_time);
+//			delay_ms(100);
+//			SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_END_TIME_ID,textvalue.textvaluebuff.end_time); 	
+//			delay_ms(100);
+//			SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TIME_LEFT_ID,textvalue.textvaluebuff.left_time);
+//			delay_ms(100);
+//			SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_TEST_TIME_VALUE,textvalue.coilsavevalue.test_duration);
+//			delay_ms(100);
+//			SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_CHANGE_AIR_TIME,textvalue.coilsavevalue.change_air_time);
+//			delay_ms(100);
+
+//			check_pwmicon();
+//			Check_Rs485();
+//			door_open_status();
 			MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);
 		}
 	}
 	else
 	{
+		led_blink(3);
 		screen_flag = 0;
-//		led_blink(3);
-//		delay_ms(100);	
 	}
 }
 
@@ -216,9 +233,9 @@ void check_warning(void)
 
 
 //温度测量
-void temp_detection(void)
+void temp_detection(float dispTemper)
 {
-	showtextvalue.current_temp_vlaue = adjusttemp2 + (float)Max6675_Read_Tem()*0.25;						//实时温度显示
+	showtextvalue.current_temp_vlaue = adjusttemp + dispTemper;						//实时温度显示
 	if(thermocouple_flag)
 	{
 		SetTextValueFloat(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_CURRENT_TEMP_ID, 999.9);	
@@ -234,6 +251,7 @@ void Check_All_Status(void)
 {
 	gpiostatus = Get_GPIO_Status();
 	check_pwm();
+	check_pidstatus();
 	Check_Rs485();
 	check_powertime();
 	check_screen_connect();
