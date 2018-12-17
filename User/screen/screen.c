@@ -1635,16 +1635,17 @@ char * monselect(char *monbuff)
 //结束时间格式转换
 void  adjustchar(char *timebuff)
 {
-	char *monbuff;
+	char monbuff[2];
 	char yearbuff[4]= {0},daybuff[2]= {0},clockbuff[5]= {0};
-	monbuff=malloc(sizeof(char)*2);
+	//monbuff=malloc(sizeof(char)*2);
 	memcpy(yearbuff,timebuff+22,4);
 	textvalue.textvaluebuff.end_time[0] = yearbuff[0];
 	textvalue.textvaluebuff.end_time[1] = yearbuff[1];
 	textvalue.textvaluebuff.end_time[2] = '/';
 	
 	strncpy(monbuff,timebuff+4,3);
-	monbuff = monselect(monbuff);
+	//monbuff = monselect(monbuff);
+	memcpy(monbuff,monselect(monbuff),2);
 	textvalue.textvaluebuff.end_time[3] = monbuff[0];
 	textvalue.textvaluebuff.end_time[4] = monbuff[1];
 	textvalue.textvaluebuff.end_time[5] = '/';

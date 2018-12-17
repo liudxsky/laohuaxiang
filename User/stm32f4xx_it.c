@@ -187,7 +187,7 @@ extern dev_info_t dev_info;
 extern MainShowTextValue showtextvalue;	//主页面文本控件缓存值
 extern int runstatus;//0 stop, 1 start, 2, autotune
 extern int debuginfo;
-
+extern float temper_usart;
 const uart_cmd_t uart_cmd[] = 
 {
 	{"show_value", 10},
@@ -197,20 +197,28 @@ const uart_cmd_t uart_cmd[] =
 	{"help", 4},
 	{"run",3},
 	{"debug",5},
-	{"setpoint",8}
+	{"setpoint",8},
+	{"simtemp",7}
 };
 
 //串口1中断函数
 void RS232_USART_IRQHandler(void)
 {
+	
 	char dst_vale[5];
+	char floatbuff[32];
 	uint8_t i = 0;
 	uint8_t index = 0;
+	if(USART_GetITStatus(RS232_USART, USART_FLAG_ORE)!=RESET)
+	{
+		USART_ClearITPendingBit(RS232_USART, USART_FLAG_ORE);
+	}
+	
 	if(USART_GetITStatus(RS232_USART, USART_IT_RXNE) != RESET)  //接收中断
 	{
 		RxBuffer[RxCounter] =USART_ReceiveData(RS232_USART);	 //读取收到的数据
 		//回显
-		printf("%c",RxBuffer[RxCounter]);
+		//printf("%c",RxBuffer[RxCounter]);
 		//0x0d 回车
 		if(RxBuffer[RxCounter]==0x0d||RxBuffer[RxCounter]==0x0a)
 		{
@@ -275,21 +283,29 @@ void RS232_USART_IRQHandler(void)
 				index = uart_cmd[RUN].len;
 				memset((void *)dst_vale,0,5);
 				strncpy(dst_vale,(char *)&RxBuffer[index],RxCounter-index);
-				debuginfo=atoi(dst_vale);
+				runstatus=atoi(dst_vale);
 			}
 			else if(strstr((char *)RxBuffer,uart_cmd[DEBUG].cmd))
 			{
 				index = uart_cmd[DEBUG].len;
 				memset((void *)dst_vale,0,5);
 				strncpy(dst_vale,(char *)&RxBuffer[index],RxCounter-index);
-				runstatus=atoi(dst_vale);
+				debuginfo=atoi(dst_vale);
 			}
 			else if(strstr((char *)RxBuffer,uart_cmd[SETPOINT].cmd))
 			{
 				index = uart_cmd[SETPOINT].len;
 				memset((void *)dst_vale,0,5);
 				strncpy(dst_vale,(char *)&RxBuffer[index],RxCounter-index);
-				runstatus=atoi(dst_vale);
+				showtextvalue.setting_temp=atoi(dst_vale);
+			}
+			else if(strstr((char *)RxBuffer,uart_cmd[SIMTEMP].cmd))
+			{
+				index = uart_cmd[SIMTEMP].len;
+				memset((void *)floatbuff,0,32);
+				strncpy(floatbuff,(char *)&RxBuffer[index],RxCounter-index);
+				temper_usart=atof(floatbuff);
+				printf("%d\n",dev_info.pwmvalue);
 			}
 			else
 			{
@@ -300,7 +316,7 @@ void RS232_USART_IRQHandler(void)
 			{		
 				RxBuffer[i] = 0x00;
 			}
-			printf("\r\n******End!******\r\n\r\n");
+			//printf("\r\n******End!******\r\n\r\n");
 		}
 		else
 		{

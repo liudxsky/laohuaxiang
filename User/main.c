@@ -21,7 +21,7 @@
 #include "pidcontroller.h"
 uint16_t current_screen_id = 0;
 volatile uint32_t  timer_tick_count = 0; //定时器节拍
-volatile uint16_t t_thread500=0;
+volatile uint32_t t_thread500=0;
 extern uint16_t ADC_ConvertedValue[ADC_NOFCHANEL];
 //extern BIG_SCREEN_ID_TAB biglanguage_screen;
 //extern BIG_SCREEN_ID_TAB bigchinese_screen;
@@ -32,7 +32,7 @@ extern uint8_t cmd_buffer[CMD_MAX_SIZE];		//指令缓存
 extern uint8_t press_flag;
 extern MainShowTextValue	showtextvalue;	//主页面文本控件缓存值
 int runstatus=0;
-int debuginfo=1;
+int debuginfo=0;
 extern arm_pid_instance_f32 PID;
 /* ----------------------- Defines ------------------------------------------*/
 
@@ -60,7 +60,7 @@ extern float adjusttemp;
 extern Touch_Times touchtimes;
 
 extern MainShowTextValue showtextvalue;	//主页面文本控件缓存值
-
+float temper_usart;
 
 
 
@@ -74,6 +74,7 @@ int main( void )
 	int pwmOut=0;
 	int AutoTuningDone=0;
 	struct AutoTuningParamStruct autoTuneParam;
+	long t_thread100=0;
 	uint16_t Ktemperature = 0;
   eMBErrorCode    eStatus;
 	qsize  size = 0;
@@ -95,23 +96,32 @@ int main( void )
 		{
 			ProcessMessage((PCTRL_MSG)cmd_buffer, size);//指令处理
 		}
-
+		if(getMsCounter()-t_thread100>200)
+		{
+			t_thread100=getMsCounter();
+			ledBlinkThread();
+		}
 		if(getMsCounter()-t_thread500>500)
 		{
 			t_thread500=getMsCounter();
+		//	printf("global T:%d", t_thread500);
 			Ktemperature=Max6675_Read_Tem();
 			temperRaw=Ktemperature*0.25;
 			
-			//SetPoint=showtextvalue.setting_temp;
-			SetPoint=100;
+			SetPoint=showtextvalue.setting_temp;
+			//SetPoint=100;
 			temperFilter=getFilterTemper(temperRaw);
-			printf("RAW:%.2lf, filter:% .2lf\n",temperRaw,temperFilter);
+			printf("%f\n",temperFilter);
+			//temperFilter=temper_usart;
 			error=SetPoint-temperFilter;
 			autoTuneParam.SetPoint=SetPoint;
+			if(debuginfo)
+			printf("Setpoint:%.2lf, filter:% .2lf\n",SetPoint,temperFilter);
 			//runstatus is debug flag. Also use button to change status
 			if(runstatus==2) //button event to set tuning flag
 			{
 				autoTuneParam.f_autoTuning=1;
+				runstatus=3;
 			}
 			if(autoTuneParam.f_autoTuning)//(autoTuning(error,&pwmOut,&autoTuneParam))
 			{
@@ -126,25 +136,24 @@ int main( void )
 						PID.Kp=autoTuneParam.Kp_auto;
 						PID.Ki=autoTuneParam.Ki_auto;
 						PID.Kd=autoTuneParam.Kd_auto;
+						printf("Kp:%f,Ki:%f,Kd%f\n",PID.Kp,PID.Ki,PID.Kd);
 						
 					}
 					else
 					{
 						//auto tune failed
-					}
-					
-					
+					}					
 				}
 				else
 				{
 					//auto-tuning still runing 
 				}
 			}
-			else
+			else//normal pid runing
 			{
 				pwmOut=pidCalc(error);
 			}
-			if(runstatus==1)//start heating
+			if(runstatus>0)//start heating
 			{
 				SetPwmValue(pwmOut);
 			}
@@ -152,6 +161,7 @@ int main( void )
 		
 		if(getMsCounter() - timer_tick_count > 1000)
 		{
+			
 			timer_tick_count = getMsCounter();
 			ReadRtcTime();
 			start_endtime_set();							//起始结束时间设置

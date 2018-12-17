@@ -99,10 +99,6 @@ void check_screen_connect(void)
 //			SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_CHANGE_AIR_TIME,textvalue.coilsavevalue.change_air_time);
 //			delay_ms(100);
 
-
-
-
-			
 			MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);
 //			check_pwmicon();
 //			Check_Rs485();
@@ -111,9 +107,9 @@ void check_screen_connect(void)
 	}
 	else
 	{
+		led_blink(3);
 		screen_flag = 0;
-//		led_blink(3);
-		delay_s(1);	
+
 	}
 }
 

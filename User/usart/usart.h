@@ -14,7 +14,7 @@
 #define RUN 5
 #define DEBUG 6
 #define SETPOINT 7
-
+#define SIMTEMP 8
 typedef struct
 {
 	char* cmd;

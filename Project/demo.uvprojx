@@ -872,6 +872,11 @@
               <FileType>5</FileType>
               <FilePath>..\User\pidcontroller.h</FilePath>
             </File>
+            <File>
+              <FileName>pidcontroller.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\pidcontroller.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
