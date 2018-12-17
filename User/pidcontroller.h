@@ -46,7 +46,7 @@ struct AutoTuningParamStruct
 	int AutoTuneStatus;
 };
 
-int PIDInit();
+int PIDInit(float kp,float ki, float kd,float sp);
 double pidCalc(float e);
 float getFilterTemper(float in);
 int autoTuning(float errornow,int * pwm_out,struct AutoTuningParamStruct* ats);

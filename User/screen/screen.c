@@ -32,7 +32,7 @@ extern dev_info_t dev_info;
 extern uint8_t pwmgpiostatus;
 extern uint16_t gpiostatus;
 extern uint8_t thermocouple_flag;
-
+extern int runstatus;
 
 uint8_t slidervalue = 0;			//滑动进度条值
 uint16_t autonopowerpassword = 0;	//自动断电恢复密码
@@ -434,6 +434,7 @@ void NotifyButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 		{
 			if(control_id == BIG_SELF_ADJUST)							//自整定按键
 			{
+				runstatus=3;
 			}
 			else if(control_id == BIG_PID_RETURN_BUTTON)  				//返回主界面
 			{

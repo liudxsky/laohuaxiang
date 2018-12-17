@@ -20,18 +20,19 @@ float errorLast;
 int tb_idx=0;	
 arm_pid_instance_f32 PID;
 extern int debuginfo;
- int PIDInit()
+ int PIDInit(float kp,float ki, float kd,float sp)
 {
-	PID.Kp=PIDKP;
-	PID.Ki=PIDKI;
-	PID.Kd=PIDKD;
+	PID.Kp=kp;
+	PID.Ki=ki;
+	PID.Kd=kd;
 	arm_pid_init_f32(&PID, 1);
 	errorSum=0;
 	errorLast=0;
 	memset(temperbuff,0,T_BUFFLEN);
 	memset(&autoTuningParam,0,sizeof(autoTuningParam));
-	autoTuningParam.kpadj=0.4;
-	autoTuningParam.kiadj=0.02;
+	autoTuningParam.SetPoint=sp;
+	autoTuningParam.kpadj=0.5;
+	autoTuningParam.kiadj=0.0;
 	autoTuningParam.kdadj=1;
 	printf("Kp:%5f, Ki:%5f, Kd:%5f\n",PID.Kp,PID.Ki,PID.Kd);
 	//arm_fir_init_f32(&S, NUM_TAPS, (float32_t *)&firCoeffs32[0], &firStateF32[0], T_BUFFLEN);
@@ -39,8 +40,6 @@ extern int debuginfo;
 }
 double pidCalc(float e)
 {
-	//
-	
 	float errorNow=e;
 	float  duty=0;
 	float outKp,outKi,outKd;
@@ -62,8 +61,8 @@ double pidCalc(float e)
 	//duty=arm_pid_f32(&PID, errorNow);//use arm lib
 	if(debuginfo)
 	{
-		printf("errorNow: %5f, errorSum: %5f, Out: %5f\n",errorNow,errorSum,duty);
-		printf("outKp: %5f, outKi: %5f,outKd: %5f  \n",outKp,outKi,outKd);
+		printf("errorNow: %f, errorSum: %f, derror:%f\n",errorNow,errorSum,derror);
+		printf("outKp: %5f, outKi: %5f,outKd: %5f,Out: %f\n",outKp,outKi,outKd,duty);
 	}
 	if(duty<0)
 	{
@@ -223,9 +222,9 @@ int autoTuning(float errornow,int * pwm_out,struct AutoTuningParamStruct* ats)
 			autoTuningParam.Ti_auto=0.5*pc_auto;
 			autoTuningParam.Td_auto=0.3*pc_auto;
 			
-			autoTuningParam.Kp_auto=0.4*autoTuningParam.kc_auto;
-			autoTuningParam.Ki_auto=autoTuningParam.Kp_auto*0.01/autoTuningParam.Ti_auto;
-			autoTuningParam.Kd_auto=autoTuningParam.Kp_auto*autoTuningParam.Td_auto/Ts;
+			autoTuningParam.Kp_auto=autoTuningParam.kc_auto*autoTuningParam.kpadj;
+			autoTuningParam.Ki_auto=autoTuningParam.Kp_auto*Ts/autoTuningParam.Ti_auto*autoTuningParam.kiadj;
+			autoTuningParam.Kd_auto=autoTuningParam.Kp_auto*autoTuningParam.Td_auto/Ts*autoTuningParam.kdadj;
 			f_autoTuning=0;
 			autoTuningParam.f_autoTuning=0;
 			autoTuningParam.f_autoTuningDone=1;

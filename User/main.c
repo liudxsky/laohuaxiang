@@ -32,7 +32,7 @@ extern uint8_t cmd_buffer[CMD_MAX_SIZE];		//指令缓存
 extern uint8_t press_flag;
 extern MainShowTextValue	showtextvalue;	//主页面文本控件缓存值
 int runstatus=0;
-int debuginfo=0;
+int debuginfo=1;
 extern arm_pid_instance_f32 PID;
 /* ----------------------- Defines ------------------------------------------*/
 
@@ -69,7 +69,7 @@ int main( void )
 {
 	float temperRaw=0;
 	float temperFilter=0;
-	int SetPoint=100;
+	float SetPoint=100;
 	float error=0;
 	int pwmOut=0;
 	int AutoTuningDone=0;
@@ -86,7 +86,8 @@ int main( void )
 	SetBackLight(20);											//初始屏幕背光亮度
 	
 	startscreen();												//start screen
-	PIDInit();//need to be reset after chage setpoint
+	//SetPoint=showtextvalue.setting_temp;
+	PIDInit(PIDKP,PIDKI,PIDKD,SetPoint);//need to be reset after chage setpoint
 
 	while(1)
     {
@@ -107,17 +108,14 @@ int main( void )
 		//	printf("global T:%d", t_thread500);
 			Ktemperature=Max6675_Read_Tem();
 			temperRaw=Ktemperature*0.25;
-			
-			SetPoint=showtextvalue.setting_temp;
 			//SetPoint=100;
 			temperFilter=getFilterTemper(temperRaw);
 			printf("%f\n",temperFilter);
 			//temperFilter=temper_usart;
 			error=SetPoint-temperFilter;
-			autoTuneParam.SetPoint=SetPoint;
 			if(debuginfo)
-			printf("Setpoint:%.2lf, filter:% .2lf\n",SetPoint,temperFilter);
-			//runstatus is debug flag. Also use button to change status
+			printf("Setpoint:%.2lf\n",SetPoint);
+			//use button to change status
 			if(runstatus==2) //button event to set tuning flag
 			{
 				autoTuneParam.f_autoTuning=1;
@@ -131,18 +129,20 @@ int main( void )
 					//auto tune finished
 					//new parameters,should stop and re-run process
 					printf("auto tune status:%d",autoTuneParam.AutoTuneStatus);
-					if(autoTuneParam.AutoTuneStatus>0)//auto tune success
+					if(autoTuneParam.AutoTuneStatus>0)
 					{
+						//auto tune success
 						PID.Kp=autoTuneParam.Kp_auto;
 						PID.Ki=autoTuneParam.Ki_auto;
 						PID.Kd=autoTuneParam.Kd_auto;
 						printf("Kp:%f,Ki:%f,Kd%f\n",PID.Kp,PID.Ki,PID.Kd);
-						
 					}
 					else
 					{
-						//auto tune failed
-					}					
+						//autotune failed
+					}
+					SetPwmValue(0);
+					runstatus=0;
 				}
 				else
 				{
