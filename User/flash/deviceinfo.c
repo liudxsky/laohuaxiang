@@ -51,12 +51,14 @@ void DeviceInfo_Init(void)
 		printf("\r\n device curren pwm scope is %d \r\n",dev_info.pwmscope);
 		printf("\r\n device current pwm value is %d \r\n",dev_info.pwmvalue);
 		printf("\r\n device current air valve angle value is %d \r\n",dev_info.airvalveangle);
-		printf("\r\n device current Pid value is : \r\nP :%.2f\r\nI :%.4f\r\n D : %.2f\r\n",dev_info.pidvalue.PID_P,dev_info.pidvalue.PID_I,dev_info.pidvalue.PID_D);
+		printf("\r\n device current Pid value is : \r\nP :%f\r\nI :%f\r\n D : %f\r\n",dev_info.pidvalue.PID_P,dev_info.pidvalue.PID_I,dev_info.pidvalue.PID_D);
 		printf("\r\n device current change air times is :\r\n");
 		for (i = 0; i < 19; ++i)
 		{
 			printf("%d : %d \r\n",90 - 5*i,dev_info.change_air_time[i]);
 		}
+		printf("\r\n device current set testtime is :%f\r\n",dev_info.testtime);		
+		printf("\r\n device current set tempvalue is :%f\r\n",dev_info.testtemp);
 	}
 
 }

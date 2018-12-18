@@ -745,9 +745,9 @@ void mergehour_min(uint16_t hour,uint16_t min);
 
 uint32_t to_day(RtcTime time);
 
-char * monselect(char *monbuff);
+//char * monselect(char *monbuff);
 
-void  adjustchar(char *timebuff);
+//void  adjustchar(char *timebuff);
 
 void endtimecalcu(RtcTime starttime,uint16_t testtime);
 

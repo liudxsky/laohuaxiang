@@ -19,6 +19,7 @@ float errorSum;
 float errorLast;
 int tb_idx=0;	
 arm_pid_instance_f32 PID;
+uint8_t ab[16] = {0};
 extern int debuginfo;
  int PIDInit(float kp,float ki, float kd,float sp)
 {
@@ -61,8 +62,8 @@ double pidCalc(float e)
 	//duty=arm_pid_f32(&PID, errorNow);//use arm lib
 	if(debuginfo)
 	{
-		printf("errorNow: %f, errorSum: %f, derror:%f\n",errorNow,errorSum,derror);
-		printf("outKp: %5f, outKi: %5f,outKd: %5f,Out: %f\n",outKp,outKi,outKd,duty);
+//		printf("errorNow: %f, errorSum: %f, derror:%f\n",errorNow,errorSum,derror);
+//		printf("outKp: %5f, outKi: %5f,outKd: %5f,Out: %f\n",outKp,outKi,outKd,duty);
 	}
 	if(duty<0)
 	{

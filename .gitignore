@@ -23,7 +23,7 @@
 *.uvgui.*
 /Listing
 /Output
-/*.si4project
+/laohuaxiang.si4project
 
 *.sw[o-q]
 JLinkLog.txt

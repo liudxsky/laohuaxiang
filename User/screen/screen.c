@@ -14,12 +14,13 @@
 
 uint8_t  soft_ver[10] = "Ver:1.0";
 
-uint16_t warmflag = 0;					//加热到目标温度次数
+uint16_t warmflag = 0;					//开始加热标志
+uint8_t lefttimeflag = 0;				//剩余时间计算标识符
 uint8_t SCREENSIZE = 1;					//屏幕语言标识，1为中文，0为英文
 uint8_t cmd_buffer[CMD_MAX_SIZE];		//指令缓存
 uint8_t press_flag = 0,touch_flag = 0;	//点击和连击状态标志
 uint8_t change_air_time[19] = {0};
-static char Month[12][4] = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
+//static char Month[12][4] = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
 uint32_t  timercount = 0;
 
 
@@ -452,8 +453,9 @@ void NotifyButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 				if(state)	
 				{		
 //					Pwm_Output(ENABLE);
-					runstatus = 1;				//启动		
-					PIDInit(dev_info.pidvalue.PID_P,dev_info.pidvalue.PID_I,dev_info.pidvalue.PID_D,showtextvalue.setting_temp);
+					runstatus = 1;				//启动	
+					warmflag = 1;
+//					PIDInit(dev_info.pidvalue.PID_P,dev_info.pidvalue.PID_I,dev_info.pidvalue.PID_D,showtextvalue.setting_temp);
 					HEAT_ON;
 					//显示加热器图标
 					AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_HEAT_SWITCH_ID,SHOW);
@@ -463,6 +465,7 @@ void NotifyButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 //					Pwm_Output(DISABLE);
 					HEAT_OFF;
 					runstatus = 0;			//停止
+					warmflag = 0;
 					//显示加热器图标消失
 					AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_HEAT_SWITCH_ID,HIDE);
 				}
@@ -674,6 +677,7 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 				memcpy(textvalue.coilsavevalue.test_duration,str,sizeof(char)*4);				
 				SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_TEST_TIME_VALUE,textvalue.coilsavevalue.test_duration);
 				showtextvalue.test_time = atoi(textvalue.coilsavevalue.test_duration);
+				dev_info.testtime = showtextvalue.test_time;
 				if(showtextvalue.test_time < 0 || showtextvalue.test_time >= 4000)
 				{
 					AnimationPlayFrame(biglanguage_screen.BIG_PASSWORD_ERROR_SCREEN,BIG_TESTTIME_SET_FAIL,SHOW);
@@ -692,6 +696,7 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 				memcpy(textvalue.coilsavevalue.test_temp,str,sizeof(char)*4);	
 				SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_TEST_TEMP_VALUE,textvalue.coilsavevalue.test_temp);
 				showtextvalue.setting_temp = atof(textvalue.coilsavevalue.test_temp);
+				dev_info.testtemp = showtextvalue.setting_temp;
 				if(showtextvalue.setting_temp < 0 || showtextvalue.setting_temp >= 1000)
 				{
 					AnimationPlayFrame(biglanguage_screen.BIG_PASSWORD_ERROR_SCREEN,BIG_TESTTEMP_SET_FAIL,SHOW);
@@ -791,6 +796,7 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 			default:
 				break;
 		}
+//		printf("time is %f    temp is %f \r\n",dev_info.testtime,dev_info.testtemp);
 		FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));				//参数设置界面数据存入flash
 	}
 	//自动断电时间设置
@@ -1457,7 +1463,7 @@ uint32_t to_day(RtcTime time)
 	return seconds;
 }
 
-
+#if 0
 //月份识别
 char * monselect(char *monbuff)
 {
@@ -1511,19 +1517,24 @@ void  adjustchar(char *timebuff)
 //	printf("### %s ###\n",textvalue.textvaluebuff.end_time);
 	
 }
-
+#endif
 
 //结束时间计算
 void endtimecalcu(RtcTime starttime,uint16_t testtime)
 {
-	char * timebuff;
-	time_t currenttime = 946684800;
-	timebuff=malloc(sizeof(char)*25);
+	char timebuff[25] = {0};
+//	char timebuff[80];
 
-	currenttime += to_day(starttime) + testtime*3600;
-	timebuff = ctime(&currenttime);
-	adjustchar(timebuff);
-	free(timebuff);
+	time_t currenttime = 946684800;
+//	timebuff=malloc(sizeof(char)*25);
+	currenttime += to_day(starttime);
+	strftime(timebuff,20,"%Y/%m/%d %H:%M:%S",localtime(&currenttime));
+	memcpy(textvalue.textvaluebuff.end_time,timebuff+2,14);
+//	printf("格式化的日期 & 时间 : |%s|\n", textvalue.textvaluebuff.end_time );
+//	timebuff = ctime(&currenttime);
+//	printf("time is %s\r\n",timebuff);
+//	adjustchar(timebuff);
+//	free(timebuff);
 	SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_END_TIME_ID,textvalue.textvaluebuff.end_time);		
 }
 
@@ -1543,7 +1554,7 @@ float myabs(float a,float b)
 		return b-a;
 }
 
-uint32_t temptime = 0;		//剩余实验时间
+ uint32_t temptime = 0;		//剩余实验时间
 
 //剩余时间计算 ，分钟
 void lefttimecalculate(void)
@@ -1551,13 +1562,16 @@ void lefttimecalculate(void)
 	temptime = showtextvalue.test_time*60 - diff_time(showtextvalue.start_time, rtctime)/60;
 	showtextvalue.left_time_hou = temptime/60;
 	showtextvalue.left_time_min = temptime%60;
+//	printf("temptime is %ld , left hour is %d,left min is %d\r\n",temptime,showtextvalue.left_time_hou,showtextvalue.left_time_min);
 	mergehour_min(showtextvalue.left_time_hou ,showtextvalue.left_time_min);
 	SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TIME_LEFT_ID,textvalue.textvaluebuff.left_time);
 	if(temptime == 0)
 	{
 		//实验结束
 		addup_testtime();   //累计实验时间
+		
 		warmflag = 0;
+		lefttimeflag = 0;
 	}
 }
 
@@ -1566,28 +1580,28 @@ void start_endtime_set(void)
 {
 	RtcTime inittime = {0};
 	
-	if(myabs(showtextvalue.setting_temp,showtextvalue.current_temp_vlaue) <= 2)
-	{
-		warmflag++;			//加热到 目标温度次数
-	}
-	if(warmflag == 0)
+//	if(myabs(showtextvalue.setting_temp,showtextvalue.current_temp_vlaue) <= 2)
+//	{
+//		warmflag++;			//加热到 目标温度次数
+//	}
+	if(warmflag == 0)		
 	{
 		mergetimechar(inittime);
 		SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_START_TIME_ID,textvalue.textvaluebuff.start_time);
 		SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_END_TIME_ID,textvalue.textvaluebuff.start_time); 	
 		SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TIME_LEFT_ID,"0 h 0 min");	
 	}
-	else if((warmflag == 1)&&(showtextvalue.setting_temp != 0))	//第一次加热到目标温度且设定温度不为0
-	{		
+	else if((warmflag == 1)&&(showtextvalue.setting_temp != 0)&&(lefttimeflag == 0))	//第一次加热到目标温度且设定温度不为0
+	{	
+		lefttimeflag = 1;
 		//开始时间设置
 		mergetimechar(rtctime);
 		showtextvalue.start_time = rtctime;
 		SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_START_TIME_ID,textvalue.textvaluebuff.start_time);
 		//结束时间设置
 		endtimecalcu(showtextvalue.start_time,showtextvalue.test_time);
-		lefttimecalculate();
 	}
-	else 
+	if(lefttimeflag == 1)
 	{
 		lefttimecalculate();
 	}

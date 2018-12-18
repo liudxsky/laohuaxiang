@@ -31,7 +31,7 @@
 
 //16K
 
-#define FLASH_USER_START_ADDR 			ADDR_FLASH_SECTOR_3
+#define FLASH_USER_START_ADDR 			ADDR_FLASH_SECTOR_2
 #define FLASH_USER_END_ADDR 			ADDR_FLASH_SECTOR_4
 
 int8_t FLASH_Write_Nbytes(uint8_t *WriteAddress,uint8_t *WriteBuf,uint16_t Len);

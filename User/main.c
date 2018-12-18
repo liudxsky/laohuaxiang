@@ -23,10 +23,8 @@ uint16_t current_screen_id = 0;
 volatile uint32_t  timer_tick_count = 0; //定时器节拍
 volatile uint32_t t_thread500=0;
 extern uint16_t ADC_ConvertedValue[ADC_NOFCHANEL];
-//extern BIG_SCREEN_ID_TAB biglanguage_screen;
-//extern BIG_SCREEN_ID_TAB bigchinese_screen;
-//extern BIG_SCREEN_ID_TAB bigenglish_screen;
- 
+
+
 extern RtcTime rtctime;
 extern uint8_t cmd_buffer[CMD_MAX_SIZE];		//指令缓存
 extern uint8_t press_flag;
@@ -64,11 +62,12 @@ float temper_usart;
 
 
 
+
 /* ----------------------- Start implementation -----------------------------*/
 int main( void )
 {
-	float temperRaw=0;
 	float temperFilter=0;
+	float temperRaw=0;
 	float SetPoint=100;
 	float error=0;
 	int pwmOut=0;
@@ -87,7 +86,7 @@ int main( void )
 	
 	startscreen();												//start screen
 	//SetPoint=showtextvalue.setting_temp;
-	PIDInit(PIDKP,PIDKI,PIDKD,SetPoint);//need to be reset after chage setpoint
+//	PIDInit(PIDKP,PIDKI,PIDKD,SetPoint);//need to be reset after chage setpoint
 
 	while(1)
     {
@@ -97,6 +96,7 @@ int main( void )
 		{
 			ProcessMessage((PCTRL_MSG)cmd_buffer, size);//指令处理
 		}
+		#if 1
 		if(getMsCounter()-t_thread100>200)
 		{
 			t_thread100=getMsCounter();
@@ -110,11 +110,11 @@ int main( void )
 			temperRaw=Ktemperature*0.25;
 			//SetPoint=100;
 			temperFilter=getFilterTemper(temperRaw);
-			printf("%f\n",temperFilter);
+//			printf("%f\n",temperFilter);
 			//temperFilter=temper_usart;
 			error=SetPoint-temperFilter;
 			if(debuginfo)
-			printf("Setpoint:%.2lf\n",SetPoint);
+//			printf("Setpoint:%.2lf\n",SetPoint);
 			//use button to change status
 			if(runstatus==2) //button event to set tuning flag
 			{
@@ -135,7 +135,7 @@ int main( void )
 						PID.Kp=autoTuneParam.Kp_auto;
 						PID.Ki=autoTuneParam.Ki_auto;
 						PID.Kd=autoTuneParam.Kd_auto;
-						printf("Kp:%f,Ki:%f,Kd%f\n",PID.Kp,PID.Ki,PID.Kd);
+//						printf("Kp:%f,Ki:%f,Kd%f\n",PID.Kp,PID.Ki,PID.Kd);
 					}
 					else
 					{
@@ -158,13 +158,13 @@ int main( void )
 				SetPwmValue(pwmOut);
 			}
 		}
-		
+		#endif
 		if(getMsCounter() - timer_tick_count > 1000)
 		{
 			timer_tick_count = getMsCounter();
 			ReadRtcTime();		
 			start_endtime_set();							//起始结束时间设置
-			temp_detection(temperFilter);								//温度测量
+			temp_detection(temperFilter);					//温度测量
 			if(press_flag)
 			{
 				get_combo_button_times();					//连击按钮跳转界面函数

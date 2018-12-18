@@ -9,6 +9,8 @@
 #define PASSWORDLEN			4
 
 
+#pragma pack(push)
+#pragma pack(1)						//按字节对齐
 
 
 typedef struct
@@ -19,14 +21,15 @@ typedef struct
 	uint16_t airvalveangle; 			//风阀角度值
 	uint8_t  change_air_time[19];		//风门角度换气次数
 	uint8_t  biglanguagestatus;			//语言选择
-	Pid_Value pidvalue;					//pid值
 	float testtime;						//实验时间
 	float testtemp;						//实验温度
+	Pid_Value pidvalue;					//pid值
 	CoilValue flash_setvalue;			//参数设置
 	AutoNoPowerTime autonopowertime;	//自动断电时间
 }dev_info_t;
 
 
+#pragma pack(pop)
 
 
 void DeviceInfo_Init(void);
