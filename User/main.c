@@ -31,7 +31,7 @@ extern RtcTime rtctime;
 extern uint8_t cmd_buffer[CMD_MAX_SIZE];		//指令缓存
 extern uint8_t press_flag;
 extern MainShowTextValue	showtextvalue;	//主页面文本控件缓存值
-int runstatus=0;
+int runstatus=2;
 int debuginfo=1;
 extern arm_pid_instance_f32 PID;
 /* ----------------------- Defines ------------------------------------------*/
@@ -106,16 +106,24 @@ int main( void )
 		{
 			t_thread500=getMsCounter();
 		//	printf("global T:%d", t_thread500);
+
+#ifdef FromUart
+			temperFilter=temper_usart;
+#else
 			Ktemperature=Max6675_Read_Tem();
 			temperRaw=Ktemperature*0.25;
 			//SetPoint=100;
 			temperFilter=getFilterTemper(temperRaw);
 			printf("%f\n",temperFilter);
-			//temperFilter=temper_usart;
-			error=SetPoint-temperFilter;
-			if(debuginfo)
-			printf("Setpoint:%.2lf\n",SetPoint);
+#endif
+			error=SetPoint-temperFilter-0.5;
+//			if(debuginfo)
+//			printf("Setpoint:%.2lf\n",SetPoint);
 			//use button to change status
+			if(runstatus==1)
+			{
+				pwmOut=pidCalc(error);
+			}
 			if(runstatus==2) //button event to set tuning flag
 			{
 				autoTuneParam.f_autoTuning=1;
@@ -136,6 +144,7 @@ int main( void )
 						PID.Ki=autoTuneParam.Ki_auto;
 						PID.Kd=autoTuneParam.Kd_auto;
 						printf("Kp:%f,Ki:%f,Kd%f\n",PID.Kp,PID.Ki,PID.Kd);
+						SetPwmValue(0);
 					}
 					else
 					{
@@ -143,19 +152,26 @@ int main( void )
 					}
 					SetPwmValue(0);
 					runstatus=0;
+					while(1)
+					{
+					}
 				}
 				else
 				{
 					//auto-tuning still runing 
 				}
 			}
-			else//normal pid runing
+			else
 			{
-				pwmOut=pidCalc(error);
+				
 			}
 			if(runstatus>0)//start heating
 			{
-				SetPwmValue(pwmOut);
+//				if(debuginfo)
+//				{
+//					printf("pwmout:%d\n",pwmOut);
+//				}
+				//SetPwmValue(pwmOut);
 			}
 		}
 		

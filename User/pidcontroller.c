@@ -4,24 +4,48 @@ int AutoTuneStatus=0;
 unsigned long cyclecnt=0;
 int f_autoTuning=0;
 int tbuffidx=0;
-unsigned long sptime[2048]={0};
-int cycles[2048]={0};
-int maxbuff[2048]={0};
-int minbuff[2048]={0};
-int m_max=0,m_min=0;
+unsigned long sptime[20]={0};
+int cycles[20]={0};
+float m_max=0,m_min=0;
 unsigned long t_adjTemp=0;
 int AutoTuneOutput=500;
 struct AutoTuningParamStruct autoTuningParam;
 float temperbuff[T_BUFFLEN];
+float outputF32[T_BUFFLEN];
+
 float offsetbuff[T_BUFFLEN];
-//float outputF32[T_BUFFLEN];
+int f_errorreset=1;
 float errorSum;
 float errorLast;
 int tb_idx=0;	
 arm_pid_instance_f32 PID;
 extern int debuginfo;
+arm_fir_instance_f32 S;
+static	float32_t firStateF32[BLOCK_SIZE + NUM_TAPS - 1];
+
+//const float32_t firCoeffs32[NUM_TAPS] = {
+//0.001152,0.001879,0.003375,0.006014,0.010080,0.015708,0.022854,0.031277,0.040550,0.050093,0.059231,0.067262,0.073539,0.077533,0.078904,0.077533,0.073539,0.067262,0.059231,0.050093,0.040550,0.031277,0.022854,0.015708,0.010080,0.006014,0.003375,0.001879,0.001152};
+const float32_t firCoeffs32[NUM_TAPS] = {
+	-0.000197,-0.000358,-0.000552,-0.000796,
+	-0.001100,-0.001467,-0.001888,-0.002340,
+	-0.002788,-0.003182,-0.003463,-0.003558,
+	-0.003393,-0.002889,-0.001973,-0.000580,
+	0.001342,0.003824,0.006874,0.010476,
+	0.014584,0.019126,0.024001,0.029087,
+	0.034241,0.039309,0.044128,0.048538,
+	0.052386,0.055535,0.057871,0.059308,
+	0.059793,0.059308,0.057871,0.055535,
+	0.052386,0.048538,0.044128,0.039309,
+	0.034241,0.029087,0.024001,0.019126,
+	0.014584,0.010476,0.006874,0.003824,
+	0.001342,-0.000580,-0.001973,-0.002889,
+	-0.003393,-0.003558,-0.003463,-0.003182,
+	-0.002788,-0.002340,-0.001888,-0.001467,
+	-0.001100,-0.000796,-0.000552,-0.000358,-0.000197
+};
  int PIDInit(float kp,float ki, float kd,float sp)
 {
+
 	PID.Kp=kp;
 	PID.Ki=ki;
 	PID.Kd=kd;
@@ -34,8 +58,12 @@ extern int debuginfo;
 	autoTuningParam.kpadj=0.5;
 	autoTuningParam.kiadj=0.0;
 	autoTuningParam.kdadj=1;
-	printf("Kp:%5f, Ki:%5f, Kd:%5f\n",PID.Kp,PID.Ki,PID.Kd);
-	//arm_fir_init_f32(&S, NUM_TAPS, (float32_t *)&firCoeffs32[0], &firStateF32[0], T_BUFFLEN);
+	if(debuginfo)
+	{
+		printf("Kp:%5f, Ki:%5f, Kd:%5f\n",PID.Kp,PID.Ki,PID.Kd);
+	}
+	arm_fir_init_f32(&S, NUM_TAPS, (float32_t *)&firCoeffs32[0], &firStateF32[0], 32);
+	f_errorreset=1;
 	return 1;
 }
 double pidCalc(float e)
@@ -44,7 +72,16 @@ double pidCalc(float e)
 	float  duty=0;
 	float outKp,outKi,outKd;
 	float derror=0;
-	if(errorNow>10)
+	int error_threashold=5;
+	if(autoTuningParam.SetPoint<150)
+	{
+		error_threashold=5;
+	}
+	else
+	{
+		error_threashold=10;
+	}
+	if(errorNow>error_threashold)
 	{
 		errorSum=0;
 	}
@@ -52,6 +89,11 @@ double pidCalc(float e)
 	{
 		errorSum=errorSum+errorNow;
 	}
+//	if(errorNow>0.5&&errorNow<1&&autoTuningParam.SetPoint<150)
+//	{
+//		f_errorreset=0;
+//		errorSum=-(10/PID.Ki);
+//	}
 	derror=errorNow-errorLast;
 	outKp=PID.Kp*errorNow;
 	outKi=PID.Ki*errorSum;
@@ -79,19 +121,28 @@ float getFilterTemper(float in)
 	int i;
 	float outtemp1=0;
 	float outtemp2=0;
-	float tempsum=0;
-	if(tb_idx>T_BUFFLEN-1)
-		tb_idx=0;
-	temperbuff[tb_idx]=in;
-	tb_idx++;
-//	for(i=0;i<T_BUFFLEN;i++)
-//	{
-//		tempsum=tempsum+temperbuff[i];
-//		
-//	}
-	//outtemp1=tempsum/T_BUFFLEN;
-	arm_mean_f32(temperbuff,T_BUFFLEN,&outtemp2);
-	//printf("calc outtemp1: %f, armLib mean:%f",outtemp1,outtemp2);
+//	float tempsum=0;
+//	if(tb_idx>T_BUFFLEN-1)
+//		tb_idx=0;
+//	temperbuff[tb_idx]=in;
+//	tb_idx++;
+//	arm_mean_f32(temperbuff,T_BUFFLEN,&outtemp2);
+	memcpy(temperbuff,temperbuff+1,sizeof(float)*(T_BUFFLEN-1));
+	temperbuff[T_BUFFLEN-1]=in;
+	if(temperbuff[0]!=0)
+	{
+		arm_fir_f32(&S, temperbuff, outputF32 , T_BUFFLEN);
+	}
+	else
+	{
+		return in;
+	}
+	outtemp2=outputF32[T_BUFFLEN-1];
+if(outtemp2>2000)
+	outtemp2=2000;
+if(outtemp2<-2000)
+	outtemp2=-2000;
+//	printf("firout: %f,outtemp:%f\n",outputF32[T_BUFFLEN-1],outtemp2);
 	return outtemp2;
 }
 /*
@@ -164,12 +215,19 @@ int autoTuning(float errornow,int * pwm_out,struct AutoTuningParamStruct* ats)
 		{
 			out=0;
 		}
-		if(errornow<0.1&&errornow>-0.1)
+//			if(debuginfo)
+//		{
+//			printf("autotune out :%d\n",out);
+//		}
+		if(errornow<0.1&&errornow>-0.2)
 		{
 			//
-			if(tbuffidx>0&&((autoTuningParam.elapse_time)-sptime[tbuffidx-1]>(CycleLimit*60*2/50)))
+			if(tbuffidx>0&&((autoTuningParam.elapse_time)-sptime[tbuffidx-1]>(CycleLimit*60*2)))
 			{
-				printf("elapse:%d,sptime:%d, idx: %d\n",autoTuningParam.elapse_time,sptime[tbuffidx-1],tbuffidx);
+//					if(debuginfo)
+//				{
+//					printf("elapse:%d,sptime:%d, idx: %d\n",autoTuningParam.elapse_time,sptime[tbuffidx-1],tbuffidx);
+//				}
 				sptime[tbuffidx]=autoTuningParam.elapse_time;
 				tbuffidx++;
 			}
@@ -191,11 +249,14 @@ int autoTuning(float errornow,int * pwm_out,struct AutoTuningParamStruct* ats)
 					
 				}
 			}
-			if(errornow>0.2)
+			if(errornow>0.1)
 			{
-				if(fabs(errornow)<fabs(m_min))
+				if(fabs(errornow)>fabs(m_min))
 				{
-					printf("min:%f\n",errornow);
+//						if(debuginfo)
+//					{
+//						printf("min:%f\n",errornow);
+//					}
 					m_min=fabs(errornow);
 				}
 			}
@@ -204,7 +265,7 @@ int autoTuning(float errornow,int * pwm_out,struct AutoTuningParamStruct* ats)
 		if(tbuffidx>7)
 		{//auto tuning finish
 			
-			int temp=(tbuffidx-1)/2;
+			int temp=tbuffidx-2;
 			for(i=1;i<temp;i++)
 			{
 				cycles[i-1]=sptime[i+2]-sptime[i];//init cycles buffer
@@ -229,6 +290,17 @@ int autoTuning(float errornow,int * pwm_out,struct AutoTuningParamStruct* ats)
 			autoTuningParam.f_autoTuning=0;
 			autoTuningParam.f_autoTuningDone=1;
 			memcpy(ats,&autoTuningParam,sizeof(autoTuningParam));
+			
+			printf("cycles:");
+		for(i=0;i<(tbuffidx-1)/2;i++)
+		{
+			printf("%d,",cycles[i]);
+		}
+		printf("\n");
+		
+		printf("Kc:%f,Pc:%d\n,",autoTuningParam.kc_auto,pc_auto);
+		
+		goto FINISH;
 		}
 			
 	}
@@ -249,13 +321,28 @@ int autoTuning(float errornow,int * pwm_out,struct AutoTuningParamStruct* ats)
 			}
 		}
 	}
-	if(autoTuningParam.elapse_time>(5*60/Ts))
+	if(autoTuningParam.elapse_time>(5*60*60/Ts))
 	{//time out, 5 hours
 		AutoTuneStatus=-4;
 		autoTuningParam.f_autoTuningDone=1;
 		autoTuningParam.f_autoTuning=0;
 		f_autoTuning=0;
+		printf("autotune -4\n");
+		goto FINISH;
 	}
 	*pwm_out=out;
 	return 1;
+	
+FINISH:
+	printf("max:%f,min:%f\n",m_max,m_min);
+		
+		printf("sptime:");
+		for(i=0;i<tbuffidx;i++)
+		{
+			printf("%d,",sptime[i]);
+		}
+		printf("\n");
+		printf("e_time:%d\n",autoTuningParam.elapse_time);
+	
+	return 2;
 }
