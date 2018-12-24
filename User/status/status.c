@@ -17,15 +17,15 @@ extern SMALL_SCREEN_ID_TAB smallenglish_screen;
 extern SMALL_SCREEN_ID_TAB smalllanguage_screen;
 
 extern uint16_t current_screen_id;
-extern RtcTime rtctime;							//ÏµÍ³µ±Ç°Ê±¼ä
-extern TextValueTab  textvalue;					//ÎÄ±¾¿Ø¼þ±£´æÖµ
-extern MainShowTextValue	showtextvalue;		//Ö÷Ò³ÃæÎÄ±¾¿Ø¼þ»º´æÖµ
+extern RtcTime rtctime;							//ÏµÍ³ï¿½ï¿½Ç°Ê±ï¿½ï¿½
+extern TextValueTab  textvalue;					//ï¿½Ä±ï¿½ï¿½Ø¼ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
+extern MainShowTextValue	showtextvalue;		//ï¿½ï¿½Ò³ï¿½ï¿½ï¿½Ä±ï¿½ï¿½Ø¼ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
 extern uint8_t SCREENSIZE; 
-extern CoilValue  coilvalue;				//ÉèÖÃ½çÃæÖµ
+extern CoilValue  coilvalue;				//ï¿½ï¿½ï¿½Ã½ï¿½ï¿½ï¿½Öµ
 extern float adjusttemp;
-extern uint8_t slidervalue;					//»¬¶¯½ø¶ÈÌõÖµ
+extern uint8_t slidervalue;					//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
 extern uint16_t autonopowerpassword;
-extern AutoNoPowerTime  nopowertime;		//×Ô¶¯¶ÏµçÊ±¼ä	
+extern AutoNoPowerTime  nopowertime;		//ï¿½Ô¶ï¿½ï¿½Ïµï¿½Ê±ï¿½ï¿½	
 extern uint8_t cmd_buffer[CMD_MAX_SIZE];
 extern uint8_t thermocouple_flag;
 extern dev_info_t dev_info;
@@ -37,16 +37,16 @@ uint16_t gpiostatus = 0;
 uint32_t door_openstatus = 0,door_closestatus = 0;
 
 
-ThermalLag heattime_log;						//ÈÈÖÍºóÊ±¼ä¼ÇÂ¼½á¹¹Ìå
+ThermalLag heattime_log;						//ï¿½ï¿½ï¿½Íºï¿½Ê±ï¿½ï¿½ï¿½Â¼ï¿½á¹¹ï¿½ï¿½
 uint8_t  control_mode[2][8] = {"4-20mA","2-10V"};
-uint8_t  Rs485TX = 0,Rs485RX = 0,Rs485Status = 2;  						//0±íÊ¾Í¨ÐÅÕý³££¬1±íÊ¾Í¨ÐÅÒì³££¬2±íÊ¾485Í¨ÐÅÎ´Á¬½Ó
+uint8_t  Rs485TX = 0,Rs485RX = 0,Rs485Status = 2;  						//0ï¿½ï¿½Ê¾Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½Ê¾Í¨ï¿½ï¿½ï¿½ì³£ï¿½ï¿½2ï¿½ï¿½Ê¾485Í¨ï¿½ï¿½Î´ï¿½ï¿½ï¿½ï¿½
 
 
 
 
 
 
-//¼ì²â¼ÌµçÆ÷·´À¡Òý½Å×´Ì¬±ä»¯
+//ï¿½ï¿½ï¿½Ìµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì¬ï¿½ä»¯
 uint16_t Get_GPIO_Status(void)
 {
 	uint8_t i;
@@ -74,9 +74,9 @@ uint16_t Get_GPIO_Status(void)
 
 
 
-//ÉÏµç×Ô¼ìÏÔÊ¾ÆÁ£¬Èç¹û²»Í¨£¬Ôò¿ÉÒÔÉÁË¸LEDµÆ
+//ï¿½Ïµï¿½ï¿½Ô¼ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë¸LEDï¿½ï¿½
 extern uint8_t screen_flag;
-//¼ì²âÆÁÄ»Á¬½Ó
+//ï¿½ï¿½ï¿½ï¿½ï¿½Ä»ï¿½ï¿½ï¿½ï¿½
 void check_screen_connect(void)
 {
 	if(screen_flag)
@@ -113,7 +113,7 @@ void check_screen_connect(void)
 }
 
 
-//¼ì²âÊÇ·ñµ½¶¨Ê±¶ÏµçÊ±¼ä
+//ï¿½ï¿½ï¿½ï¿½Ç·ñµ½¶ï¿½Ê±ï¿½Ïµï¿½Ê±ï¿½ï¿½
 void check_nopowertime(void)
 {
 	if(SCREENSIZE)
@@ -138,7 +138,7 @@ void check_nopowertime(void)
 
 }
 
-//¼ì²â¼ÓÈÈÍ¨¶Ï
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½
 void check_pwmicon(void)
 {
 	if(dev_info.pwmvalue != 0)
@@ -152,7 +152,7 @@ void check_pwmicon(void)
 }
 
 
-//¼ì²â485Í¨ÐÅ×´Ì¬
+//ï¿½ï¿½ï¿½485Í¨ï¿½ï¿½×´Ì¬
 void Check_Rs485(void)
 {
 	if(Rs485TX&Rs485RX)
@@ -187,7 +187,7 @@ void Check_Rs485(void)
 }
 
 
-//¼ì²âÖ÷°åÊÇ·ñÓÐµçÍ¨¹ýÅÐ¶ÏÉÏ´Î¶ÏµçÊ±¼äÊÇ·ñÐ¡ÓÚ2001ÄêÅÐ¶Ï
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½Ðµï¿½Í¨ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½Ï´Î¶Ïµï¿½Ê±ï¿½ï¿½ï¿½Ç·ï¿½Ð¡ï¿½ï¿½2001ï¿½ï¿½ï¿½Ð¶ï¿½
 void check_powertime(void)
 {
 	if(rtctime.Year == 0)
@@ -196,13 +196,13 @@ void check_powertime(void)
 	}		
 }
 
-//¼ì²âPWMÊä³ö
+//ï¿½ï¿½ï¿½PWMï¿½ï¿½ï¿½
 void check_pwm(void)
 {
 	pwmgpiostatus = GPIO_ReadInputDataBit(PWM_GPIO_PORT,BACK_PWM_PIN);
 }
 
-//¼ì²â±¨¾¯
+//ï¿½ï¿½â±¨ï¿½ï¿½
 void check_warning(void)
 {
 	if(showtextvalue.current_temp_vlaue >= coilvalue.warning1_down &&  showtextvalue.current_temp_vlaue <= coilvalue.warning1_up)
@@ -232,11 +232,11 @@ void check_warning(void)
 }
 
 
-//ÎÂ¶È²âÁ¿
+//ï¿½Â¶È²ï¿½ï¿½ï¿½
 void temp_detection(float dispTemper)
 {
 	showtextvalue.current_temp_vlaue = adjusttemp + dispTemper;
-//	showtextvalue.current_temp_vlaue = adjusttemp + (float)Max6675_Read_Tem()*0.25;		//ÊµÊ±ÎÂ¶ÈÏÔÊ¾
+//	showtextvalue.current_temp_vlaue = adjusttemp + (float)Max6675_Read_Tem()*0.25;		//ÊµÊ±ï¿½Â¶ï¿½ï¿½ï¿½Ê¾
 	if(thermocouple_flag)
 	{
 		SetTextValueFloat(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_CURRENT_TEMP_ID, 999.9);	
@@ -262,7 +262,7 @@ void Check_All_Status(void)
 	devicefunc_selfcheck();
 }
 
-//Éè±¸¶¨Ê±×Ô¼ì
+//ï¿½è±¸ï¿½ï¿½Ê±ï¿½Ô¼ï¿½
 void device_timing_selfcheck(void)
 {
 	if((rtctime.Hour == 12)&&(rtctime.Min == 0)&&(rtctime.Sec - 0 <= 3))
@@ -271,7 +271,7 @@ void device_timing_selfcheck(void)
 	}
 }
 
-//Éè±¸×Ô¼ì¹ÊÕÏÏÔÊ¾
+//ï¿½è±¸ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾
 void device_selfcheck(void)
 {
 	uint8_t i,temp[5] = {0};
@@ -280,7 +280,7 @@ void device_selfcheck(void)
 	temp[0] = GPIO_ReadOutputDataBit(DRIVER_GPIO_PORT,HEAT_CONTROL_PIN);
 	if(temp[0] != Bit_SET)
 	{
-		//ÉèÖÃ´íÎóÍ¼±êµÚÒ»ÐÐÏÔÊ¾
+		//ï¿½ï¿½ï¿½Ã´ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ê¾
 		AnimationPlayFrame(biglanguage_screen.BIG_SELF_TEST_NOTPASS_SCREEN,BIG_ERROR1_TEXT,SHOW);				
 	}
 	HEAT_OFF;
@@ -290,7 +290,7 @@ void device_selfcheck(void)
 	temp[1] = GPIO_ReadOutputDataBit(DRIVER_GPIO_PORT,SPINNER_RACK_CONTROL_PIN);
 	if(temp[1] != Bit_SET)
 	{
-		//ÉèÖÃ´íÎóÍ¼±êµÚ¶þÐÐÏÔÊ¾
+		//ï¿½ï¿½ï¿½Ã´ï¿½ï¿½ï¿½Í¼ï¿½ï¿½Ú¶ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾
 		AnimationPlayFrame(biglanguage_screen.BIG_SELF_TEST_NOTPASS_SCREEN,BIG_ERROR2_TEXT,SHOW);
 	}
 	SPINNER_RACK_OFF;
@@ -300,7 +300,7 @@ void device_selfcheck(void)
 	temp[2] = GPIO_ReadOutputDataBit(DRIVER_GPIO_PORT,CIRCULATING_FUN_CONTROL_PIN);
 	if(temp[2] != Bit_SET)
 	{
-		//ÉèÖÃ´íÎóÍ¼±êµÚÈýÐÐÏÔÊ¾
+		//ï¿½ï¿½ï¿½Ã´ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾
 		AnimationPlayFrame(biglanguage_screen.BIG_SELF_TEST_NOTPASS_SCREEN,BIG_ERROR3_TEXT,SHOW);
 	}
 	CIRCULATING_FUN_OFF;
@@ -310,7 +310,7 @@ void device_selfcheck(void)
 	temp[3] = GPIO_ReadOutputDataBit(DRIVER_GPIO_PORT,ALARM_CONTROL1_PIN);
 	if(temp[3] != Bit_SET)
 	{
-		//ÉèÖÃ´íÎóÍ¼±êµÚËÄÐÐÏÔÊ¾
+		//ï¿½ï¿½ï¿½Ã´ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾
 		AnimationPlayFrame(biglanguage_screen.BIG_SELF_TEST_NOTPASS_SCREEN,BIG_ERROR4_TEXT,SHOW);
 	}
 	ALARM1_OFF;
@@ -319,7 +319,7 @@ void device_selfcheck(void)
 	temp[4] = GPIO_ReadOutputDataBit(DRIVER_GPIO_PORT,ALARM_CONTROL2_PIN);
 	if(temp[4] != Bit_SET)
 	{
-		//ÉèÖÃ´íÎóÍ¼±êµÚÎåÐÐÏÔÊ¾
+		//ï¿½ï¿½ï¿½Ã´ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾
 	}
 	delay_s(1);
 	ALARM2_OFF;
@@ -335,10 +335,10 @@ void device_selfcheck(void)
 }
 
 
-//Éè±¸¹¦ÄÜ×Ô¼ì¹ÊÕÏÏÔÊ¾
+//ï¿½è±¸ï¿½ï¿½ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾
 void devicefunc_selfcheck(void)
 {
-	if(thermocouple_flag)//ÓÐ¹ÊÕÏ
+	if(thermocouple_flag)//ï¿½Ð¹ï¿½ï¿½ï¿½
 	{
 		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TROUBLE_INDICATE_ID,SHOW);
 		AnimationPlayFrame(biglanguage_screen.BIG_SELF_TEST_NOTPASS_SCREEN,BIG_ERROR1_TEXT,SHOW);
@@ -361,7 +361,7 @@ void devicefunc_selfcheck(void)
 //			MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);
 //		}
 //	}
-	if(gpiostatus)//ÓÐ¹ÊÕÏ
+	if(gpiostatus)//ï¿½Ð¹ï¿½ï¿½ï¿½
 	{
 		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TROUBLE_INDICATE_ID,SHOW);
 		AnimationPlayFrame(biglanguage_screen.BIG_SELF_TEST_NOTPASS_SCREEN,BIG_ERROR3_TEXT,SHOW);
@@ -382,7 +382,7 @@ void devicefunc_selfcheck(void)
 
 uint8_t thermalbuff[38] = {0};
 
-//¸ñÊ½×ª»»
+//ï¿½ï¿½Ê½×ªï¿½ï¿½
 void changestruct(void)
 {
 	uint8_t j;
@@ -421,12 +421,12 @@ void changestruct(void)
 }
 
 
-//ÏäÃÅ×´Ì¬¼à²â,ÈÈÖÍºóÊý¾Ý¼ÇÂ¼
+//ï¿½ï¿½ï¿½ï¿½×´Ì¬ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½Íºï¿½ï¿½ï¿½ï¿½Ý¼ï¿½Â¼
 void door_open_status(void)
 {
 	uint8_t doorflag = 0;
 	doorflag = GPIO_ReadInputDataBit(BOX_DOOR_GPIO_PORT,BOX_DOOR_PIN);
-	if(doorflag)			//¿ªÃÅ×´Ì¬
+	if(doorflag)			//ï¿½ï¿½ï¿½ï¿½×´Ì¬
 	{
 		door_openstatus++;
 		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_DOOR_OPEN_ID,SHOW);
@@ -460,7 +460,7 @@ void door_open_status(void)
 }
 
 
-//·§ÃÅ¿ØÖÆ·½Ê½Ñ¡Ôñ
+//ï¿½ï¿½ï¿½Å¿ï¿½ï¿½Æ·ï¿½Ê½Ñ¡ï¿½ï¿½
 void control_mode_select(void)
 {	
 	uint8_t controlflag = GPIO_ReadInputDataBit(DAC_SELECT_GPIO_PORT,DAC_SELECT2_GPIO_PIN);	;

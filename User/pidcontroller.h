@@ -2,24 +2,19 @@
 #include "stdio.h"
 #include "string.h"
 #include "stdlib.h"
-#define PIDKP 25
-#define PIDKI 0.0053
-#define PIDKD 26809
+//#define FromUart
+#define PIDKP 38//sp100->25
+#define PIDKI 0.01
+#define PIDKD 29809
 #define T_BUFFLEN 64
 #define BLOCK_SIZE T_BUFFLEN
 #define PWMOUTLIMIT 1000
-#define NUM_TAPS      29
-#define CycleLimit 5 //each period should be larger than 5 mins
+#define NUM_TAPS      65
+#define CycleLimit 3 //each period should be larger than 5 mins
 #define Ts 0.5 //sample time
-//const float32_t firCoeffs32[NUM_TAPS] = {
-//	0.0012,0.0019,0.0034,0.0060,0.0101,0.0157
-//	 0.0229,0.0313,0.0406,0.0501,0.0592,0.0673
-//	0.0735,0.0775,0.0789,0.0775,0.0735,0.0673
-//	 0.0592,0.0501,0.0406,0.0313,0.0229,0.0157
-//	 0.0101,0.0060,0.0034,0.0019,0.0012};
 
-//arm_fir_instance_f32 S;
-//static float32_t firStateF32[BLOCK_SIZE + NUM_TAPS - 1];
+
+
 
 struct AutoTuningParamStruct
 {

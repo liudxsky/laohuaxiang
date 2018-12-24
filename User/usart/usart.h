@@ -26,7 +26,7 @@ typedef struct
 /************************usart1_rs232*******************************/
 #define RS232_USART                             USART1   //usart1
 #define RS232_USART_CLK                         RCC_APB2Periph_USART1
-#define RS232_USART_BAUDRATE                    115200  //µ÷ÊÔ´®¿Ú²¨ÌØÂÊ
+#define RS232_USART_BAUDRATE                    115200  //ï¿½ï¿½ï¿½Ô´ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ï¿½ï¿½
 
 #define RS232_USART_RX_GPIO_PORT                GPIOA
 #define RS232_USART_RX_GPIO_CLK                 RCC_AHB1Periph_GPIOA
@@ -46,7 +46,7 @@ typedef struct
 
 #define RS485_USART                             USART3	
 #define RS485_USART_CLK                         RCC_APB1Periph_USART3
-//#define RS485_USART3_BAUDRATE                    115200  //²¨ÌØÂÊ
+//#define RS485_USART3_BAUDRATE                    115200  //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 
 #define RS485_USART_RX_GPIO_PORT                GPIOD
@@ -61,7 +61,7 @@ typedef struct
 #define RS485_USART_TX_AF                       GPIO_AF_USART3
 #define RS485_USART_TX_SOURCE                   GPIO_PinSource8
 
-//RS485ÊÕ·¢¿ØÖÆÒý½Å
+//RS485ï¿½Õ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 #define RS485_RE_GPIO_PORT                      GPIOC 
 #define RS485_RE_GPIO_CLK                       RCC_AHB1Periph_GPIOC 
 #define RS485_RE_PIN                            GPIO_Pin_9
@@ -73,10 +73,10 @@ typedef struct
 /*************************************************************************************************************/
 
 
- /*¿ØÖÆÊÕ·¢Òý½Å*/ 
-//½øÈë½ÓÊÕÄ£Ê½,±ØÐëÒªÓÐÑÓÊ±µÈ´ý 485 ´¦ÀíÍêÊý¾Ý 
+ /*ï¿½ï¿½ï¿½ï¿½ï¿½Õ·ï¿½ï¿½ï¿½ï¿½ï¿½*/ 
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½,ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½Ê±ï¿½È´ï¿½ 485 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
 #define RS485_RX_EN()  GPIO_ResetBits(RS485_RE_GPIO_PORT,RS485_RE_PIN);
-//½øÈë·¢ËÍÄ£Ê½,±ØÐëÒªÓÐÑÓÊ±µÈ´ý 485 ´¦ÀíÍêÊý¾Ý 
+//ï¿½ï¿½ï¿½ë·¢ï¿½ï¿½Ä£Ê½,ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½Ê±ï¿½È´ï¿½ 485 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
 #define RS485_TX_EN()  GPIO_SetBits(RS485_RE_GPIO_PORT,RS485_RE_PIN); 
 
 /*************************************************************************************************************/

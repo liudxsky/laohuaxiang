@@ -14,11 +14,11 @@
 
 uint8_t  soft_ver[10] = "Ver:1.0";
 
-uint16_t warmflag = 0;					//¿ªÊ¼¼ÓÈÈ±êÖ¾
-uint8_t lefttimeflag = 0;				//Ê£ÓàÊ±¼ä¼ÆËã±êÊ¶·û
-uint8_t SCREENSIZE = 1;					//ÆÁÄ»ÓïÑÔ±êÊ¶£¬1ÎªÖÐÎÄ£¬0ÎªÓ¢ÎÄ
-uint8_t cmd_buffer[CMD_MAX_SIZE];		//Ö¸Áî»º´æ
-uint8_t press_flag = 0,touch_flag = 0;	//µã»÷ºÍÁ¬»÷×´Ì¬±êÖ¾
+uint16_t warmflag = 0;					//ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½È±ï¿½Ö¾
+uint8_t lefttimeflag = 0;				//Ê£ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¶ï¿½ï¿½
+uint8_t SCREENSIZE = 1;					//ï¿½ï¿½Ä»ï¿½ï¿½ï¿½Ô±ï¿½Ê¶ï¿½ï¿½1Îªï¿½ï¿½ï¿½Ä£ï¿½0ÎªÓ¢ï¿½ï¿½
+uint8_t cmd_buffer[CMD_MAX_SIZE];		//Ö¸ï¿½î»ºï¿½ï¿½
+uint8_t press_flag = 0,touch_flag = 0;	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì¬ï¿½ï¿½Ö¾
 uint8_t change_air_time[19] = {0};
 //static char Month[12][4] = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
 uint32_t  timercount = 0;
@@ -34,19 +34,19 @@ extern uint16_t gpiostatus;
 extern uint8_t thermocouple_flag;
 extern int runstatus;
 
-uint8_t slidervalue = 0;			//»¬¶¯½ø¶ÈÌõÖµ
-uint16_t autonopowerpassword = 0;	//×Ô¶¯¶Ïµç»Ö¸´ÃÜÂë
+uint8_t slidervalue = 0;			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
+uint16_t autonopowerpassword = 0;	//ï¿½Ô¶ï¿½ï¿½Ïµï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½
 
 
 ID_Table idtable;					//screen size id 
-float adjusttemp = 0;				//ÎÂ¶ÈÖµÐ£Õý
-RtcTime rtctime;					//RTC¿ØÖÆÊ±¼ä
-AutoNoPowerTime  nopowertime;		//×Ô¶¯¶ÏµçÊ±¼ä	
+float adjusttemp = 0;				//ï¿½Â¶ï¿½ÖµÐ£ï¿½ï¿½
+RtcTime rtctime;					//RTCï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½
+AutoNoPowerTime  nopowertime;		//ï¿½Ô¶ï¿½ï¿½Ïµï¿½Ê±ï¿½ï¿½	
 
-PCTRL_MSG msg;						//´®¿ÚÆÁ·¢ËÍÐÅÏ¢
-TextValueTab  textvalue;			//ÎÄ±¾¿Ø¼þ±£´æÖµ
-MainShowTextValue	showtextvalue;	//Ö÷Ò³ÃæÎÄ±¾¿Ø¼þ»º´æÖµ
-CoilValue  coilvalue;				//ÉèÖÃ½çÃæÖµ
+PCTRL_MSG msg;						//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
+TextValueTab  textvalue;			//ï¿½Ä±ï¿½ï¿½Ø¼ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
+MainShowTextValue	showtextvalue;	//ï¿½ï¿½Ò³ï¿½ï¿½ï¿½Ä±ï¿½ï¿½Ø¼ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
+CoilValue  coilvalue;				//ï¿½ï¿½ï¿½Ã½ï¿½ï¿½ï¿½Öµ
 
 Touch_Coord touch_press,touch_up;
 
@@ -68,14 +68,14 @@ SMALL_SCREEN_ID_TAB smalllanguage_screen = {0};
 void SetTextValueInt32(uint16_t screen_id, uint16_t control_id,int32_t value)
 {
 	char buffer[12] = {0};
-	sprintf(buffer,"%ld",value); //°ÑÕûÊý×ª»»Îª×Ö·û´®
+	sprintf(buffer,"%ld",value); //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½Îªï¿½Ö·ï¿½ï¿½ï¿½
 	SetTextValue(screen_id,control_id,buffer);
 }
 
 void SetTextValueFloat(uint16_t screen_id, uint16_t control_id,float value)
 {
 	char buffer[12] = {0};
-	sprintf(buffer,"%.1f",value);//°Ñ¸¡µãÊý×ª»»Îª×Ö·û´®(±£ÁôÒ»Î»Ð¡Êý)
+	sprintf(buffer,"%.1f",value);//ï¿½Ñ¸ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½Îªï¿½Ö·ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½Ò»Î»Ð¡ï¿½ï¿½)
 	SetTextValue(screen_id,control_id,buffer);
 }
 
@@ -169,32 +169,32 @@ void screen_init(void)
 		
 }
 
-//Ê®½øÖÆ×ªBCD
+//Ê®ï¿½ï¿½ï¿½ï¿½×ªBCD
 uint8_t DectoBCD(uint8_t Dec)
 {
      return ((((Dec/10)<<4)&0xf0)|(Dec%10));
 }
-//BCD×ªÊ®½øÖÆ
+//BCD×ªÊ®ï¿½ï¿½ï¿½ï¿½
 uint8_t BcdToDec(uint8_t bcd)
 {
 	return (0xff & (bcd>>4))*10 +(0xf & bcd);
 }
 
 /*! 
- *  \brief  »­ÃæÇÐ»»Í¨Öª
- *  \details  µ±Ç°»­Ãæ¸Ä±äÊ±(»òµ÷ÓÃGetScreen)£¬Ö´ÐÐ´Ëº¯Êý
- *  \param screen_id µ±Ç°»­ÃæID
+ *  \brief  ï¿½ï¿½ï¿½ï¿½ï¿½Ð»ï¿½Í¨Öª
+ *  \details  ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½Ä±ï¿½Ê±(ï¿½ï¿½ï¿½ï¿½ï¿½GetScreen)ï¿½ï¿½Ö´ï¿½Ð´Ëºï¿½ï¿½ï¿½
+ *  \param screen_id ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ID
  */
 void NotifyScreen(uint16_t screen_id)
 {
 	uint8_t i = 0;
 	current_screen_id = screen_id;
 //	printf("current screen id is %d \n",current_screen_id);
-	//°´¼üÒ³Ãæ
+	//ï¿½ï¿½ï¿½ï¿½Ò³ï¿½ï¿½
 	if(screen_id == biglanguage_screen.BIG_KEYBOARD)
 	{
 	}
-	//»»Æø´ÎÊý±à¼­½çÃæ
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½à¼­ï¿½ï¿½ï¿½ï¿½
 	if(screen_id == biglanguage_screen.BIG_AIR_CHANGE_RATE_SCREEN)
 	{
 		for (i= 0; i < 19; ++i)
@@ -202,16 +202,16 @@ void NotifyScreen(uint16_t screen_id)
 			SetTextValue(screen_id,BIG_CHANGE_AIR_TIME_SET_90+i,textvalue.change_air_times[i]);
 		}
 	}
-	//·çÃÅ½Ç¶È¿ØÖÆµ÷½Ú½çÃæ
+	//ï¿½ï¿½ï¿½Å½Ç¶È¿ï¿½ï¿½Æµï¿½ï¿½Ú½ï¿½ï¿½ï¿½
 	if(screen_id == biglanguage_screen.BIG_AIR_DOOR_SCREEN)
 	{
 		SetTextValue(screen_id,BIG_AIR_DOOR_ANGLE_SET,textvalue.airdoor_value);
 	}
-	//ÆÁÄ»ÁÁ¶È
+	//ï¿½ï¿½Ä»ï¿½ï¿½ï¿½ï¿½
 	if(screen_id == biglanguage_screen.BIG_BRIGHT_ADJUST_SCREEN)
 	{
 	}
-	//²Ëµ¥ÃÜÂë
+	//ï¿½Ëµï¿½ï¿½ï¿½ï¿½ï¿½
 	if(screen_id == biglanguage_screen.BIG_SCREAT_PROTECT_SCREEN)
 	{
 		SetTextValue(screen_id,BIG_PASSWORD_PROTECT_INPUT,"");
@@ -225,7 +225,7 @@ void NotifyScreen(uint16_t screen_id)
 
 		SetTextValue(screen_id,BIG_D_VALUE_SET,textvalue.Pidvalue[2]);	
 	}
-	//²ÎÊýÉèÖÃ½çÃæ
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã½ï¿½ï¿½ï¿½
 	if(screen_id == biglanguage_screen.BIG_PARAM_SET_SCREEN)
 	{
 		SetTextValueInt32(screen_id,BIG_TEST_TIME_VALUE,showtextvalue.test_time );
@@ -258,7 +258,7 @@ void NotifyScreen(uint16_t screen_id)
 		AnimationPlayFrame(screen_id,BIG_CHINESE_LANGUAGE,textvalue.coilsavevalue.menu_language[0]);
 		AnimationPlayFrame(screen_id,BIG_ENGLISH_LANGUAGE,textvalue.coilsavevalue.menu_language[1]);
 	}
-	//×Ô¶¯¶ÏµçÊ±¼äÉè¶¨
+	//ï¿½Ô¶ï¿½ï¿½Ïµï¿½Ê±ï¿½ï¿½ï¿½è¶¨
 	if(screen_id == biglanguage_screen.BIG_AUTO_POWEROFF_TIMESET_SCREEN)
 	{	
 		SetTextValue(screen_id,BIG_YEAR_SET,textvalue.autotime.year);
@@ -267,24 +267,24 @@ void NotifyScreen(uint16_t screen_id)
 	
 		SetTextValue(screen_id,BIG_DAY_SET,textvalue.autotime.day);
 	}
-	//ÎÂ¶ÈÖµÐ£Õý
+	//ï¿½Â¶ï¿½ÖµÐ£ï¿½ï¿½
 	if(screen_id == biglanguage_screen.BIG_TEMP_VALUE_REVISE_SCREEN)
 	{
 	}
-	//²ÎÊýÉèÖÃÎÞÐ§½çÃæ
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½ï¿½ï¿½
 	if(screen_id == biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN)
 	{
 
 	}
-	//Éè±¸Ê±¼äÉèÖÃ
+	//ï¿½è±¸Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	if(screen_id == biglanguage_screen.BIG_CONTROL_TIME_SET)
 	{	
 	}
-	//ÎÂ¶ÈÇúÏßÏÔÊ¾½çÃæ
+	//ï¿½Â¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
 	if(screen_id == biglanguage_screen.BIG_TEMP_CURVE_SHOW_SCREEN)
 	{
 	}
-	//×Ô¼ì½çÃæ
+	//ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½
 	if(screen_id == biglanguage_screen.BIG_SELF_TEST_SCREEN)
 	{
 	}
@@ -293,10 +293,10 @@ void NotifyScreen(uint16_t screen_id)
 
 
 /*! 
- *  \brief  ´¥Ãþ×ø±êÊÂ¼þÏìÓ¦
- *  \param press 1°´ÏÂ´¥ÃþÆÁ£¬3ËÉ¿ª´¥ÃþÆÁ
- *  \param x x×ø±ê
- *  \param y y×ø±ê
+ *  \brief  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½ï¿½ï¿½Ó¦
+ *  \param press 1ï¿½ï¿½ï¿½Â´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½3ï¿½É¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ *  \param x xï¿½ï¿½ï¿½ï¿½
+ *  \param y yï¿½ï¿½ï¿½ï¿½
  */
 void NotifyTouchXY(uint8_t press,uint16_t x,uint16_t y)
 {
@@ -318,23 +318,23 @@ void NotifyTouchXY(uint8_t press,uint16_t x,uint16_t y)
 		touch_flag = 0;
 		if((current_screen_id == biglanguage_screen.BIG_PARAM_SET_SCREEN)&&(touch_press.touch_x - touch_up.touch_x < 50))
 		{
-			if((touch_press.touch_x > 650)&&(touch_press.touch_y > 350)) //ÓÒÏÂ½Ç
+			if((touch_press.touch_x > 650)&&(touch_press.touch_y > 350)) //ï¿½ï¿½ï¿½Â½ï¿½
 			{
 				touchtimes.rightdown_times++;
 			}
-			if((touch_press.touch_x > 650)&&(touch_press.touch_y < 120)) //ÓÒÉÏ½Ç
+			if((touch_press.touch_x > 650)&&(touch_press.touch_y < 120)) //ï¿½ï¿½ï¿½Ï½ï¿½
 			{
 				touchtimes.rightup_times++;
 			}
-			if((touch_press.touch_x < 200)&&(touch_press.touch_y >= 120)&&(touch_press.touch_y <= 300)) //×óÖÐ¼ä
+			if((touch_press.touch_x < 200)&&(touch_press.touch_y >= 120)&&(touch_press.touch_y <= 300)) //ï¿½ï¿½ï¿½Ð¼ï¿½
 			{
 				touchtimes.leftmiddle_times++;
 			}
-			if((touch_press.touch_x < 200)&&(touch_press.touch_y > 300)) //×óÏÂ½Ç
+			if((touch_press.touch_x < 200)&&(touch_press.touch_y > 300)) //ï¿½ï¿½ï¿½Â½ï¿½
 			{
 				touchtimes.leftdown_times++;
 			}
-			if((touch_press.touch_x >= 300)&&(touch_press.touch_x <= 500)&&(touch_press.touch_y >= 120)&&(touch_press.touch_y <= 300)) //ÉÏÖÐ¼ä
+			if((touch_press.touch_x >= 300)&&(touch_press.touch_x <= 500)&&(touch_press.touch_y >= 120)&&(touch_press.touch_y <= 300)) //ï¿½ï¿½ï¿½Ð¼ï¿½
 			{
 				touchtimes.upmiddle_times++;
 			}
@@ -346,60 +346,60 @@ void NotifyTouchXY(uint8_t press,uint16_t x,uint16_t y)
 
 
 /*! 
- *  \brief  °´Å¥¿Ø¼þÍ¨Öª
- *  \details  µ±°´Å¥×´Ì¬¸Ä±ä(»òµ÷ÓÃGetControlValue)Ê±£¬Ö´ÐÐ´Ëº¯Êý
- *  \param screen_id »­ÃæID
- *  \param control_id ¿Ø¼þID
- *  \param state °´Å¥×´Ì¬£º0µ¯Æð£¬1°´ÏÂ
+ *  \brief  ï¿½ï¿½Å¥ï¿½Ø¼ï¿½Í¨Öª
+ *  \details  ï¿½ï¿½ï¿½ï¿½Å¥×´Ì¬ï¿½Ä±ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½GetControlValue)Ê±ï¿½ï¿½Ö´ï¿½Ð´Ëºï¿½ï¿½ï¿½
+ *  \param screen_id ï¿½ï¿½ï¿½ï¿½ID
+ *  \param control_id ï¿½Ø¼ï¿½ID
+ *  \param state ï¿½ï¿½Å¥×´Ì¬ï¿½ï¿½0ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½
  */
 void NotifyButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 {
 	press_flag = 1;
 	
-	//»»Æø´ÎÊý±à¼­½çÃæ
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½à¼­ï¿½ï¿½ï¿½ï¿½
 	if((screen_id == biglanguage_screen.BIG_AIR_CHANGE_RATE_SCREEN)&&(control_id == BIG_AIR_RETURN_BUTTON))
 	{
-		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);			//Ö÷ÏÔÊ¾½çÃæ
+		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);			//ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
 	}
-	//pidÖµÉèÖÃ½çÃæ
+	//pidÖµï¿½ï¿½ï¿½Ã½ï¿½ï¿½ï¿½
 	if((screen_id == biglanguage_screen.BIG_PID_SET_SCREEN)&&(state == 1))
 	{
-		if(control_id == BIG_SELF_ADJUST)							//×ÔÕû¶¨°´¼ü
+		if(control_id == BIG_SELF_ADJUST)							//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		{
 			runstatus=2;
 		}
-		else if(control_id == BIG_PID_RETURN_BUTTON)  				//·µ»ØÖ÷½çÃæ
+		else if(control_id == BIG_PID_RETURN_BUTTON)  				//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		{
-			MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);			//Ö÷ÏÔÊ¾½çÃæ
+			MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);			//ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
 		}
 		
 	}
-	//²ÎÊýÉèÖÃ½çÃæ
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã½ï¿½ï¿½ï¿½
 	if((screen_id == biglanguage_screen.BIG_PARAM_SET_SCREEN)&&(control_id == BIG_SET_RETURN_BUTTON)&&(state == 1))
 	{
-		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);			//Ö÷ÏÔÊ¾½çÃæ
+		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);			//ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
 	}
-	//×Ô¶¯¶ÏµçÊ±¼äÉèÖÃ½çÃæ
+	//ï¿½Ô¶ï¿½ï¿½Ïµï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½Ã½ï¿½ï¿½ï¿½
 	if((screen_id == biglanguage_screen.BIG_AUTO_POWEROFF_TIMESET_SCREEN)&&(control_id == BIG_NO_POWER_RETURN_BUTTON)&&(state == 1))
 	{
-		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);			//Ö÷ÏÔÊ¾½çÃæ
+		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);			//ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
 	}
-	//Ê±¼äÉèÖÃ½çÃæ
+	//Ê±ï¿½ï¿½ï¿½ï¿½ï¿½Ã½ï¿½ï¿½ï¿½
 	if((screen_id == biglanguage_screen.BIG_CONTROL_TIME_SET)&&(control_id == BIG_TIME_SET_RETURN_BUTTON)&&(state == 1))
 	{
-		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);			//Ö÷ÏÔÊ¾½çÃæ
+		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);			//ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
 	}
-	//ÃÜÂë´íÎóÌáÊ¾½çÃæ
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
 	if((screen_id == biglanguage_screen.BIG_PASSWORD_ERROR_SCREEN)&&(control_id == BIG_PASS_ERROR_RETURN_BUTTON)&&(state == 1))
 	{
-		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);			//Ö÷ÏÔÊ¾½çÃæ
+		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);			//ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
 	}
-	//²ÎÊýÉèÖÃÎÞÐ§½çÃæ
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½ï¿½ï¿½
 	if((screen_id == biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN)&&(control_id == BIG_FAIL_RETURN_BUTTON)&&(state == 1))
 	{
 		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);	
 	}
-	//Ö÷ÏÔÊ¾½çÃæ
+	//ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
 	if(screen_id == biglanguage_screen.BIG_MAIN_SHOW_SCREEN)
 	{
 		switch (control_id)
@@ -420,14 +420,14 @@ void NotifyButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 				if(state)
 				{
 					SPINNER_RACK_ON;
-					//Ñù¼ÜÍ¼±êÏÔÊ¾
+					//ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½Ê¾
 					AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_SAMPLE_FRAME_MOTOR_ID,SHOW);
 					AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_RR_WORK_STATUS_ID,HIDE);
 				}
 				else
 				{
 					SPINNER_RACK_OFF;
-					//Ñù¼ÜÍ¼±êÏûÊ§
+					//ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½Ê§
 					AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_SAMPLE_FRAME_MOTOR_ID,HIDE);
 					AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_RR_WORK_STATUS_ID,SHOW);
 				}
@@ -436,7 +436,7 @@ void NotifyButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 				if(state)
 				{
 					CIRCULATING_FUN_ON;
-					//·ç»úÍ¼±êÏÔÊ¾
+					//ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½Ê¾
 					AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_FAN_OPERATION_ID,SHOW);
 					AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_FR_WORK_STATUS_ID,HIDE);
 					
@@ -444,7 +444,7 @@ void NotifyButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 				else
 				{
 					CIRCULATING_FUN_OFF;
-					//·ç»úÍ¼±êÏûÊ§
+					//ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½Ê§
 					AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_FAN_OPERATION_ID,HIDE);
 					AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_FR_WORK_STATUS_ID,SHOW);
 				}
@@ -453,11 +453,11 @@ void NotifyButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 				if(state)	
 				{		
 //					Pwm_Output(ENABLE);
-					runstatus = 1;				//Æô¶¯	
+					runstatus = 1;				//ï¿½ï¿½	
 					warmflag = 1;
 //					PIDInit(dev_info.pidvalue.PID_P,dev_info.pidvalue.PID_I,dev_info.pidvalue.PID_D,showtextvalue.setting_temp);
 					HEAT_ON;
-					//ÏÔÊ¾¼ÓÈÈÆ÷Í¼±ê
+					//ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½
 					AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_HEAT_SWITCH_ID,SHOW);
 				}
 				else
@@ -466,7 +466,7 @@ void NotifyButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 					HEAT_OFF;
 					runstatus = 0;			//Í£Ö¹
 					warmflag = 0;
-					//ÏÔÊ¾¼ÓÈÈÆ÷Í¼±êÏûÊ§
+					//ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½Ê§
 					AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_HEAT_SWITCH_ID,HIDE);
 				}
 				break;
@@ -478,16 +478,16 @@ void NotifyButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 
 
 /*! 
- *  \brief  ÎÄ±¾¿Ø¼þÍ¨Öª
- *  \details  µ±ÎÄ±¾Í¨¹ý¼üÅÌ¸üÐÂ(»òµ÷ÓÃGetControlValue)Ê±£¬Ö´ÐÐ´Ëº¯Êý
- *  \param screen_id »­ÃæID
- *  \param control_id ¿Ø¼þID
- *  \param str ÎÄ±¾¿Ø¼þÄÚÈÝ
+ *  \brief  ï¿½Ä±ï¿½ï¿½Ø¼ï¿½Í¨Öª
+ *  \details  ï¿½ï¿½ï¿½Ä±ï¿½Í¨ï¿½ï¿½ï¿½ï¿½ï¿½Ì¸ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½GetControlValue)Ê±ï¿½ï¿½Ö´ï¿½Ð´Ëºï¿½ï¿½ï¿½
+ *  \param screen_id ï¿½ï¿½ï¿½ï¿½ID
+ *  \param control_id ï¿½Ø¼ï¿½ID
+ *  \param str ï¿½Ä±ï¿½ï¿½Ø¼ï¿½ï¿½ï¿½ï¿½ï¿½
  */
 void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 {
 	uint16_t backlight = 0;
-	//Ò³Ãæ1£¬»»Æø´ÎÊý±à¼­½çÃæ
+	//Ò³ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½à¼­ï¿½ï¿½ï¿½ï¿½
 	
 	if(screen_id == biglanguage_screen.BIG_AIR_CHANGE_RATE_SCREEN)
 	{
@@ -593,9 +593,9 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 		}
 		coilvalue.change_max_time = max_change_air(dev_info.change_air_time,19);
 		SetTextValueInt32(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_CHANGE_AIR_MAX_SET,coilvalue.change_max_time);
-		FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));				//»»Æø´ÎÊýÐ´Èëflash
+		FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));				//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½flash
 	}
-	//·çÃÅ½Ç¶È
+	//ï¿½ï¿½ï¿½Å½Ç¶ï¿½
 	if((screen_id == biglanguage_screen.BIG_AIR_DOOR_SCREEN)&&(control_id == BIG_AIR_DOOR_ANGLE_SET))
 	{
 		memset(textvalue.airdoor_value,0,sizeof(char)*4);
@@ -605,7 +605,7 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 		Dac1_Set_Vol(3300*coilvalue.air_door_angle/90);
 		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);		
 	}
-	//ÆÁÄ»ÁÁ¶È
+	//ï¿½ï¿½Ä»ï¿½ï¿½ï¿½ï¿½
 	if((screen_id == biglanguage_screen.BIG_BRIGHT_ADJUST_SCREEN)&&(control_id == BIG_SCREEN_BRIGHT_ADJUST))
 	{
 		memset(textvalue.screen_light_value,0,sizeof(char)*4);
@@ -622,7 +622,7 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 		SetBackLight(backlight);
 		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);		
 	}
-	//²Ëµ¥ÃÜÂë
+	//ï¿½Ëµï¿½ï¿½ï¿½ï¿½ï¿½
 	if((screen_id == biglanguage_screen.BIG_SCREAT_PROTECT_SCREEN)&&(control_id == BIG_PASSWORD_PROTECT_INPUT))
 	{
 		memset(textvalue.protect_password,0,sizeof(char)*6);
@@ -665,9 +665,9 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 			default:
 				break;
 		}
-		FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));		//pidÊý¾ÝÐ´Èëflash
+		FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));		//pidï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½flash
 	}
-	//²ÎÊýÉèÖÃ½çÃæ
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã½ï¿½ï¿½ï¿½
 	if(screen_id == biglanguage_screen.BIG_PARAM_SET_SCREEN)
 	{
 		switch (control_id)
@@ -797,9 +797,9 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 				break;
 		}
 //		printf("time is %f    temp is %f \r\n",dev_info.testtime,dev_info.testtemp);
-		FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));				//²ÎÊýÉèÖÃ½çÃæÊý¾Ý´æÈëflash
+		FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));				//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý´ï¿½ï¿½ï¿½flash
 	}
-	//×Ô¶¯¶ÏµçÊ±¼äÉèÖÃ
+	//ï¿½Ô¶ï¿½ï¿½Ïµï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	if(screen_id == biglanguage_screen.BIG_AUTO_POWEROFF_TIMESET_SCREEN)
 	{
 		switch (control_id)
@@ -827,14 +827,14 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 		}
 		FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
 	}
-	//×Ô¶¯¶Ïµçµ¯³ö½çÃæ
+	//ï¿½Ô¶ï¿½ï¿½Ïµçµ¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	if(screen_id == biglanguage_screen.BIG_AUTO_POWEROFF_POPUPWINDOWS_SCREEN)
 	{
 		memset(textvalue.autonopowerpassword,0,sizeof(char)*BUFFSIZE);
 		memcpy(textvalue.autonopowerpassword,str,sizeof(char)*BUFFSIZE);
 		autonopowerpassword =  atoi(textvalue.autonopowerpassword);
 	}
-	//ÎÂ¶ÈÖµÐ£Õý
+	//ï¿½Â¶ï¿½ÖµÐ£ï¿½ï¿½
 	if(screen_id == biglanguage_screen.BIG_TEMP_VALUE_REVISE_SCREEN)
 	{
 		memset(textvalue.temp_adjust_value,0,sizeof(char)*BUFFSIZE);
@@ -842,7 +842,7 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 		adjusttemp +=  atof(textvalue.temp_adjust_value);
 		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);
 	}
-	//Éè±¸Ê±¼äÉèÖÃ
+	//ï¿½è±¸Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	if(screen_id == biglanguage_screen.BIG_CONTROL_TIME_SET)
 	{
 		switch (control_id)
@@ -888,13 +888,13 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 		}
 		SetRtcTime(rtctime.Sec,rtctime.Min,rtctime.Hour,rtctime.Day,0,rtctime.Mon,rtctime.Year);
 	}
-//	//Ö÷ÏÔÊ¾½çÃæ
+//	//ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
 //	if(screen_id == biglanguage_screen.BIG_MAIN_SHOW_SCREEN)
 //	{
 //		switch (control_id)
 //		{
 //			case BIG_CURRENT_TEMP_ID:
-//				sprintf(textvalue.textvaluebuff.current_temp_vlaue,"%.1f",showtextvalue.current_temp_vlaue);//°Ñ¸¡µãÊý×ª»»Îª×Ö·û´®(±£ÁôÒ»Î»Ð¡Êý)
+//				sprintf(textvalue.textvaluebuff.current_temp_vlaue,"%.1f",showtextvalue.current_temp_vlaue);//ï¿½Ñ¸ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½Îªï¿½Ö·ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½Ò»Î»Ð¡ï¿½ï¿½)
 //				SetTextValue(screen_id,control_id,textvalue.textvaluebuff.current_temp_vlaue);
 //				SetTextValueFloat(screen_id,control_id, showtextvalue.current_temp_vlaue);
 //				break;
@@ -929,15 +929,15 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 }
 
 /*! 
- *  \brief  ½ø¶ÈÌõ¿Ø¼þÍ¨Öª
- *  \details  µ÷ÓÃGetControlValueÊ±£¬Ö´ÐÐ´Ëº¯Êý
- *  \param screen_id »­ÃæID
- *  \param control_id ¿Ø¼þID
+ *  \brief  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½Í¨Öª
+ *  \details  ï¿½ï¿½ï¿½ï¿½GetControlValueÊ±ï¿½ï¿½Ö´ï¿½Ð´Ëºï¿½ï¿½ï¿½
+ *  \param screen_id ï¿½ï¿½ï¿½ï¿½ID
+ *  \param control_id ï¿½Ø¼ï¿½ID
  *  \param value Öµ
  */
 void NotifyProgress(uint16_t screen_id, uint16_t control_id, uint32_t value)
 {
-	//TODO: Ìí¼ÓÓÃ»§´úÂë
+	//TODO: ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½
 	if((screen_id == biglanguage_screen.BIG_START_INIT_SCREEN)&&(control_id == BIG_START_INIT_ID))
 	{
 		if(value == 100)
@@ -952,24 +952,24 @@ void NotifyProgress(uint16_t screen_id, uint16_t control_id, uint32_t value)
 
 
 /*! 
- *  \brief  »¬¶¯Ìõ¿Ø¼þÍ¨Öª
- *  \details  µ±»¬¶¯Ìõ¸Ä±ä(»òµ÷ÓÃGetControlValue)Ê±£¬Ö´ÐÐ´Ëº¯Êý
- *  \param screen_id »­ÃæID
- *  \param control_id ¿Ø¼þID
+ *  \brief  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½Í¨Öª
+ *  \details  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä±ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½GetControlValue)Ê±ï¿½ï¿½Ö´ï¿½Ð´Ëºï¿½ï¿½ï¿½
+ *  \param screen_id ï¿½ï¿½ï¿½ï¿½ID
+ *  \param control_id ï¿½Ø¼ï¿½ID
  *  \param value Öµ
  */
 void NotifySlider(uint16_t screen_id, uint16_t control_id, uint32_t value)
 {
-	//TODO: Ìí¼ÓÓÃ»§´úÂë
+	//TODO: ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½
 }
 
 
 /*! 
- *  \brief  ¶¯»­¿Ø¼þÍ¨Öª
- *  \details  µ±¶¯»­¸Ä±ä(»òµ÷ÓÃGetControlValue)Ê±£¬Ö´ÐÐ´Ëº¯Êý
- *  \param screen_id »­ÃæID
- *  \param control_id ¿Ø¼þID
- *  \param starus    0x00±íÊ¾´¥Ãþ°´ÏÂ£¬0x01±íÊ¾µ¯Æð
+ *  \brief  ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½Í¨Öª
+ *  \details  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä±ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½GetControlValue)Ê±ï¿½ï¿½Ö´ï¿½Ð´Ëºï¿½ï¿½ï¿½
+ *  \param screen_id ï¿½ï¿½ï¿½ï¿½ID
+ *  \param control_id ï¿½Ø¼ï¿½ID
+ *  \param starus    0x00ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â£ï¿½0x01ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
  *  \param iconimage_id Öµ
  */
 void  NotifyAnimation(uint16_t screen_id, uint16_t control_id,uint8_t status,uint8_t iconimage_id)
@@ -979,11 +979,11 @@ void  NotifyAnimation(uint16_t screen_id, uint16_t control_id,uint8_t status,uin
 }
 
 /*! 
- *  \brief  Í¼±ê¿Ø¼þÍ¨Öª
- *  \details  µ÷ÓÃGetControlValueÊ±£¬Ö´ÐÐ´Ëº¯Êý
- *  \param screen_id »­ÃæID
- *  \param control_id ¿Ø¼þID
- *  \param status    0x00±íÊ¾´¥Ãþ°´ÏÂ£¬0x01±íÊ¾µ¯Æð
+ *  \brief  Í¼ï¿½ï¿½Ø¼ï¿½Í¨Öª
+ *  \details  ï¿½ï¿½ï¿½ï¿½GetControlValueÊ±ï¿½ï¿½Ö´ï¿½Ð´Ëºï¿½ï¿½ï¿½
+ *  \param screen_id ï¿½ï¿½ï¿½ï¿½ID
+ *  \param control_id ï¿½Ø¼ï¿½ID
+ *  \param status    0x00ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â£ï¿½0x01ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
  *  \param iconimage_id Öµ
  */
 void NotifyIcon(uint16_t screen_id, uint16_t control_id,uint8_t status,uint8_t iconimage_id)
@@ -1054,89 +1054,89 @@ void NotifyIcon(uint16_t screen_id, uint16_t control_id,uint8_t status,uint8_t i
 
 
 /*! 
- *  \brief  ÒÇ±í¿Ø¼þÍ¨Öª
- *  \details  µ÷ÓÃGetControlValueÊ±£¬Ö´ÐÐ´Ëº¯Êý
- *  \param screen_id »­ÃæID
- *  \param control_id ¿Ø¼þID
+ *  \brief  ï¿½Ç±ï¿½Ø¼ï¿½Í¨Öª
+ *  \details  ï¿½ï¿½ï¿½ï¿½GetControlValueÊ±ï¿½ï¿½Ö´ï¿½Ð´Ëºï¿½ï¿½ï¿½
+ *  \param screen_id ï¿½ï¿½ï¿½ï¿½ID
+ *  \param control_id ï¿½Ø¼ï¿½ID
  *  \param value Öµ
  */
 void NotifyMeter(uint16_t screen_id, uint16_t control_id, uint32_t value)
 {
-	//TODO: Ìí¼ÓÓÃ»§´úÂë
+	//TODO: ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½
 	
 	
 }
 
 /*! 
- *  \brief  ²Ëµ¥¿Ø¼þÍ¨Öª
- *  \details  µ±²Ëµ¥Ïî°´ÏÂ»òËÉ¿ªÊ±£¬Ö´ÐÐ´Ëº¯Êý
- *  \param screen_id »­ÃæID
- *  \param control_id ¿Ø¼þID
- *  \param item ²Ëµ¥ÏîË÷Òý
- *  \param state °´Å¥×´Ì¬£º0ËÉ¿ª£¬1°´ÏÂ
+ *  \brief  ï¿½Ëµï¿½ï¿½Ø¼ï¿½Í¨Öª
+ *  \details  ï¿½ï¿½ï¿½Ëµï¿½ï¿½î°´ï¿½Â»ï¿½ï¿½É¿ï¿½Ê±ï¿½ï¿½Ö´ï¿½Ð´Ëºï¿½ï¿½ï¿½
+ *  \param screen_id ï¿½ï¿½ï¿½ï¿½ID
+ *  \param control_id ï¿½Ø¼ï¿½ID
+ *  \param item ï¿½Ëµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ *  \param state ï¿½ï¿½Å¥×´Ì¬ï¿½ï¿½0ï¿½É¿ï¿½ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½
  */
 void NotifyMenu(uint16_t screen_id, uint16_t control_id, uint8_t  item, uint8_t  state)
 {
-	//TODO: Ìí¼ÓÓÃ»§´úÂë
+	//TODO: ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½
 
 }
 
 /*! 
- *  \brief  Ñ¡Ôñ¿Ø¼þÍ¨Öª
- *  \details  µ±Ñ¡Ôñ¿Ø¼þ±ä»¯Ê±£¬Ö´ÐÐ´Ëº¯Êý
- *  \param screen_id »­ÃæID
- *  \param control_id ¿Ø¼þID
- *  \param item µ±Ç°Ñ¡Ïî
+ *  \brief  Ñ¡ï¿½ï¿½Ø¼ï¿½Í¨Öª
+ *  \details  ï¿½ï¿½Ñ¡ï¿½ï¿½Ø¼ï¿½ï¿½ä»¯Ê±ï¿½ï¿½Ö´ï¿½Ð´Ëºï¿½ï¿½ï¿½
+ *  \param screen_id ï¿½ï¿½ï¿½ï¿½ID
+ *  \param control_id ï¿½Ø¼ï¿½ID
+ *  \param item ï¿½ï¿½Ç°Ñ¡ï¿½ï¿½
  */
 void NotifySelector(uint16_t screen_id, uint16_t control_id, uint8_t  item)
 {
-	//TODO: Ìí¼ÓÓÃ»§´úÂë
+	//TODO: ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½
 
 }
 
 /*! 
- *  \brief  ¶¨Ê±Æ÷³¬Ê±Í¨Öª´¦Àí
- *  \param screen_id »­ÃæID
- *  \param control_id ¿Ø¼þID
+ *  \brief  ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½Ê±Í¨Öªï¿½ï¿½ï¿½ï¿½
+ *  \param screen_id ï¿½ï¿½ï¿½ï¿½ID
+ *  \param control_id ï¿½Ø¼ï¿½ID
  */
 void NotifyTimer(uint16_t screen_id, uint16_t control_id)
 {
-	//TODO: Ìí¼ÓÓÃ»§´úÂë
+	//TODO: ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½
 	
 }
 
 /*! 
- *  \brief  ¶ÁÈ¡ÓÃ»§FLASH×´Ì¬·µ»Ø
- *  \param status 0Ê§°Ü£¬1³É¹¦
- *  \param _data ·µ»ØÊý¾Ý
- *  \param length Êý¾Ý³¤¶È
+ *  \brief  ï¿½ï¿½È¡ï¿½Ã»ï¿½FLASH×´Ì¬ï¿½ï¿½ï¿½ï¿½
+ *  \param status 0Ê§ï¿½Ü£ï¿½1ï¿½É¹ï¿½
+ *  \param _data ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ *  \param length ï¿½ï¿½ï¿½Ý³ï¿½ï¿½ï¿½
  */
 void NotifyReadFlash(uint8_t status,uint8_t *_data,uint16_t length)
 {
-	//TODO: Ìí¼ÓÓÃ»§´úÂë
+	//TODO: ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½
 	
 }
 
 /*! 
- *  \brief  Ð´ÓÃ»§FLASH×´Ì¬·µ»Ø
- *  \param status 0Ê§°Ü£¬1³É¹¦
+ *  \brief  Ð´ï¿½Ã»ï¿½FLASH×´Ì¬ï¿½ï¿½ï¿½ï¿½
+ *  \param status 0Ê§ï¿½Ü£ï¿½1ï¿½É¹ï¿½
  */
 void NotifyWriteFlash(uint8_t status)
 {
-	//TODO: Ìí¼ÓÓÃ»§´úÂë
+	//TODO: ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½
 	
 }
 
 
 /*! 
- *  \brief  ¶ÁÈ¡RTCÊ±¼ä£¬×¢Òâ·µ»ØµÄÊÇBCDÂë
- *  \param year Äê£¨BCD£©
- *  \param month ÔÂ£¨BCD£©
- *  \param week ÐÇÆÚ£¨BCD£©
- *  \param day ÈÕ£¨BCD£©
- *  \param hour Ê±£¨BCD£©
- *  \param minute ·Ö£¨BCD£©
- *  \param second Ãë£¨BCD£©
+ *  \brief  ï¿½ï¿½È¡RTCÊ±ï¿½ä£¬×¢ï¿½â·µï¿½Øµï¿½ï¿½ï¿½BCDï¿½ï¿½
+ *  \param year ï¿½ê£¨BCDï¿½ï¿½
+ *  \param month ï¿½Â£ï¿½BCDï¿½ï¿½
+ *  \param week ï¿½ï¿½ï¿½Ú£ï¿½BCDï¿½ï¿½
+ *  \param day ï¿½Õ£ï¿½BCDï¿½ï¿½
+ *  \param hour Ê±ï¿½ï¿½BCDï¿½ï¿½
+ *  \param minute ï¿½Ö£ï¿½BCDï¿½ï¿½
+ *  \param second ï¿½ë£¨BCDï¿½ï¿½
  */
 void NotifyReadRTC(uint8_t year,uint8_t month,uint8_t week,uint8_t day,uint8_t hour,uint8_t minute,uint8_t second)
 {	
@@ -1155,45 +1155,45 @@ void NotifyReadRTC(uint8_t year,uint8_t month,uint8_t week,uint8_t day,uint8_t h
 
 
 /*! 
- *  \brief  ÏûÏ¢´¦ÀíÁ÷³Ì
- *  \param msg ´ý´¦ÀíÏûÏ¢
- *  \param size ÏûÏ¢³¤¶È
+ *  \brief  ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ *  \param msg ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
+ *  \param size ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½
  */
 void ProcessMessage( PCTRL_MSG msg, uint16_t size )
 {
-	uint8_t cmd_type = msg->cmd_type;					//Ö¸ÁîÀàÐÍ
-	uint8_t ctrl_msg = msg->ctrl_msg;   				//ÏûÏ¢µÄÀàÐÍ
-	uint8_t control_type = msg->control_type;			//¿Ø¼þÀàÐÍ
-	uint16_t screen_id = PTR2U16(&msg->screen_id);		//»­ÃæID
-	uint16_t control_id = PTR2U16(&msg->control_id);	//¿Ø¼þID
-	uint32_t value = PTR2U32(msg->param);				//ÊýÖµ
+	uint8_t cmd_type = msg->cmd_type;					//Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	uint8_t ctrl_msg = msg->ctrl_msg;   				//ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	uint8_t control_type = msg->control_type;			//ï¿½Ø¼ï¿½ï¿½ï¿½ï¿½ï¿½
+	uint16_t screen_id = PTR2U16(&msg->screen_id);		//ï¿½ï¿½ï¿½ï¿½ID
+	uint16_t control_id = PTR2U16(&msg->control_id);	//ï¿½Ø¼ï¿½ID
+	uint32_t value = PTR2U32(msg->param);				//ï¿½ï¿½Öµ
 
 	switch(cmd_type)
 	{		
-		case NOTIFY_TOUCH_PRESS:		//´¥ÃþÆÁ°´ÏÂ
+		case NOTIFY_TOUCH_PRESS:		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			NotifyTouchXY(cmd_buffer[1],PTR2U16(cmd_buffer+2),PTR2U16(cmd_buffer+4));
 			break;
-		case NOTIFY_TOUCH_RELEASE:		//´¥ÃþÆÁËÉ¿ª
+		case NOTIFY_TOUCH_RELEASE:		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É¿ï¿½
 			NotifyTouchXY(cmd_buffer[1],PTR2U16(cmd_buffer+2),PTR2U16(cmd_buffer+4));
 			break;	
-		case NOTIFY_WRITE_FLASH_OK:		//Ð´FLASH³É¹¦
+		case NOTIFY_WRITE_FLASH_OK:		//Ð´FLASHï¿½É¹ï¿½
 			NotifyWriteFlash(1);
 			break;
-		case NOTIFY_WRITE_FLASH_FAILD:	//Ð´FLASHÊ§°Ü
+		case NOTIFY_WRITE_FLASH_FAILD:	//Ð´FLASHÊ§ï¿½ï¿½
 			NotifyWriteFlash(0);
 			break;
-		case NOTIFY_READ_FLASH_OK:		//¶ÁÈ¡FLASH³É¹¦
-			NotifyReadFlash(1,cmd_buffer+2,size-6);		//È¥³ýÖ¡Í·Ö¡Î²
+		case NOTIFY_READ_FLASH_OK:		//ï¿½ï¿½È¡FLASHï¿½É¹ï¿½
+			NotifyReadFlash(1,cmd_buffer+2,size-6);		//È¥ï¿½ï¿½Ö¡Í·Ö¡Î²
 			break;
-		case NOTIFY_READ_FLASH_FAILD:	//¶ÁÈ¡FLASHÊ§°Ü
+		case NOTIFY_READ_FLASH_FAILD:	//ï¿½ï¿½È¡FLASHÊ§ï¿½ï¿½
 			NotifyReadFlash(0,0,0);
 			break;
-		case NOTIFY_READ_RTC:			//¶ÁÈ¡RTCÊ±¼ä
+		case NOTIFY_READ_RTC:			//ï¿½ï¿½È¡RTCÊ±ï¿½ï¿½
 			NotifyReadRTC(cmd_buffer[2],cmd_buffer[3],cmd_buffer[4],cmd_buffer[5],cmd_buffer[6],cmd_buffer[7],cmd_buffer[8]);
 			break;
 		case NOTIFY_CONTROL:
 			{
-				if(ctrl_msg==MSG_GET_CURRENT_SCREEN)	//»­ÃæID±ä»¯Í¨Öª
+				if(ctrl_msg==MSG_GET_CURRENT_SCREEN)	//ï¿½ï¿½ï¿½ï¿½IDï¿½ä»¯Í¨Öª
 				{
 					NotifyScreen(screen_id);
 				}
@@ -1205,30 +1205,30 @@ void ProcessMessage( PCTRL_MSG msg, uint16_t size )
 				{
 					switch(control_type)
 					{
-						case kCtrlButton: //°´Å¥¿Ø¼þ
+						case kCtrlButton: //ï¿½ï¿½Å¥ï¿½Ø¼ï¿½
 							NotifyButton(screen_id,control_id,msg->param[1]);
 							break;
-						case kCtrlText://ÎÄ±¾¿Ø¼þ
+						case kCtrlText://ï¿½Ä±ï¿½ï¿½Ø¼ï¿½
 							NotifyText(screen_id,control_id,msg->param);
 							break;
-						case kCtrlProgress: //½ø¶ÈÌõ¿Ø¼þ
+						case kCtrlProgress: //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½
 							NotifyProgress(screen_id,control_id,value);
 							break;
-						case kCtrlSlider: //»¬¶¯Ìõ¿Ø¼þ
+						case kCtrlSlider: //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½
 							NotifySlider(screen_id,control_id,value);
 							break;
-						case kCtrlAnimation: //¶¯»­¿Ø¼þ
+						case kCtrlAnimation: //ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½
 							NotifyAnimation(screen_id, control_id,msg->param[0],msg->param[1]);
-						case kCtrlMeter: //ÒÇ±í¿Ø¼þ
+						case kCtrlMeter: //ï¿½Ç±ï¿½Ø¼ï¿½
 							NotifyMeter(screen_id,control_id,value);
 							break;
-						case kCtrlMenu://²Ëµ¥¿Ø¼þ
+						case kCtrlMenu://ï¿½Ëµï¿½ï¿½Ø¼ï¿½
 							NotifyMenu(screen_id,control_id,msg->param[0],msg->param[1]);
 							break;
-						case kCtrlSelector://Ñ¡Ôñ¿Ø¼þ
+						case kCtrlSelector://Ñ¡ï¿½ï¿½Ø¼ï¿½
 							NotifySelector(screen_id,control_id,msg->param[0]);
 							break;
-						case kCtrlRTC://µ¹¼ÆÊ±¿Ø¼þ
+						case kCtrlRTC://ï¿½ï¿½ï¿½ï¿½Ê±ï¿½Ø¼ï¿½
 							NotifyTimer(screen_id,control_id);
 							break;
 						default:
@@ -1244,14 +1244,14 @@ void ProcessMessage( PCTRL_MSG msg, uint16_t size )
 
 
 
-//Æô¶¯½çÃæ
+//ï¿½ï¿½ï¿½ï¿½ï¿½
 void startscreen(void)
 {
-	printf("%s\r\n",soft_ver);														//Èí¼þ°æ±¾
+	printf("%s\r\n",soft_ver);														//ï¿½ï¿½ï¿½ï¿½æ±¾
 	
-	MySetScreen(biglanguage_screen.BIG_START_INIT_SCREEN);							//Ìø×ªµ½Æô¶¯½çÃæ
-	SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_SOFT_VER_ID,soft_ver);	//ÏÔÊ¾Èí¼þ°æ±¾
-	MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);							//Ìø×ªµ½Ö÷ÏÔÊ¾½çÃæ	
+	MySetScreen(biglanguage_screen.BIG_START_INIT_SCREEN);							//ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_SOFT_VER_ID,soft_ver);	//ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½æ±¾
+	MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);							//ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½	
 }
 
 void check_pidstatus(void)
@@ -1266,7 +1266,7 @@ void check_pidstatus(void)
 	}
 }
 
-//Á¬»÷´¥¿ØÌø×ª½çÃæº¯Êý
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½æº¯ï¿½ï¿½
 void  touchtoscreen(void)
 {
 	if((touch_press.touch_x - touch_up.touch_x > 100)&&(current_screen_id == biglanguage_screen.BIG_MAIN_SHOW_SCREEN))
@@ -1321,10 +1321,10 @@ void  touchtoscreen(void)
 }
 
 
-//Á¬»÷°´Å¥Ìø×ª½çÃæº¯Êý
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å¥ï¿½ï¿½×ªï¿½ï¿½ï¿½æº¯ï¿½ï¿½
 void get_combo_button_times(void)
 {
-	//²Ëµ¥°´Å¥
+	//ï¿½Ëµï¿½ï¿½ï¿½Å¥
 	if(touchtimes.menu_click_times == 1)
 	{
 		printf("menu 1button times is %d \n",touchtimes.menu_click_times);
@@ -1342,10 +1342,10 @@ void get_combo_button_times(void)
 		printf("menu 1button times is %d \n",touchtimes.menu_click_times);
 	}
 
-	//×Ô¼ì°´Å¥
+	//ï¿½Ô¼ì°´Å¥
 	if(touchtimes.self_check_times == 1)
 	{
-		if(thermocouple_flag|gpiostatus) //ÓÐ¹ÊÕÏ
+		if(thermocouple_flag|gpiostatus) //ï¿½Ð¹ï¿½ï¿½ï¿½
 		{
 			MySetScreen(biglanguage_screen.BIG_SELF_TEST_NOTPASS_SCREEN);
 		}
@@ -1374,7 +1374,7 @@ void get_combo_button_times(void)
 
 
 
-//ÎÂ¶ÈÇúÏß´æ´¢
+//ï¿½Â¶ï¿½ï¿½ï¿½ï¿½ß´æ´¢
 void temp_curve_save(void)
 {
 	GraphTempDataAdd(biglanguage_screen.BIG_TEMP_CURVE_SHOW_SCREEN, BIG_TEMP_CURVE_SHOW,(uint16_t)showtextvalue.current_temp_vlaue);
@@ -1386,11 +1386,11 @@ void temp_curve_save(void)
 
 
 
-//ºÏ²¢Ê±¼ä×Ö·û
+//ï¿½Ï²ï¿½Ê±ï¿½ï¿½ï¿½Ö·ï¿½
 void  mergetimechar(RtcTime datetime)
 {
 	uint8_t buff[2] = {0};
-	sprintf(buff,"%02d",datetime.Year); //°ÑÕûÊý×ª»»Îª×Ö·û´®
+	sprintf(buff,"%02d",datetime.Year); //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½Îªï¿½Ö·ï¿½ï¿½ï¿½
 	textvalue.textvaluebuff.start_time[0] = buff[0];
 	textvalue.textvaluebuff.start_time[1] = buff[1];
 
@@ -1416,11 +1416,11 @@ void  mergetimechar(RtcTime datetime)
 	textvalue.textvaluebuff.start_time[13] = buff[1];
 }
 
-//ºÏ²¢Ð¡Ê±·ÖÖÓ×Ö·û´®
+//ï¿½Ï²ï¿½Ð¡Ê±ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½
 void mergehour_min(uint16_t hour,uint16_t min)
 {
 	uint8_t buff[5] = {0};
-	sprintf(buff,"%04d",hour); //°ÑÕûÊý×ª»»Îª×Ö·û´®
+	sprintf(buff,"%04d",hour); //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½Îªï¿½Ö·ï¿½ï¿½ï¿½
 	textvalue.textvaluebuff.left_time[0] = buff[0];
 	textvalue.textvaluebuff.left_time[1] = buff[1];
 	textvalue.textvaluebuff.left_time[2] = buff[2];
@@ -1434,7 +1434,7 @@ void mergehour_min(uint16_t hour,uint16_t min)
 	textvalue.textvaluebuff.left_time[9] = 'n';
 }
 
-//µ½Ä³Ê±µÄ·ÖÖÓÊý£¬´Ó2000Äê1ÔÂ1ºÅ£¬0:00¿ªÊ¼
+//ï¿½ï¿½Ä³Ê±ï¿½Ä·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½2000ï¿½ï¿½1ï¿½ï¿½1ï¿½Å£ï¿½0:00ï¿½ï¿½Ê¼
 uint32_t to_day(RtcTime time)
 {
 	uint8_t mon[] = {31,28,31,30,31,30,31,31,30,31,30,31};
@@ -1464,7 +1464,7 @@ uint32_t to_day(RtcTime time)
 }
 
 #if 0
-//ÔÂ·ÝÊ¶±ð
+//ï¿½Â·ï¿½Ê¶ï¿½ï¿½
 char * monselect(char *monbuff)
 {
 	uint8_t i = 0,temp = 0;
@@ -1480,7 +1480,7 @@ char * monselect(char *monbuff)
 	}
 }
 
-//½áÊøÊ±¼ä¸ñÊ½×ª»»
+//ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½Ê½×ªï¿½ï¿½
 void  adjustchar(char *timebuff)
 {
 	char monbuff[2];
@@ -1519,7 +1519,7 @@ void  adjustchar(char *timebuff)
 }
 #endif
 
-//½áÊøÊ±¼ä¼ÆËã
+//ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½
 void endtimecalcu(RtcTime starttime,uint16_t testtime)
 {
 	char timebuff[25] = {0};
@@ -1530,7 +1530,7 @@ void endtimecalcu(RtcTime starttime,uint16_t testtime)
 	currenttime += to_day(starttime);
 	strftime(timebuff,20,"%Y/%m/%d %H:%M:%S",localtime(&currenttime));
 	memcpy(textvalue.textvaluebuff.end_time,timebuff+2,14);
-//	printf("¸ñÊ½»¯µÄÈÕÆÚ & Ê±¼ä : |%s|\n", textvalue.textvaluebuff.end_time );
+//	printf("ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ & Ê±ï¿½ï¿½ : |%s|\n", textvalue.textvaluebuff.end_time );
 //	timebuff = ctime(&currenttime);
 //	printf("time is %s\r\n",timebuff);
 //	adjustchar(timebuff);
@@ -1539,13 +1539,13 @@ void endtimecalcu(RtcTime starttime,uint16_t testtime)
 }
 
 
-//Ê±¼ä²î£¬·µ»ØÃëÊý
+//Ê±ï¿½ï¿½î£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 uint32_t diff_time(RtcTime starttime,RtcTime endtime)
 {
 	return (to_day(endtime) - to_day(starttime));
 }
 
-//Á½¸öÊµÊýµÄ¾ø¶ÔÖµ
+//ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½ï¿½Ä¾ï¿½ï¿½ï¿½Öµ
 float myabs(float a,float b)
 {
 	if(a >= b)  
@@ -1554,9 +1554,9 @@ float myabs(float a,float b)
 		return b-a;
 }
 
- uint32_t temptime = 0;		//Ê£ÓàÊµÑéÊ±¼ä
+ uint32_t temptime = 0;		//Ê£ï¿½ï¿½Êµï¿½ï¿½Ê±ï¿½ï¿½
 
-//Ê£ÓàÊ±¼ä¼ÆËã £¬·ÖÖÓ
+//Ê£ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void lefttimecalculate(void)
 {
 	temptime = showtextvalue.test_time*60 - diff_time(showtextvalue.start_time, rtctime)/60;
@@ -1567,22 +1567,22 @@ void lefttimecalculate(void)
 	SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TIME_LEFT_ID,textvalue.textvaluebuff.left_time);
 	if(temptime == 0)
 	{
-		//ÊµÑé½áÊø
-		addup_testtime();   //ÀÛ¼ÆÊµÑéÊ±¼ä
+		//Êµï¿½ï¿½ï¿½ï¿½ï¿½
+		addup_testtime();   //ï¿½Û¼ï¿½Êµï¿½ï¿½Ê±ï¿½ï¿½
 		
 		warmflag = 0;
 		lefttimeflag = 0;
 	}
 }
 
-//ÆðÊ¼½áÊøÊ±¼äÉèÖÃ
+//ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void start_endtime_set(void)
 {
 	RtcTime inittime = {0};
 	
 //	if(myabs(showtextvalue.setting_temp,showtextvalue.current_temp_vlaue) <= 2)
 //	{
-//		warmflag++;			//¼ÓÈÈµ½ Ä¿±êÎÂ¶È´ÎÊý
+//		warmflag++;			//ï¿½ï¿½ï¿½Èµï¿½ Ä¿ï¿½ï¿½ï¿½Â¶È´ï¿½ï¿½ï¿½
 //	}
 	if(warmflag == 0)		
 	{
@@ -1591,14 +1591,14 @@ void start_endtime_set(void)
 		SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_END_TIME_ID,textvalue.textvaluebuff.start_time); 	
 		SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TIME_LEFT_ID,"0 h 0 min");	
 	}
-	else if((warmflag == 1)&&(showtextvalue.setting_temp != 0)&&(lefttimeflag == 0))	//µÚÒ»´Î¼ÓÈÈµ½Ä¿±êÎÂ¶ÈÇÒÉè¶¨ÎÂ¶È²»Îª0
+	else if((warmflag == 1)&&(showtextvalue.setting_temp != 0)&&(lefttimeflag == 0))	//ï¿½ï¿½Ò»ï¿½Î¼ï¿½ï¿½Èµï¿½Ä¿ï¿½ï¿½ï¿½Â¶ï¿½ï¿½ï¿½ï¿½è¶¨ï¿½Â¶È²ï¿½Îª0
 	{	
 		lefttimeflag = 1;
-		//¿ªÊ¼Ê±¼äÉèÖÃ
+		//ï¿½ï¿½Ê¼Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		mergetimechar(rtctime);
 		showtextvalue.start_time = rtctime;
 		SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_START_TIME_ID,textvalue.textvaluebuff.start_time);
-		//½áÊøÊ±¼äÉèÖÃ
+		//ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		endtimecalcu(showtextvalue.start_time,showtextvalue.test_time);
 	}
 	if(lefttimeflag == 1)
@@ -1607,7 +1607,7 @@ void start_endtime_set(void)
 	}
 }
 
-//ÀÛ¼ÆÊµÑéÊ±¼ä
+//ï¿½Û¼ï¿½Êµï¿½ï¿½Ê±ï¿½ï¿½
 void addup_testtime(void)
 {
 	uint32_t addtime = 0;
@@ -1620,7 +1620,7 @@ void addup_testtime(void)
 
 
 
-//·çÃÅ½Ç¶È´ÎÊý½çÃæ±à¼­
+//ï¿½ï¿½ï¿½Å½Ç¶È´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½à¼­
 void change_air_times(void)
 {
 	uint8_t i = 0;
@@ -1732,7 +1732,7 @@ void change_air_times(void)
 	}
 }
 
-//×î´ó»»Æø´ÎÊý±à¼­
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½à¼­
 uint8_t max_change_air(uint8_t *buff,uint8_t size)
 {
 	uint8_t i = 0, temp = 0;

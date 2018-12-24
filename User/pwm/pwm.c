@@ -13,9 +13,9 @@ extern dev_info_t dev_info;
 
 
 /**
-  * @brief  ÅäÖÃTIM¸´ÓÃÊä³öPWMÊ±ÓÃµ½µÄI/O
-  * @param  ÎÞ
-  * @retval ÎÞ
+  * @brief  ï¿½ï¿½ï¿½ï¿½TIMï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½PWMÊ±ï¿½Ãµï¿½ï¿½ï¿½I/O
+  * @param  ï¿½ï¿½
+  * @retval ï¿½ï¿½
   */
 void SetPwmValue(int a)
 {
@@ -32,18 +32,17 @@ void SetPwmScope(int a)
 	dev_info.pwmscope=a;
 	TIM_PWMOUTPUT_Config();
 }
-
 static void TIMx_GPIO_Config(void) 
 {
-	/*¶¨ÒåÒ»¸öGPIO_InitTypeDefÀàÐÍµÄ½á¹¹Ìå*/
+	/*ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½GPIO_InitTypeDefï¿½ï¿½ï¿½ÍµÄ½á¹¹ï¿½ï¿½*/
 	GPIO_InitTypeDef GPIO_InitStructure;
 
-	/*¿ªÆôÏà¹ØµÄGPIOÍâÉèÊ±ÖÓ*/
+	/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Øµï¿½GPIOï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½*/
 	RCC_AHB1PeriphClockCmd (PWM_GPIO_CLK, ENABLE); 
-  /* ¶¨Ê±Æ÷Í¨µÀÒý½Å¸´ÓÃ */
+  /* ï¿½ï¿½Ê±ï¿½ï¿½Í¨ï¿½ï¿½ï¿½ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ */
 	GPIO_PinAFConfig(PWM_GPIO_PORT,PWM_PINSOURCE,PWM_AF); 
   
-	/* ¶¨Ê±Æ÷Í¨µÀÒý½ÅÅäÖÃ */															   
+	/* ï¿½ï¿½Ê±ï¿½ï¿½Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */															   
 	GPIO_InitStructure.GPIO_Pin = PWM_PIN;	
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;    
 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
@@ -64,55 +63,55 @@ void TIM_PWMOUTPUT_Config(void)
   	TIM_OCInitTypeDef  TIM_OCInitStructure;
 //	TIM_BDTRInitTypeDef TIM_BDTRInitStructure;
 	
-	// ¿ªÆôTIMx_CLK 
+	// ï¿½ï¿½ï¿½ï¿½TIMx_CLK 
   RCC_APB2PeriphClockCmd(PWM_TIMx_CLK, ENABLE); 
 
-  /* ÀÛ¼Æ TIM_Period¸öºó²úÉúÒ»¸ö¸üÐÂ»òÕßÖÐ¶Ï*/		
+  /* ï¿½Û¼ï¿½ TIM_Periodï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½Â»ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½*/		
   TIM_TimeBaseStructure.TIM_Period = dev_info.pwmscope-1;       
 	
-  // Í¨ÓÃ¿ØÖÆ¶¨Ê±Æ÷Ê±ÖÓÔ´TIMxCLK = HCLK/2=84MHz 
-  // Éè¶¨¶¨Ê±Æ÷ÆµÂÊÎª=TIMxCLK/(TIM_Prescaler+1)=100KHz
+  // Í¨ï¿½Ã¿ï¿½ï¿½Æ¶ï¿½Ê±ï¿½ï¿½Ê±ï¿½ï¿½Ô´TIMxCLK = HCLK/2=84MHz 
+  // ï¿½è¶¨ï¿½ï¿½Ê±ï¿½ï¿½Æµï¿½ï¿½Îª=TIMxCLK/(TIM_Prescaler+1)=100KHz
   TIM_TimeBaseStructure.TIM_Prescaler = 8400-1;	
-  // ²ÉÑùÊ±ÖÓ·ÖÆµ
+  // ï¿½ï¿½ï¿½ï¿½Ê±ï¿½Ó·ï¿½Æµ
   TIM_TimeBaseStructure.TIM_ClockDivision=TIM_CKD_DIV1;
-  // ¼ÆÊý·½Ê½²ÉÓÃÖÐÐÄ¶¨Ê±
+  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¶ï¿½Ê±
   TIM_TimeBaseStructure.TIM_CounterMode=TIM_CounterMode_CenterAligned1;
-   //ÖØ¸´¼Ä´æÆ÷£¬ÓÃÓÚ×Ô¶¯¸üÐÂpwmÕ¼¿Õ±È
+   //ï¿½Ø¸ï¿½ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½pwmÕ¼ï¿½Õ±ï¿½
   TIM_TimeBaseStructure.TIM_RepetitionCounter=0;     
-	// ³õÊ¼»¯¶¨Ê±Æ÷TIMx, x[2,3,4,5,12,13,14] 
+	// ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½TIMx, x[2,3,4,5,12,13,14] 
   TIM_TimeBaseInit(PWM_TIMx, &TIM_TimeBaseStructure);
 
 
 
- // ÅäÖÃÎª PWM Ä£Ê½ 1£¬ÏÈÊä³ö¸ßµçÆ½£¬´ïµ½±È½ÏÖµµÄÊ±ºòÔÙ¸Ä±äµçÆ½ 
+ // ï¿½ï¿½ï¿½ï¿½Îª PWM Ä£Ê½ 1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ßµï¿½Æ½ï¿½ï¿½ï¿½ïµ½ï¿½È½ï¿½Öµï¿½ï¿½Ê±ï¿½ï¿½ï¿½Ù¸Ä±ï¿½ï¿½Æ½ 
  TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1; 
- // Ö÷Êä³öÊ¹ÄÜ 
+ // ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½ 
  TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable; 
 
- // »¥²¹Êä³öÊ¹ÄÜ 
+ // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½ 
  TIM_OCInitStructure.TIM_OutputNState = TIM_OutputNState_Enable;
- // ÅäÖÃ±È½ÏÖµ 
+ // ï¿½ï¿½ï¿½Ã±È½ï¿½Öµ 
  TIM_OCInitStructure.TIM_Pulse = dev_info.pwmscope - dev_info.pwmvalue; 
- // Ö÷Êä³ö¸ßµçÆ½ÓÐÐ§ 
+ // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ßµï¿½Æ½ï¿½ï¿½Ð§ 
  TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High; 
 
- // ¿ÕÏÐÊä³ö¸ß
+ // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
  TIM_OCInitStructure.TIM_OCIdleState = TIM_OCIdleState_Set; 
   
- // Í¨µÀ³õÊ¼»¯ 
+ // Í¨ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ 
  TIM_OC1Init(PWM_TIMx, &TIM_OCInitStructure); 
 
 // TIM_OC2Init(PWM_TIMx, &TIM_OCInitStructure);
- // Ê¹ÄÜÍ¨µÀÖØ×°ÔØ 
+ // Ê¹ï¿½ï¿½Í¨ï¿½ï¿½ï¿½ï¿½×°ï¿½ï¿½ 
  TIM_OC1PreloadConfig(PWM_TIMx, TIM_OCPreload_Enable); 
  
- TIM_ARRPreloadConfig(PWM_TIMx,ENABLE);//ARPEÊ¹ÄÜ 
+ TIM_ARRPreloadConfig(PWM_TIMx,ENABLE);//ARPEÊ¹ï¿½ï¿½ 
 
 		
- // Ê¹ÄÜ¶¨Ê±Æ÷
+ // Ê¹ï¿½Ü¶ï¿½Ê±ï¿½ï¿½
  TIM_Cmd(PWM_TIMx, ENABLE);	
 	
- /* Ö÷¶¯Êä³öÊ¹ÄÜ £¬Êä³öpwm±ØÐë´ò¿ª*/
+ /* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½pwmï¿½ï¿½ï¿½ï¿½ï¿½*/
  TIM_CtrlPWMOutputs(PWM_TIMx, ENABLE);
 
 
@@ -122,9 +121,9 @@ void TIM_PWMOUTPUT_Config(void)
 
 
 /**
-  * @brief  ³õÊ¼»¯¿ØÖÆÍ¨ÓÃ¶¨Ê±Æ÷
-  * @param  ÎÞ
-  * @retval ÎÞ
+  * @brief  ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¨ï¿½Ã¶ï¿½Ê±ï¿½ï¿½
+  * @param  ï¿½ï¿½
+  * @retval ï¿½ï¿½
   */
 void TIMx_Configuration(void)
 {
@@ -133,7 +132,7 @@ void TIMx_Configuration(void)
   TIM_PWMOUTPUT_Config();
 }
 
-//PWMÊä³ö¿ØÖÆ
+//PWMï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void Pwm_Output(FunctionalState NewState)
 {
  	TIM_CtrlPWMOutputs(PWM_TIMx, NewState);

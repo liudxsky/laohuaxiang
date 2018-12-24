@@ -4,64 +4,64 @@
 int timer100;
 int blinkcnt=0;
 int ledstatus=0;
-//LEDµÆ³õÊ¼»¯ÅäÖÃ
+//LEDï¿½Æ³ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void led_init(void)
 {
-	GPIO_InitTypeDef  GPIO_InitStructure; //¶¨Òå½á¹¹Ìå
+	GPIO_InitTypeDef  GPIO_InitStructure; //ï¿½ï¿½ï¿½ï¿½á¹¹ï¿½ï¿½
 
-	RCC_AHB1PeriphClockCmd(LED_GPIO_CLK, ENABLE);//¿ªÆôÍâÉèÊ±ÖÓ
+	RCC_AHB1PeriphClockCmd(LED_GPIO_CLK, ENABLE);//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½
 
 	  
 	GPIO_InitStructure.GPIO_Pin = LED_PIN ;      				 //LED
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;                //Êä³öÄ£Ê½
-	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;               //ÍÆÍìÊä³ö
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;           //GpioÊä³öËÙÂÊÎª100MHz
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;                 //ÉèÖÃÒý½ÅÎªÉÏÀ­Ä£Ê½		
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;                //ï¿½ï¿½ï¿½Ä£Ê½
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;               //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;           //Gpioï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îª100MHz
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;                 //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½Ä£Ê½		
 	GPIO_Init(LED_GPIO_PORT, &GPIO_InitStructure); 
 	
-	GPIO_ResetBits(LED_GPIO_PORT,LED_PIN);						 //Ï¨ÃðLED
+	GPIO_ResetBits(LED_GPIO_PORT,LED_PIN);						 //Ï¨ï¿½ï¿½LED
 	timer100=0;
 }
 
-//Çý¶¯¿ª¹Ø´¥µãºÍ·´À¡Òý½Å³õÊ¼»¯ÅäÖÃ
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½ï¿½ï¿½Í·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å³ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void driver_gpio_init(void)
 {
-	GPIO_InitTypeDef  GPIO_InitStructure; 				 //¶¨Òå½á¹¹Ìå
-	RCC_AHB1PeriphClockCmd(DRIVER_GPIO_CLK, ENABLE);	 //¿ªÆôÍâÉèÊ±ÖÓ
-	RCC_AHB1PeriphClockCmd(BACK_GPIO_CLK, ENABLE);	 //¿ªÆô·´À¡Òý½ÅÊ±ÖÓ
+	GPIO_InitTypeDef  GPIO_InitStructure; 				 //ï¿½ï¿½ï¿½ï¿½á¹¹ï¿½ï¿½
+	RCC_AHB1PeriphClockCmd(DRIVER_GPIO_CLK, ENABLE);	 //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½
+	RCC_AHB1PeriphClockCmd(BACK_GPIO_CLK, ENABLE);	 //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½
 	GPIO_InitStructure.GPIO_Pin = HEAT_CONTROL_PIN|SPINNER_RACK_CONTROL_PIN|
 								  CIRCULATING_FUN_CONTROL_PIN|ALARM_CONTROL1_PIN|
-								  ALARM_CONTROL2_PIN;     //Îå¸öÇý¶¯IO¿Ú
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;         //Êä³öÄ£Ê½
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;   //GpioÊä³öËÙÂÊÎª100MHz
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;     //ÉèÖÃÒý½ÅÎª²»ÉÏÀ­Ò²²»ÏÂÀ­Ä£Ê½
+								  ALARM_CONTROL2_PIN;     //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½IOï¿½ï¿½
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;         //ï¿½ï¿½ï¿½Ä£Ê½
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;   //Gpioï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îª100MHz
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;     //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½
 	GPIO_Init(DRIVER_GPIO_PORT, &GPIO_InitStructure);  
 
 	GPIO_InitStructure.GPIO_Pin = BACK_GPIO_PIN1|
 								  BACK_GPIO_PIN2|BACK_GPIO_PIN3|
-								  BACK_GPIO_PIN4|BACK_GPIO_PIN5;  //Îå¸ö·´À¡¿Ú
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;         //ÊäÈëÄ£Ê½
+								  BACK_GPIO_PIN4|BACK_GPIO_PIN5;  //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;         //ï¿½ï¿½ï¿½ï¿½Ä£Ê½
 	GPIO_Init(BACK_GPIO_PORT, &GPIO_InitStructure); 
 }
 
 
 
-//ÏäÃÅ¿ª¹Ø³õÊ¼»¯ÅäÖÃ
+//ï¿½ï¿½ï¿½Å¿ï¿½ï¿½Ø³ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void door_gpio_init(void)
 {
-	GPIO_InitTypeDef  GPIO_InitStructure; 				 //¶¨Òå½á¹¹Ìå
-	RCC_AHB1PeriphClockCmd(BOX_DOOR_GPIO_CLK, ENABLE);	 //¿ªÆôÍâÉèÊ±ÖÓ
+	GPIO_InitTypeDef  GPIO_InitStructure; 				 //ï¿½ï¿½ï¿½ï¿½á¹¹ï¿½ï¿½
+	RCC_AHB1PeriphClockCmd(BOX_DOOR_GPIO_CLK, ENABLE);	 //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½
 	
 	GPIO_InitStructure.GPIO_Pin = BOX_DOOR_PIN;      	 //box_door
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;         //ÊäÈëÄ£Ê½
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;   //GpioÊä³öËÙÂÊÎª100MHz
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;     //ÉèÖÃÒý½ÅÎª²»ÉÏÀ­Ò²²»ÏÂÀ­Ä£Ê½
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;         //ï¿½ï¿½ï¿½ï¿½Ä£Ê½
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;   //Gpioï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îª100MHz
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;     //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½
 	GPIO_Init(BOX_DOOR_GPIO_PORT, &GPIO_InitStructure);   
 }
 
 
 
-//ÕûÌågpio³õÊ¼»¯ÅäÖÃ
+//ï¿½ï¿½ï¿½ï¿½gpioï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void Gpio_Init(void)
 {
 	led_init();
@@ -74,18 +74,18 @@ void ledBlinkThread()
 	{
 		//blinkcnt--;
 		if(ledstatus==0)
-		{
-			LED_ON;
-			ledstatus=1;
-		}
-		else
-		{
-			LED_OFF;
-			ledstatus=0;
-		}
-	}	
+	{
+		LED_ON;
+		ledstatus=1;
+	}
+	else
+	{
+		LED_OFF;
+		ledstatus=0;
+	}
+	
 }
-
+}
 void test(void)
 {
 	GPIO_SetBits(DRIVER_GPIO_PORT,HEAT_CONTROL_PIN);
@@ -113,7 +113,6 @@ void test(void)
 	GPIO_ResetBits(DRIVER_GPIO_PORT,ALARM_CONTROL2_PIN);
 	delay_ms(500);
 }
-
 
 void led_blink(uint8_t num)
 {

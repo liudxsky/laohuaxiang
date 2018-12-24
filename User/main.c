@@ -20,33 +20,33 @@
 #include "pidcontroller.h"
 
 uint16_t current_screen_id = 0;
-volatile uint32_t  timer_tick_count = 0; //¶¨Ê±Æ÷½ÚÅÄ
+volatile uint32_t  timer_tick_count = 0; //ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 volatile uint32_t t_thread500=0;
 extern uint16_t ADC_ConvertedValue[ADC_NOFCHANEL];
 
 
 extern RtcTime rtctime;
-extern uint8_t cmd_buffer[CMD_MAX_SIZE];		//Ö¸Áî»º´æ
+extern uint8_t cmd_buffer[CMD_MAX_SIZE];		//Ö¸ï¿½î»ºï¿½ï¿½
 extern uint8_t press_flag;
-extern MainShowTextValue	showtextvalue;	//Ö÷Ò³ÃæÎÄ±¾¿Ø¼þ»º´æÖµ
+extern MainShowTextValue	showtextvalue;	//ï¿½ï¿½Ò³ï¿½ï¿½ï¿½Ä±ï¿½ï¿½Ø¼ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
 int runstatus=0;
 int debuginfo=1;
 extern arm_pid_instance_f32 PID;
 /* ----------------------- Defines ------------------------------------------*/
 
-//ÊäÈë¼Ä´æÆ÷ÄÚÈÝ
+//ï¿½ï¿½ï¿½ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 uint16_t    usRegInputBuf[REG_INPUT_NREGS]= {0};
 
 
-//±£³Ö¼Ä´æÆ÷ÄÚÈÝ
+//ï¿½ï¿½ï¿½Ö¼Ä´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 uint16_t	usRegHoldingBuf[REG_HOLDING_NREGS] = {0};
 
 
-//ÏßÈ¦¼Ä´æÆ÷ÄÚÈÝ
+//ï¿½ï¿½È¦ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 uint16_t	ucRegCoilsBuf[REG_COILS_SIZE] = {0};
 
 
-//¿ª¹ØÊäÈë¼Ä´æÆ÷ÄÚÈÝ
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 uint16_t	ucRegDiscreteBuf[REG_DISCRETE_SIZE] = {0};
 
 /* --------------------------------------------------------------------------*/
@@ -57,9 +57,8 @@ extern uint32_t password2;
 extern float adjusttemp;
 extern Touch_Times touchtimes;
 
-extern MainShowTextValue showtextvalue;	//Ö÷Ò³ÃæÎÄ±¾¿Ø¼þ»º´æÖµ
+extern MainShowTextValue showtextvalue;	//ï¿½ï¿½Ò³ï¿½ï¿½ï¿½Ä±ï¿½ï¿½Ø¼ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
 float temper_usart;
-
 
 
 
@@ -77,12 +76,12 @@ int main( void )
 	uint16_t Ktemperature = 0;
   eMBErrorCode    eStatus;
 	qsize  size = 0;
-	System_Init();												//ÏµÍ³³õÊ¼»¯ÉèÖÃ
+	System_Init();												//ÏµÍ³ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
-	eStatus = eMBInit( MB_RTU, 0x01, 0x01, 9600, MB_PAR_NONE ); //³õÊ¼»¯Modbus
-	eStatus = eMBEnable();									//Æô¶¯Free MODBUS
+	eStatus = eMBInit( MB_RTU, 0x01, 0x01, 9600, MB_PAR_NONE ); //ï¿½ï¿½Ê¼ï¿½ï¿½Modbus
+	eStatus = eMBEnable();									//ï¿½ï¿½Free MODBUS
 	delay_s(1);
-	SetBackLight(20);											//³õÊ¼ÆÁÄ»±³¹âÁÁ¶È
+	SetBackLight(20);											//ï¿½ï¿½Ê¼ï¿½ï¿½Ä»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	
 	startscreen();												//start screen
 	//SetPoint=showtextvalue.setting_temp;
@@ -90,11 +89,11 @@ int main( void )
 
 	while(1)
     {
-        eMBPoll(  );											//²éÑ¯Êý¾ÝÖ¡ 
-        size = queue_find_cmd(cmd_buffer,CMD_MAX_SIZE); 		//´Ó»º³åÇøÖÐ»ñÈ¡Ò»ÌõÖ¸Áî        
-		if(size>0)												//½ÓÊÕµ½Ö¸Áî
+      eMBPoll(  );											//ï¿½ï¿½Ñ¯ï¿½ï¿½ï¿½ï¿½Ö¡ 
+      size = queue_find_cmd(cmd_buffer,CMD_MAX_SIZE); 		//ï¿½Ó»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð»ï¿½È¡Ò»ï¿½ï¿½Ö¸ï¿½ï¿½        
+		if(size>0)												//ï¿½ï¿½ï¿½Õµï¿½Ö¸ï¿½ï¿½
 		{
-			ProcessMessage((PCTRL_MSG)cmd_buffer, size);//Ö¸Áî´¦Àí
+			ProcessMessage((PCTRL_MSG)cmd_buffer, size);//Ö¸ï¿½î´¦ï¿½ï¿½
 		}
 		#if 1
 		if(getMsCounter()-t_thread100>200)
@@ -163,17 +162,17 @@ int main( void )
 		{
 			timer_tick_count = getMsCounter();
 			ReadRtcTime();		
-			start_endtime_set();							//ÆðÊ¼½áÊøÊ±¼äÉèÖÃ
-			temp_detection(temperFilter);					//ÎÂ¶È²âÁ¿
+			start_endtime_set();							//ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			temp_detection(temperFilter);					//ï¿½Â¶È²ï¿½ï¿½ï¿½
 			if(press_flag)
 			{
-				get_combo_button_times();					//Á¬»÷°´Å¥Ìø×ª½çÃæº¯Êý
+				get_combo_button_times();					//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å¥ï¿½ï¿½×ªï¿½ï¿½ï¿½æº¯ï¿½ï¿½
 				touchtimes.self_check_times = 0;
 				touchtimes.menu_click_times = 0;
 				press_flag = 0;
 			}
 				
-			temp_curve_save();								//ÎÂ¶ÈÇúÏß´æ´¢	
+			temp_curve_save();								//ï¿½Â¶ï¿½ï¿½ï¿½ï¿½ß´æ´¢	
 			Check_All_Status();			
 		}
 			device_timing_selfcheck();
@@ -184,26 +183,26 @@ int main( void )
 
 
 
-//ÏµÍ³³õÊ¼»¯
+//ÏµÍ³ï¿½ï¿½Ê¼ï¿½ï¿½
 void System_Init(void)
 {
-	delay_init();									//ÑÓÊ±º¯Êý³õÊ¼»¯
-	Gpio_Init();									//GPIO³õÊ¼»¯ÅäÖÃ
-	USART1_Config();								//´®¿Ú1ÅäÖÃ		
-	UartInit();										//ÏÔÊ¾ÆÁ´®¿ÚÅäÖÃ
-	screenlanguage();								//ÆÁÄ»ÓïÑÔÑ¡Ôñ
+	delay_init();									//ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½
+	Gpio_Init();									//GPIOï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	USART1_Config();								//ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½		
+	UartInit();										//ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	screenlanguage();								//ï¿½ï¿½Ä»ï¿½ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½
 	delay_s(1);
-	DeviceInfo_Init();								//Éè±¸³õÊ¼»¯
+	DeviceInfo_Init();								//ï¿½è±¸ï¿½ï¿½Ê¼ï¿½ï¿½
 
-	TIMx_Configuration();							//pwmÊ±ÖÓÅäÖÃ
-	TIMx_Init();									//¼ÆÊ±tim
+	TIMx_Configuration();							//pwmÊ±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	TIMx_Init();									//ï¿½ï¿½Ê±tim
 	
-	Analog_Init();									//adc³õÊ¼»¯ÅäÖÃ
-	DAC1_Init();									//DAC³õÊ¼»¯ÅäÖÃ
+	Analog_Init();									//adcï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	DAC1_Init();									//DACï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	Dac_Select_Init();
-	Max6675_Gpio_Init();							//ÈÈµçÅ¼GPIO³õÊ¼»¯	 
-	control_mode_select();							//·§ÃÅ¿ØÖÆÑ¡Ôñ
-	screen_init();									//ÆÁÄ»ÄÚÈÝ³õÊ¼»¯
+	Max6675_Gpio_Init();							//ï¿½Èµï¿½Å¼GPIOï¿½ï¿½Ê¼ï¿½ï¿½	 
+	control_mode_select();							//ï¿½ï¿½ï¿½Å¿ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½
+	screen_init();									//ï¿½ï¿½Ä»ï¿½ï¿½ï¿½Ý³ï¿½Ê¼ï¿½ï¿½
 	
 }
 
@@ -225,39 +224,39 @@ void System_Init(void)
 
 
 /**
-* @brief ÊäÈë¼Ä´æÆ÷´¦Àíº¯Êý£¬ÊäÈë¼Ä´æÆ÷¿É¶Á£¬µ«²»¿ÉÐ´¡£
-* @param pucRegBuffer ·µ»ØÊý¾ÝÖ¸Õë
-* usAddress ¼Ä´æÆ÷ÆðÊ¼µØÖ·
-* usNRegs ¼Ä´æÆ÷³¤¶È
-* @retval eStatus ¼Ä´æÆ÷×´Ì¬
+* @brief ï¿½ï¿½ï¿½ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä´ï¿½ï¿½ï¿½ï¿½É¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½
+* @param pucRegBuffer ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
+* usAddress ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½Ö·
+* usNRegs ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+* @retval eStatus ï¿½Ä´ï¿½ï¿½ï¿½×´Ì¬
 */
 eMBErrorCode
 eMBRegInputCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs )
 {
     eMBErrorCode    eStatus = MB_ENOERR;
    	int16_t iRegIndex;
-	/*²éÑ¯ÊÇ·ñÔÚ¼Ä´æÆ÷·¶Î§ÄÚ.ÎªÁË±ÜÃâ¾¯¸æ£¬ÐÞ¸ÄÎªÓÐ·ûºÅÕûÊý*/
+	/*ï¿½ï¿½Ñ¯ï¿½Ç·ï¿½ï¿½Ú¼Ä´ï¿½ï¿½ï¿½ï¿½ï¿½Î§ï¿½ï¿½.Îªï¿½Ë±ï¿½ï¿½â¾¯ï¿½æ£¬ï¿½Þ¸ï¿½Îªï¿½Ð·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
 	if( ( (int16_t)usAddress >= REG_INPUT_START ) \
 	&& ( usAddress + usNRegs <= REG_INPUT_START + REG_INPUT_NREGS ) )
 	{
-		/*»ñµÃ²Ù×÷Æ«ÒÆÁ¿£¬±¾´Î²Ù×÷ÆðÊ¼µØÖ·-ÊäÈë¼Ä´æÆ÷µÄ³õÊ¼µØÖ·*/
+		/*ï¿½ï¿½Ã²ï¿½ï¿½ï¿½Æ«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î²ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½Ö·-ï¿½ï¿½ï¿½ï¿½Ä´ï¿½ï¿½ï¿½ï¿½Ä³ï¿½Ê¼ï¿½ï¿½Ö·*/
 		iRegIndex = ( int16_t )( usAddress - REG_INPUT_START );
 		
-		while( usNRegs > 0 )			//Öð¸ö¸³Öµ
+		while( usNRegs > 0 )			//ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
 		{
 			
-			*pucRegBuffer++ = ( uint8_t )( usRegInputBuf[iRegIndex] >> 8 );			//¸³Öµ¸ß×Ö½Ú
+			*pucRegBuffer++ = ( uint8_t )( usRegInputBuf[iRegIndex] >> 8 );			//ï¿½ï¿½Öµï¿½ï¿½ï¿½Ö½ï¿½
 			
-			*pucRegBuffer++ = ( uint8_t )( usRegInputBuf[iRegIndex] & 0xFF );		//¸³ÖµµÍ×Ö½Ú
+			*pucRegBuffer++ = ( uint8_t )( usRegInputBuf[iRegIndex] & 0xFF );		//ï¿½ï¿½Öµï¿½ï¿½ï¿½Ö½ï¿½
 			
-			iRegIndex++;		//Æ«ÒÆÁ¿Ôö¼Ó
+			iRegIndex++;		//Æ«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			
-			usNRegs--;			//±»²Ù×÷¼Ä´æÆ÷ÊýÁ¿µÝ¼õ
+			usNRegs--;			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¼ï¿½
 		}
 	}
 	else
 	{
-		eStatus = MB_ENOREG;		//·µ»Ø´íÎó×´Ì¬£¬ÎÞ¼Ä´æÆ÷ 
+		eStatus = MB_ENOREG;		//ï¿½ï¿½ï¿½Ø´ï¿½ï¿½ï¿½×´Ì¬ï¿½ï¿½ï¿½Þ¼Ä´ï¿½ï¿½ï¿½ 
 	}
     return eStatus;
 }
@@ -266,28 +265,28 @@ eMBRegInputCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs )
 
 
 /**
-* @brief ±£³Ö¼Ä´æÆ÷´¦Àíº¯Êý£¬±£³Ö¼Ä´æÆ÷¿É¶Á£¬¿É¶Á¿ÉÐ´
-* @param pucRegBuffer ¶Á²Ù×÷Ê±--·µ»ØÊý¾ÝÖ¸Õë£¬Ð´²Ù×÷Ê±--ÊäÈëÊý¾ÝÖ¸Õë
-* usAddress ¼Ä´æÆ÷ÆðÊ¼µØÖ·
-* usNRegs ¼Ä´æÆ÷³¤¶È
-* eMode ²Ù×÷·½Ê½£¬¶Á»òÕßÐ´
-* @retval eStatus ¼Ä´æÆ÷×´Ì¬
+* @brief ï¿½ï¿½ï¿½Ö¼Ä´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¼Ä´ï¿½ï¿½ï¿½ï¿½É¶ï¿½ï¿½ï¿½ï¿½É¶ï¿½ï¿½ï¿½Ð´
+* @param pucRegBuffer ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±--ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ë£¬Ð´ï¿½ï¿½ï¿½ï¿½Ê±--ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
+* usAddress ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½Ö·
+* usNRegs ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+* eMode ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð´
+* @retval eStatus ï¿½Ä´ï¿½ï¿½ï¿½×´Ì¬
 */
 eMBErrorCode
 eMBRegHoldingCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs,
                  eMBRegisterMode eMode )
 {
-	eMBErrorCode eStatus = MB_ENOERR;			//´íÎó×´Ì¬	
-	int16_t iRegIndex;							//Æ«ÒÆÁ¿
-	/*ÅÐ¶Ï¼Ä´æÆ÷ÊÇ²»ÊÇÔÚ·¶Î§ÄÚ*/
+	eMBErrorCode eStatus = MB_ENOERR;			//ï¿½ï¿½ï¿½ï¿½×´Ì¬	
+	int16_t iRegIndex;							//Æ«ï¿½ï¿½ï¿½ï¿½
+	/*ï¿½Ð¶Ï¼Ä´ï¿½ï¿½ï¿½ï¿½Ç²ï¿½ï¿½ï¿½ï¿½Ú·ï¿½Î§ï¿½ï¿½*/
 	if( ( (int16_t)usAddress >= REG_HOLDING_START ) \
 	&& ( usAddress + usNRegs <= REG_HOLDING_START + REG_HOLDING_NREGS ) )
 	{	
-		iRegIndex = ( int16_t )( usAddress - REG_HOLDING_START);   //¼ÆËãÆ«ÒÆÁ¿
+		iRegIndex = ( int16_t )( usAddress - REG_HOLDING_START);   //ï¿½ï¿½ï¿½ï¿½Æ«ï¿½ï¿½ï¿½ï¿½
 
 		switch ( eMode )
 		{	
-			case MB_REG_READ:			//¶Á´¦Àíº¯Êý 
+			case MB_REG_READ:			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
 				while( usNRegs > 0 )
 				{
 					*pucRegBuffer++ = ( uint8_t )( usRegHoldingBuf[iRegIndex] >> 8 );
@@ -296,7 +295,7 @@ eMBRegHoldingCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs,
 					usNRegs--;
 				}
 			break;
-			case MB_REG_WRITE:			//Ð´´¦Àíº¯Êý 
+			case MB_REG_WRITE:			//Ð´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
 				while( usNRegs > 0 )
 				{
 					usRegHoldingBuf[iRegIndex] = *pucRegBuffer++ << 8;
@@ -309,7 +308,7 @@ eMBRegHoldingCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs,
 	}
 	else
 	{
-		eStatus = MB_ENOREG;			//·µ»Ø´íÎó×´Ì¬
+		eStatus = MB_ENOREG;			//ï¿½ï¿½ï¿½Ø´ï¿½ï¿½ï¿½×´Ì¬
 	}
     return eStatus;
 }
@@ -317,12 +316,12 @@ eMBRegHoldingCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs,
 
 
 /**
-* @brief ÏßÈ¦¼Ä´æÆ÷´¦Àíº¯Êý£¬ÏßÈ¦¼Ä´æÆ÷¿É¶Á£¬¿É¶Á¿ÉÐ´
-* @param pucRegBuffer ¶Á²Ù×÷---·µ»ØÊý¾ÝÖ¸Õë£¬Ð´²Ù×÷--·µ»ØÊý¾ÝÖ¸Õë
-* usAddress ¼Ä´æÆ÷ÆðÊ¼µØÖ·
-* usNRegs ¼Ä´æÆ÷³¤¶È
-* eMode ²Ù×÷·½Ê½£¬¶Á»òÕßÐ´
-* @retval eStatus ¼Ä´æÆ÷×´Ì¬
+* @brief ï¿½ï¿½È¦ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¦ï¿½Ä´ï¿½ï¿½ï¿½ï¿½É¶ï¿½ï¿½ï¿½ï¿½É¶ï¿½ï¿½ï¿½Ð´
+* @param pucRegBuffer ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½---ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ë£¬Ð´ï¿½ï¿½ï¿½ï¿½--ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
+* usAddress ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½Ö·
+* usNRegs ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+* eMode ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð´
+* @retval eStatus ï¿½Ä´ï¿½ï¿½ï¿½×´Ì¬
 */
 
 eMBErrorCode
@@ -330,21 +329,21 @@ eMBRegCoilsCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNCoils,
                eMBRegisterMode eMode )
 {
 
-	eMBErrorCode eStatus = MB_ENOERR;		    	//´íÎó×´Ì¬
+	eMBErrorCode eStatus = MB_ENOERR;		    	//ï¿½ï¿½ï¿½ï¿½×´Ì¬
 
-	int16_t iNCoils = ( int16_t )usNCoils;			//¼Ä´æÆ÷¸öÊý
+	int16_t iNCoils = ( int16_t )usNCoils;			//ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	
-	int16_t usBitOffset;							//¼Ä´æÆ÷Æ«ÒÆÁ¿
+	int16_t usBitOffset;							//ï¿½Ä´ï¿½ï¿½ï¿½Æ«ï¿½ï¿½ï¿½ï¿½
 
-	/*¼ì²é¼Ä´æÆ÷ÊÇ·ñÔÚÖ¸¶¨·¶Î§ÄÚ*/
+	/*ï¿½ï¿½ï¿½Ä´ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½Î§ï¿½ï¿½*/
 	if( ( (int16_t)usAddress >= REG_COILS_START ) &&
 	( usAddress + usNCoils <= REG_COILS_START + REG_COILS_SIZE ) )
 	{
-		/*¼ÆËã¼Ä´æÆ÷Æ«ÒÆÁ¿*/
+		/*ï¿½ï¿½ï¿½ï¿½Ä´ï¿½ï¿½ï¿½Æ«ï¿½ï¿½ï¿½ï¿½*/
 		usBitOffset = ( int16_t )( usAddress - REG_COILS_START );
 		switch ( eMode )
 		{
-			case MB_REG_READ:								//¶Á²Ù×÷
+			case MB_REG_READ:								//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 				while( iNCoils > 0 )
 				{
 					*pucRegBuffer++ = xMBUtilGetBits( ucRegCoilsBuf, usBitOffset,
@@ -355,7 +354,7 @@ eMBRegCoilsCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNCoils,
 			break;
 
 	
-			case MB_REG_WRITE:								//Ð´²Ù×÷
+			case MB_REG_WRITE:								//Ð´ï¿½ï¿½ï¿½ï¿½
 				while( iNCoils > 0 )
 				{
 					xMBUtilSetBits( ucRegCoilsBuf, usBitOffset,
@@ -377,29 +376,29 @@ eMBRegCoilsCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNCoils,
 
 
 /**
-* @brief ¿ª¹ØÊäÈë¼Ä´æÆ÷´¦Àíº¯Êý£¬¿ª¹ØÊäÈë¼Ä´æÆ÷£¬¿É¶Á
-* @param pucRegBuffer ¶Á²Ù×÷---·µ»ØÊý¾ÝÖ¸Õë£¬Ð´²Ù×÷--·µ»ØÊý¾ÝÖ¸Õë
-* usAddress ¼Ä´æÆ÷ÆðÊ¼µØÖ·
-* usNRegs ¼Ä´æÆ÷³¤¶È
-* eMode ²Ù×÷·½Ê½£¬¶Á»òÕßÐ´
-* @retval eStatus ¼Ä´æÆ÷×´Ì¬
+* @brief ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É¶ï¿½
+* @param pucRegBuffer ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½---ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ë£¬Ð´ï¿½ï¿½ï¿½ï¿½--ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
+* usAddress ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½Ö·
+* usNRegs ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+* eMode ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð´
+* @retval eStatus ï¿½Ä´ï¿½ï¿½ï¿½×´Ì¬
 */
 
 eMBErrorCode
 eMBRegDiscreteCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNDiscrete )
 {
    
-	eMBErrorCode eStatus = MB_ENOERR;		 			//´íÎó×´Ì¬
+	eMBErrorCode eStatus = MB_ENOERR;		 			//ï¿½ï¿½ï¿½ï¿½×´Ì¬
 	
-	int16_t iNDiscrete = ( int16_t )usNDiscrete;		//²Ù×÷¼Ä´æÆ÷¸öÊý
+	int16_t iNDiscrete = ( int16_t )usNDiscrete;		//ï¿½ï¿½ï¿½ï¿½ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	
-	uint16_t usBitOffset;								//Æ«ÒÆÁ¿
+	uint16_t usBitOffset;								//Æ«ï¿½ï¿½ï¿½ï¿½
 
-	/*ÅÐ¶Ï¼Ä´æÆ÷Ê±ºòÔÙÖÆ¶¨·¶Î§ÄÚ*/
+	/*ï¿½Ð¶Ï¼Ä´ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½ï¿½ï¿½Î§ï¿½ï¿½*/
 	if( ( (int16_t)usAddress >= REG_DISCRETE_START ) &&
 	( usAddress + usNDiscrete <= REG_DISCRETE_START + REG_DISCRETE_SIZE ) )
 	{
-		/*»ñµÃÆ«ÒÆÁ¿*/
+		/*ï¿½ï¿½ï¿½Æ«ï¿½ï¿½ï¿½ï¿½*/
 		usBitOffset = ( uint16_t )( usAddress - REG_DISCRETE_START );
 
 		while( iNDiscrete > 0 )
