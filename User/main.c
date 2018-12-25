@@ -21,7 +21,7 @@
 
 uint16_t current_screen_id = 0;
 volatile uint32_t  timer_tick_count = 0; //��ʱ������
-volatile uint32_t t_thread500=0;
+
 extern uint16_t ADC_ConvertedValue[ADC_NOFCHANEL];
 
 extern dev_info_t dev_info;
@@ -30,6 +30,7 @@ extern uint8_t cmd_buffer[CMD_MAX_SIZE];		//ָ���
 extern uint8_t press_flag;
 extern MainShowTextValue	showtextvalue;	//��ҳ���ı��ؼ�����ֵ
 int runstatus=2;
+int runstatus_last=0;
 int debuginfo=0;
 extern arm_pid_instance_f32 PID;
 /* ----------------------- Defines ------------------------------------------*/
@@ -71,7 +72,9 @@ int main( void )
 	uint16_t pwmOut=0;
 	int AutoTuningDone=0;
 	struct AutoTuningParamStruct autoTuneParam;
-	long t_thread100=0;
+	volatile uint32_t t_thread100=0;
+	volatile uint32_t t_thread500=0;
+	volatile uint32_t t_thread3s=0;
 	uint16_t Ktemperature = 0;
   eMBErrorCode    eStatus;
 	qsize  size = 0;
@@ -103,6 +106,11 @@ int main( void )
 		if(getMsCounter()-t_thread500>500)
 		{
 			t_thread500=getMsCounter();
+			if(runstatus>0&&runstatus_last==0)
+			{
+				PIDInit(PIDKP,PIDKI,PIDKD,SetPoint);
+				runstatus_last=runstatus;
+			}
 		//	printf("global T:%d", t_thread500);
 			Ktemperature=Max6675_Read_Tem();
 			temperRaw=Ktemperature*0.25;
@@ -128,8 +136,7 @@ int main( void )
 				pwmOut=autoTuning(error,NULL,&autoTuneParam);
 				if(autoTuneParam.f_autoTuningDone)
 				{//auto tune finished
-					runstatus=4;
-					
+					runstatus=0;
 					//new parameters,should stop and re-run process
 					printf("auto tune status:%d",autoTuneParam.AutoTuneStatus);
 					if(autoTuneParam.AutoTuneStatus>0)
@@ -147,8 +154,7 @@ int main( void )
 					{
 						//autotune failed
 					}
-					SetPwmValue(0);
-					runstatus=0;
+					
 					while(1)
 					{
 					}
@@ -162,6 +168,12 @@ int main( void )
 			if(runstatus>0)//start heating
 			{
 				SetPwmValue(pwmOut);
+				HEAT_ON;
+			}
+			else//(runstatus==0)
+			{
+				SetPwmValue(0);
+				HEAT_OFF;
 			}
 		}
 		#endif
@@ -169,18 +181,25 @@ int main( void )
 		{
 			timer_tick_count = getMsCounter();
 			ReadRtcTime();		
-			start_endtime_set();							//��ʼ����ʱ������
-			temp_detection(temperFilter);					//�¶Ȳ���
+			start_endtime_set();							
+			temp_detection(temperFilter);				
 			if(press_flag)
 			{
-				get_combo_button_times();					//������ť��ת���溯��
+				get_combo_button_times();					
 				touchtimes.self_check_times = 0;
 				touchtimes.menu_click_times = 0;
 				press_flag = 0;
 			}
 				
-			temp_curve_save();								//�¶����ߴ洢	
-			Check_All_Status();			
+			temp_curve_save();								
+			Check_All_Status();	
+		}
+		if(getMsCounter() - t_thread3s > 3000)
+		{
+			t_thread3s = getMsCounter();
+			//3s thread
+			//add status and relay control here.
+			
 		}
 			device_timing_selfcheck();
     }

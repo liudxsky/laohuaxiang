@@ -450,25 +450,23 @@ void NotifyButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 				}
 				break;
 			case BIG_START_OR_PAUSE_ID:
-				if(state)	
-				{		
-//					Pwm_Output(ENABLE);
-					runstatus = 1;				//��	
-					warmflag = 1;
-//					PIDInit(dev_info.pidvalue.PID_P,dev_info.pidvalue.PID_I,dev_info.pidvalue.PID_D,showtextvalue.setting_temp);
-					HEAT_ON;
-					//��ʾ������ͼ��
-					AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_HEAT_SWITCH_ID,SHOW);
-				}
-				else
+				if(runstatus>0)
 				{
-//					Pwm_Output(DISABLE);
-					HEAT_OFF;
+					runstatus=0;
+					SetPwmValue(0);
 					runstatus = 0;			//ֹͣ
 					warmflag = 0;
 					//��ʾ������ͼ����ʧ
 					AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_HEAT_SWITCH_ID,HIDE);
 				}
+				else
+				{
+					runstatus = 1;				//��	
+					warmflag = 1;
+					//��ʾ������ͼ��
+					AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_HEAT_SWITCH_ID,SHOW);
+				}
+			
 				break;
 			default:
 				break;
