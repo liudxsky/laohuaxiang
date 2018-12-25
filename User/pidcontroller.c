@@ -1,14 +1,14 @@
 #include "pidcontroller.h"
+#define AutoTuneOutput 500
 
 int AutoTuneStatus=0;
 unsigned long cyclecnt=0;
-int f_autoTuning=0;
 int tbuffidx=0;
 unsigned long sptime[20]={0};
 int cycles[20]={0};
 float m_max=0,m_min=0;
 unsigned long t_adjTemp=0;
-int AutoTuneOutput=500;
+
 struct AutoTuningParamStruct autoTuningParam;
 float temperbuff[T_BUFFLEN];
 float outputF32[T_BUFFLEN];
@@ -66,7 +66,7 @@ const float32_t firCoeffs32[NUM_TAPS] = {
 	f_errorreset=1;
 	return 1;
 }
-double pidCalc(float e)
+uint16_t pidCalc(float e)
 {
 	float errorNow=e;
 	float  duty=0;
@@ -114,7 +114,8 @@ double pidCalc(float e)
 	{
 		duty=PWMOUTLIMIT;
 	}
-	return duty;
+	
+	return (uint16_t)duty;
 }
 float getFilterTemper(float in)
 {
@@ -194,17 +195,18 @@ float adj_display(float in_temp,float sp,struct AutoTuningParamStruct* PIDadj)
 	return rst;
 }
 */
-int autoTuning(float errornow,int * pwm_out,struct AutoTuningParamStruct* ats)
+uint16_t autoTuning(float errornow,int * pwm_out,struct AutoTuningParamStruct* ats)
 {
-	int i=1;
-	int out=0;
+	uint16_t out=0;
+	int i=1;	
 	int pc_auto=0;
-	
+	float calctemp;
 	int f_autoTuning=ats->f_autoTuning;
 	if(!f_autoTuning)
 		return 0;
 	autoTuningParam.elapse_time++;
-	if(f_autoTuning&&errornow<10)
+	
+	if(f_autoTuning&&errornow<13)
 	{
 		if(errornow>0)
 		{
@@ -215,7 +217,7 @@ int autoTuning(float errornow,int * pwm_out,struct AutoTuningParamStruct* ats)
 		{
 			out=0;
 		}
-//			if(debuginfo)
+//		if(debuginfo)
 //		{
 //			printf("autotune out :%d\n",out);
 //		}
@@ -224,10 +226,10 @@ int autoTuning(float errornow,int * pwm_out,struct AutoTuningParamStruct* ats)
 			//
 			if(tbuffidx>0&&((autoTuningParam.elapse_time)-sptime[tbuffidx-1]>(CycleLimit*60*2)))
 			{
-//					if(debuginfo)
-//				{
-//					printf("elapse:%d,sptime:%d, idx: %d\n",autoTuningParam.elapse_time,sptime[tbuffidx-1],tbuffidx);
-//				}
+//			if(debuginfo)
+//			{
+//				printf("elapse:%d,sptime:%d, idx: %d\n",autoTuningParam.elapse_time,sptime[tbuffidx-1],tbuffidx);
+//			}
 				sptime[tbuffidx]=autoTuningParam.elapse_time;
 				tbuffidx++;
 			}
@@ -237,7 +239,7 @@ int autoTuning(float errornow,int * pwm_out,struct AutoTuningParamStruct* ats)
 				tbuffidx++;
 			}
 		}
-		if(tbuffidx>0)
+		if(tbuffidx>1)
 		{
 			if(errornow<-0.2)//y-sp>0.2, sp-y<-0.2
 			{
@@ -272,7 +274,9 @@ int autoTuning(float errornow,int * pwm_out,struct AutoTuningParamStruct* ats)
 			}
 			
 			
-			arm_mean_q31(cycles,i,&pc_auto);//q31,int compare
+			arm_mean_q31(cycles,i-1,&pc_auto);//q31,int compare
+			calctemp=pc_auto;
+			pc_auto=(int)calctemp*Ts;
 			autoTuningParam.pc_auto=pc_auto;
 			
 			autoTuningParam.a=(fabs(m_max)+fabs(m_min))/2;
@@ -286,9 +290,11 @@ int autoTuning(float errornow,int * pwm_out,struct AutoTuningParamStruct* ats)
 			autoTuningParam.Kp_auto=autoTuningParam.kc_auto*autoTuningParam.kpadj;
 			autoTuningParam.Ki_auto=autoTuningParam.Kp_auto*Ts/autoTuningParam.Ti_auto*autoTuningParam.kiadj;
 			autoTuningParam.Kd_auto=autoTuningParam.Kp_auto*autoTuningParam.Td_auto/Ts*autoTuningParam.kdadj;
+			
 			f_autoTuning=0;
 			autoTuningParam.f_autoTuning=0;
 			autoTuningParam.f_autoTuningDone=1;
+			autoTuningParam.AutoTuneStatus=1;
 			memcpy(ats,&autoTuningParam,sizeof(autoTuningParam));
 			
 			printf("cycles:");
@@ -298,30 +304,33 @@ int autoTuning(float errornow,int * pwm_out,struct AutoTuningParamStruct* ats)
 		}
 		printf("\n");
 		
-		printf("Kc:%f,Pc:%d\n,",autoTuningParam.kc_auto,pc_auto);
+		printf("Kc:%f,Pc:%d\n,",autoTuningParam.kc_auto,autoTuningParam.pc_auto);
 		
 		goto FINISH;
 		}
 			
 	}
-	else if(f_autoTuning&&errornow>10)
+
+	 if(f_autoTuning&&errornow>10)
 	{
 		out=1000;
+		
 		if(AutoTuneStatus==1)
 		{
 			if(tbuffidx<4)
 			{
 				autoTuningParam.AutoTuneStatus=-2;
-				AutoTuneOutput=AutoTuneOutput+100;
+				//AutoTuneOutput=AutoTuneOutput+100;
 			}
 			else
 			{
 				autoTuningParam.AutoTuneStatus=-3;
-				AutoTuneOutput=AutoTuneOutput-100;
+				//AutoTuneOutput=AutoTuneOutput-100;
 			}
 		}
+		
 	}
-	if(autoTuningParam.elapse_time>(5*60*60/Ts))
+	if(autoTuningParam.elapse_time>AUTOTUNE_TIMEOUT)
 	{//time out, 5 hours
 		AutoTuneStatus=-4;
 		autoTuningParam.f_autoTuningDone=1;
@@ -330,8 +339,8 @@ int autoTuning(float errornow,int * pwm_out,struct AutoTuningParamStruct* ats)
 		printf("autotune -4\n");
 		goto FINISH;
 	}
-	*pwm_out=out;
-	return 1;
+	
+	return out;
 	
 FINISH:
 	printf("max:%f,min:%f\n",m_max,m_min);
@@ -344,5 +353,6 @@ FINISH:
 		printf("\n");
 		printf("e_time:%d\n",autoTuningParam.elapse_time);
 	
-	return 2;
+	return 0;
+
 }

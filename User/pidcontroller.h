@@ -12,7 +12,7 @@
 #define NUM_TAPS      65
 #define CycleLimit 3 //each period should be larger than 5 mins
 #define Ts 0.5 //sample time
-
+#define AUTOTUNE_TIMEOUT (5*60*60*2)
 
 
 
@@ -42,6 +42,6 @@ struct AutoTuningParamStruct
 };
 
 int PIDInit(float kp,float ki, float kd,float sp);
-double pidCalc(float e);
+uint16_t pidCalc(float e);
 float getFilterTemper(float in);
-int autoTuning(float errornow,int * pwm_out,struct AutoTuningParamStruct* ats);
+uint16_t autoTuning(float errornow,int * pwm_out,struct AutoTuningParamStruct* ats);

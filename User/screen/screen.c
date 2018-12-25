@@ -1256,11 +1256,11 @@ void startscreen(void)
 
 void check_pidstatus(void)
 {
-	if(runstatus)
+	if(runstatus==3)
 	{		
 		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_PID_RUN_ID,SHOW);
 	}
-	else
+	if(runstatus==4)
 	{
 		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_PID_RUN_ID,HIDE);
 	}

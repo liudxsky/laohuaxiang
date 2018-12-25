@@ -19,13 +19,16 @@ extern dev_info_t dev_info;
   */
 void SetPwmValue(int a)
 {
-	if(a>dev_info.pwmscope)
-		a=dev_info.pwmscope;
-	if(a<0)
-		a=0;
-	dev_info.pwmvalue=a;
 	
-	TIM_PWMOUTPUT_Config();
+	
+if(a>dev_info.pwmscope)
+	a=dev_info.pwmscope;
+if(a<0)
+	a=0;
+dev_info.pwmvalue=a;
+TIM_SetCompare1(TIM1,dev_info.pwmscope-dev_info.pwmvalue);
+//TIM_PWMOUTPUT_Config();
+
 }
 void SetPwmScope(int a)
 {

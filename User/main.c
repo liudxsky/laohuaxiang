@@ -24,13 +24,13 @@ volatile uint32_t  timer_tick_count = 0; //��ʱ������
 volatile uint32_t t_thread500=0;
 extern uint16_t ADC_ConvertedValue[ADC_NOFCHANEL];
 
-
+extern dev_info_t dev_info;
 extern RtcTime rtctime;
 extern uint8_t cmd_buffer[CMD_MAX_SIZE];		//ָ���
 extern uint8_t press_flag;
 extern MainShowTextValue	showtextvalue;	//��ҳ���ı��ؼ�����ֵ
-int runstatus=0;
-int debuginfo=1;
+int runstatus=2;
+int debuginfo=0;
 extern arm_pid_instance_f32 PID;
 /* ----------------------- Defines ------------------------------------------*/
 
@@ -56,7 +56,6 @@ extern  uint32_t password1;
 extern uint32_t password2;
 extern float adjusttemp;
 extern Touch_Times touchtimes;
-
 extern MainShowTextValue showtextvalue;	//��ҳ���ı��ؼ�����ֵ
 float temper_usart;
 
@@ -67,9 +66,9 @@ int main( void )
 {
 	float temperFilter=0;
 	float temperRaw=0;
-	float SetPoint=100;
+	float SetPoint=150;
 	float error=0;
-	int pwmOut=0;
+	uint16_t pwmOut=0;
 	int AutoTuningDone=0;
 	struct AutoTuningParamStruct autoTuneParam;
 	long t_thread100=0;
@@ -85,7 +84,7 @@ int main( void )
 	
 	startscreen();												//start screen
 	//SetPoint=showtextvalue.setting_temp;
-//	PIDInit(PIDKP,PIDKI,PIDKD,SetPoint);//need to be reset after chage setpoint
+	PIDInit(PIDKP,PIDKI,PIDKD,SetPoint);//need to be reset after chage setpoint
 
 	while(1)
     {
@@ -109,23 +108,28 @@ int main( void )
 			temperRaw=Ktemperature*0.25;
 			//SetPoint=100;
 			temperFilter=getFilterTemper(temperRaw);
-//			printf("%f\n",temperFilter);
+			printf("%f\n",temperFilter);
 			//temperFilter=temper_usart;
 			error=SetPoint-temperFilter;
-			if(debuginfo)
+//			if(debuginfo)
 //			printf("Setpoint:%.2lf\n",SetPoint);
 			//use button to change status
+			if(runstatus==1)
+			{
+				pwmOut=pidCalc(error);
+			}
 			if(runstatus==2) //button event to set tuning flag
 			{
 				autoTuneParam.f_autoTuning=1;
 				runstatus=3;
 			}
-			if(autoTuneParam.f_autoTuning)//(autoTuning(error,&pwmOut,&autoTuneParam))
+			if(autoTuneParam.f_autoTuning)
 			{
-				autoTuning(error,&pwmOut,&autoTuneParam);
+				pwmOut=autoTuning(error,NULL,&autoTuneParam);
 				if(autoTuneParam.f_autoTuningDone)
-				{
-					//auto tune finished
+				{//auto tune finished
+					runstatus=4;
+					
 					//new parameters,should stop and re-run process
 					printf("auto tune status:%d",autoTuneParam.AutoTuneStatus);
 					if(autoTuneParam.AutoTuneStatus>0)
@@ -134,7 +138,10 @@ int main( void )
 						PID.Kp=autoTuneParam.Kp_auto;
 						PID.Ki=autoTuneParam.Ki_auto;
 						PID.Kd=autoTuneParam.Kd_auto;
-//						printf("Kp:%f,Ki:%f,Kd%f\n",PID.Kp,PID.Ki,PID.Kd);
+						dev_info.pidvalue.PID_P=autoTuneParam.Kp_auto;
+						dev_info.pidvalue.PID_I=autoTuneParam.Ki_auto;
+						dev_info.pidvalue.PID_D=autoTuneParam.Kd_auto;
+						printf("Kp:%f,Ki:%f,Kd%f\n",PID.Kp,PID.Ki,PID.Kd);
 					}
 					else
 					{
@@ -142,16 +149,16 @@ int main( void )
 					}
 					SetPwmValue(0);
 					runstatus=0;
+					while(1)
+					{
+					}
 				}
 				else
 				{
 					//auto-tuning still runing 
 				}
 			}
-			else//normal pid runing
-			{
-				pwmOut=pidCalc(error);
-			}
+
 			if(runstatus>0)//start heating
 			{
 				SetPwmValue(pwmOut);

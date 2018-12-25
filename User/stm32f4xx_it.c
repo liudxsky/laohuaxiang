@@ -188,6 +188,7 @@ extern MainShowTextValue showtextvalue;	//主页面文本控件缓存值
 extern int runstatus;//0 stop, 1 start, 2, autotune
 extern int debuginfo;
 extern float temper_usart;
+const int dstlen=32;
 const uart_cmd_t uart_cmd[] = 
 {
 	{"show_value", 10},
@@ -205,7 +206,7 @@ const uart_cmd_t uart_cmd[] =
 void RS232_USART_IRQHandler(void)
 {
 	
-	char dst_vale[5];
+	char dst_vale[dstlen];
 	char floatbuff[32];
 	uint8_t i = 0;
 	uint8_t index = 0;
@@ -225,19 +226,19 @@ void RS232_USART_IRQHandler(void)
 			if(strstr((char *)RxBuffer,uart_cmd[SET_PWMSCOPE].cmd)) 	
 			{					
 				index = uart_cmd[SET_PWMSCOPE].len;
-				memset((void *)dst_vale,0,5);
+				memset((void *)dst_vale,0,dstlen);
 				strncpy(dst_vale,(char *)&RxBuffer[index],RxCounter-index);
 				dev_info.valid_flag = true;
 				SetPwmScope(atoi(dst_vale));
 				//dev_info.pwmscope = atoi(dst_vale);
-//				FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
+				FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
 				//TIM_PWMOUTPUT_Config();
 				printf("\r\ncurrent PWM Scope is  0 -- %d \r\n",dev_info.pwmscope);
 			}
 			else if(strstr((char *)RxBuffer,uart_cmd[SET_PWMVLAUE].cmd)) 	
 			{					
 				index = uart_cmd[SET_PWMVLAUE].len;
-				memset((void *)dst_vale,0,5);
+				memset((void *)dst_vale,0,dstlen);
 				strncpy(dst_vale,(char *)&RxBuffer[index],RxCounter-index);
 				dev_info.valid_flag = true;
 				SetPwmValue(atoi(dst_vale));
@@ -250,7 +251,7 @@ void RS232_USART_IRQHandler(void)
 			else if(strstr((char *)RxBuffer,uart_cmd[SET_ANGLE].cmd)) 	
 			{					
 				index = uart_cmd[SET_ANGLE].len;
-				memset((void *)dst_vale,0,5);
+				memset((void *)dst_vale,0,dstlen);
 				strncpy(dst_vale,(char *)&RxBuffer[index],RxCounter-index);
 				dev_info.valid_flag = true;
 				dev_info.airvalveangle = atoi(dst_vale);
@@ -281,21 +282,22 @@ void RS232_USART_IRQHandler(void)
 			else if(strstr((char *)RxBuffer,uart_cmd[RUN].cmd))
 			{
 				index = uart_cmd[RUN].len;
-				memset((void *)dst_vale,0,5);
+				memset((void *)dst_vale,0,dstlen);
 				strncpy(dst_vale,(char *)&RxBuffer[index],RxCounter-index);
+				dev_info.valid_flag = true;
 				runstatus=atoi(dst_vale);
 			}
 			else if(strstr((char *)RxBuffer,uart_cmd[DEBUG].cmd))
 			{
 				index = uart_cmd[DEBUG].len;
-				memset((void *)dst_vale,0,5);
+				memset((void *)dst_vale,0,dstlen);
 				strncpy(dst_vale,(char *)&RxBuffer[index],RxCounter-index);
 				debuginfo=atoi(dst_vale);
 			}
 			else if(strstr((char *)RxBuffer,uart_cmd[SETPOINT].cmd))
 			{
 				index = uart_cmd[SETPOINT].len;
-				memset((void *)dst_vale,0,5);
+				memset((void *)dst_vale,0,dstlen);
 				strncpy(dst_vale,(char *)&RxBuffer[index],RxCounter-index);
 				showtextvalue.setting_temp=atoi(dst_vale);
 			}
