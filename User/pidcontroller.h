@@ -3,9 +3,9 @@
 #include "string.h"
 #include "stdlib.h"
 //#define FromUart
-#define PIDKP 38//sp100->25
-#define PIDKI 0.01
-#define PIDKD 29809
+#define PIDKP 25//sp100->25
+#define PIDKI 0.005
+#define PIDKD 26809
 #define T_BUFFLEN 64
 #define BLOCK_SIZE T_BUFFLEN
 #define PWMOUTLIMIT 1000
@@ -14,8 +14,7 @@
 #define Ts 0.5 //sample time
 #define AUTOTUNE_TIMEOUT (5*60*60*2)
 
-
-
+	
 struct AutoTuningParamStruct
 {
 	float a;
@@ -40,7 +39,7 @@ struct AutoTuningParamStruct
 	unsigned long elapse_time;
 	int AutoTuneStatus;
 };
-
+void pidSPinit();
 int PIDInit(float kp,float ki, float kd,float sp);
 uint16_t pidCalc(float e);
 float getFilterTemper(float in);

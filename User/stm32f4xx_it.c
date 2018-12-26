@@ -254,11 +254,11 @@ void RS232_USART_IRQHandler(void)
 				memset((void *)dst_vale,0,dstlen);
 				strncpy(dst_vale,(char *)&RxBuffer[index],RxCounter-index);
 				dev_info.valid_flag = true;
-				dev_info.airvalveangle = atoi(dst_vale);
+				dev_info.flash_setvalue.air_door_angle = atoi(dst_vale);
 //				FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));		
-				printf("\r\n\r\nair valve angle value is set: \r\n------dec: %d\r\n------hex: 0x%x\r\n",dev_info.airvalveangle,dev_info.airvalveangle);
-				printf("\r\n\r\nback value  is : %04x  %d\r\n",dev_info.airvalveangle,dev_info.airvalveangle);
-				Dac1_Set_Vol(dev_info.airvalveangle);
+				printf("\r\n\r\nair valve angle value is set: \r\n------dec: %d\r\n------hex: 0x%x\r\n",dev_info.flash_setvalue.air_door_angle,dev_info.flash_setvalue.air_door_angle);
+				printf("\r\n\r\nback value  is : %04x  %d\r\n",dev_info.flash_setvalue.air_door_angle,dev_info.flash_setvalue.air_door_angle);
+				Dac1_Set_Vol(dev_info.flash_setvalue.air_door_angle);
 			}
 			else if(strstr((char *)RxBuffer,uart_cmd[SHOWVALUE].cmd))			//显示当前设备存储值
 			{		
@@ -267,8 +267,8 @@ void RS232_USART_IRQHandler(void)
 				printf("\r\ncurrent PWM Scope is  0 -- %d \r\n",dev_info.pwmscope);
 				printf("\r\ncurrent PWM Value is %d \r\n",dev_info.pwmvalue);	
 				printf("\r\n\r\ncurrent temperature is :%.2lf\r\n",showtextvalue.current_temp_vlaue);
-				printf("\r\n\r\ncurrent air valve angle value is set: \r\n------dec: %d\r\n------hex: 0x%x\r\n",dev_info.airvalveangle,dev_info.airvalveangle);
-				printf("\r\n\r\ncurrent back value  is : %04x  %d\r\n",dev_info.airvalveangle,dev_info.airvalveangle);
+				printf("\r\n\r\ncurrent air valve angle value is set: \r\n------dec: %d\r\n------hex: 0x%x\r\n",dev_info.flash_setvalue.air_door_angle,dev_info.flash_setvalue.air_door_angle);
+				printf("\r\n\r\ncurrent back value  is : %04x  %d\r\n",dev_info.flash_setvalue.air_door_angle,dev_info.flash_setvalue.air_door_angle);
 			}
 			else if(strstr((char *)RxBuffer,uart_cmd[HELP].cmd))				//帮助说明
 			{
@@ -284,7 +284,6 @@ void RS232_USART_IRQHandler(void)
 				index = uart_cmd[RUN].len;
 				memset((void *)dst_vale,0,dstlen);
 				strncpy(dst_vale,(char *)&RxBuffer[index],RxCounter-index);
-				dev_info.valid_flag = true;
 				runstatus=atoi(dst_vale);
 			}
 			else if(strstr((char *)RxBuffer,uart_cmd[DEBUG].cmd))

@@ -9,24 +9,33 @@
 #define PASSWORDLEN			4
 
 
+#define HMAC_LENGTH 		20
+#define PLAINTEXT_LENGTH    64
+
+
 #pragma pack(push)
 #pragma pack(1)						//按字节对齐
 
 
 typedef struct
 {
-	uint16_t valid_flag;    			//有效标志位
-	uint16_t pwmscope;					//pwm输出范围
-	uint16_t pwmvalue;					//pwm控制温度值
-	uint16_t airvalveangle; 			//风阀角度值
-	uint8_t  change_air_time[19];		//风门角度换气次数
-	uint8_t  biglanguagestatus;			//语言选择
-	float testtime;						//实验时间
-	float testtemp;						//实验温度
-	Pid_Value pidvalue;					//pid值
-	CoilValue flash_setvalue;			//参数设置
-	AutoNoPowerTime autonopowertime;	//自动断电时间
+	uint16_t valid_flag;    							//有效标志位
+	uint16_t pwmscope;									//pwm输出范围
+	uint16_t pwmvalue;									//pwm控制温度值
+	uint8_t  change_air_time[19];						//风门角度换气次数
+	uint8_t  biglanguagestatus;							//语言选择
+	float testtime;										//实验时间
+	float testtemp;										//实验温度
+	uint32_t  addup_testtime;							//累计试验时间
+	Pid_Value pidvalue;									//pid值
+	CoilValue flash_setvalue;							//参数设置
+	AutoNoPowerTime autonopowertime;					//自动断电时间
+	uint8_t autonopower_password[PASSWORDLENGTH];		//自动断电密码
 }dev_info_t;
+
+typedef enum {FAILED = 0, PASSED = !FAILED} TestStatus;
+
+
 
 
 #pragma pack(pop)
@@ -46,6 +55,21 @@ void  encryp_password(void);
 //uint16_t encry_password2(void);
 
 
+int32_t STM32_SHA1_HMAC_Compute(uint8_t* InputMessage,
+                          uint32_t InputMessageLength,
+                          uint8_t *HMAC_key,
+                          uint32_t HMAC_keyLength,
+                          uint8_t *MessageDigest,
+                          int32_t* MessageDigestLength);
 
-                                                
+TestStatus Buffercmp(const uint8_t* pBuffer, uint8_t* pBuffer1, uint16_t BufferLength);
+
+
+void testpassword(void);
+
+
+
+
+
+
 #endif

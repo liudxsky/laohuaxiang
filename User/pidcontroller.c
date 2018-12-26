@@ -22,6 +22,7 @@ arm_pid_instance_f32 PID;
 extern int debuginfo;
 arm_fir_instance_f32 S;
 static	float32_t firStateF32[BLOCK_SIZE + NUM_TAPS - 1];
+struct AutoTuningParamStruct pidSP[3];
 
 //const float32_t firCoeffs32[NUM_TAPS] = {
 //0.001152,0.001879,0.003375,0.006014,0.010080,0.015708,0.022854,0.031277,0.040550,0.050093,0.059231,0.067262,0.073539,0.077533,0.078904,0.077533,0.073539,0.067262,0.059231,0.050093,0.040550,0.031277,0.022854,0.015708,0.010080,0.006014,0.003375,0.001879,0.001152};
@@ -43,12 +44,33 @@ const float32_t firCoeffs32[NUM_TAPS] = {
 	-0.002788,-0.002340,-0.001888,-0.001467,
 	-0.001100,-0.000796,-0.000552,-0.000358,-0.000197
 };
+void pidSPinit()
+{
+	pidSP[0].Kp_auto=25;
+	pidSP[0].Ki_auto=0.005;
+	pidSP[0].Kd_auto=26809;
+	pidSP[0].SetPoint=100;
+	pidSP[0].kiadj=5;//integral time;
+	
+	pidSP[1].Kp_auto=38;
+	pidSP[1].Ki_auto=0.01;
+	pidSP[1].Kd_auto=29809;
+	pidSP[1].SetPoint=200;
+	pidSP[1].kiadj=10;//integral time;
+	
+	pidSP[2].Kp_auto=38.5;
+	pidSP[2].Ki_auto=0.01;
+	pidSP[2].Kd_auto=39697;
+	pidSP[2].SetPoint=300;
+	pidSP[2].kiadj=10;//integral time;
+}
  int PIDInit(float kp,float ki, float kd,float sp)
 {
 
 	PID.Kp=kp;
 	PID.Ki=ki;
 	PID.Kd=kd;
+
 	arm_pid_init_f32(&PID, 1);
 	errorSum=0;
 	errorLast=0;
@@ -286,7 +308,8 @@ uint16_t autoTuning(float errornow,int * pwm_out,struct AutoTuningParamStruct* a
 			
 			autoTuningParam.Ti_auto=0.5*pc_auto;
 			autoTuningParam.Td_auto=0.3*pc_auto;
-			
+			autoTuningParam.kiadj=0.5;
+			autoTuningParam.kdadj=0.7;
 			autoTuningParam.Kp_auto=autoTuningParam.kc_auto*autoTuningParam.kpadj;
 			autoTuningParam.Ki_auto=autoTuningParam.Kp_auto*Ts/autoTuningParam.Ti_auto*autoTuningParam.kiadj;
 			autoTuningParam.Kd_auto=autoTuningParam.Kp_auto*autoTuningParam.Td_auto/Ts*autoTuningParam.kdadj;

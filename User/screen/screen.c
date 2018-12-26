@@ -14,13 +14,12 @@
 
 uint8_t  soft_ver[10] = "Ver:1.0";
 
-uint16_t warmflag = 0;					//��ʼ���ȱ�־
-uint8_t lefttimeflag = 0;				//ʣ��ʱ������ʶ��
-uint8_t SCREENSIZE = 1;					//��Ļ���Ա�ʶ��1Ϊ���ģ�0ΪӢ��
-uint8_t cmd_buffer[CMD_MAX_SIZE];		//ָ���
-uint8_t press_flag = 0,touch_flag = 0;	//���������״̬��־
-uint8_t change_air_time[19] = {0};
-//static char Month[12][4] = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
+uint16_t warmflag = 0;					//开始加热标志
+uint8_t lefttimeflag = 0;				//剩余时间计算标识符
+uint8_t SCREENLANGUAGE = 1;					//屏幕语言标识，1为中文，0为英文
+uint8_t cmd_buffer[CMD_MAX_SIZE];		//指令缓存
+uint8_t press_flag = 0,touch_flag = 0;	//点击和连击状态标志
+uint8_t change_air_time[CHANGE_AIR_SIZE] = {0};
 uint32_t  timercount = 0;
 
 
@@ -34,19 +33,19 @@ extern uint16_t gpiostatus;
 extern uint8_t thermocouple_flag;
 extern int runstatus;
 
-uint8_t slidervalue = 0;			//����������ֵ
-uint16_t autonopowerpassword = 0;	//�Զ��ϵ�ָ�����
+uint8_t slidervalue = 0;			//滑动进度条值
+uint8_t autonopowerpassword[PASSWORDLENGTH] = {0};	//自动断电恢复密码
 
 
 ID_Table idtable;					//screen size id 
-float adjusttemp = 0;				//�¶�ֵУ��
-RtcTime rtctime;					//RTC����ʱ��
-AutoNoPowerTime  nopowertime;		//�Զ��ϵ�ʱ��	
+float adjusttemp = 0;				//温度值校正
+RtcTime rtctime;					//RTC控制时间
+AutoNoPowerTime  nopowertime;		//自动断电时间	
 
-PCTRL_MSG msg;						//������������Ϣ
-TextValueTab  textvalue;			//�ı��ؼ�����ֵ
-MainShowTextValue	showtextvalue;	//��ҳ���ı��ؼ�����ֵ
-CoilValue  coilvalue;				//���ý���ֵ
+PCTRL_MSG msg;						//串口屏发送信息
+TextValueTab  textvalue;			//文本控件保存值
+MainShowTextValue	showtextvalue;	//主页面文本控件缓存值
+CoilValue  coilvalue;				//设置界面值
 
 Touch_Coord touch_press,touch_up;
 
@@ -54,36 +53,33 @@ Touch_Times touchtimes = {0,0};	//button is pressed times
 
 
 
-BIG_SCREEN_ID_TAB bigchinese_screen = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19};
-BIG_SCREEN_ID_TAB bigenglish_screen = {20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39};
+BIG_SCREEN_ID_TAB bigchinese_screen = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18};
+BIG_SCREEN_ID_TAB bigenglish_screen = {19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37};
 BIG_SCREEN_ID_TAB biglanguage_screen = {0};
 
 
-SMALL_SCREEN_ID_TAB smallchinese_screen = {0,1,2,3,4,5,6,7,8,9,10,11,12,13};
-SMALL_SCREEN_ID_TAB smallenglish_screen = {0};
-SMALL_SCREEN_ID_TAB smalllanguage_screen = {0};
 
 
 
 void SetTextValueInt32(uint16_t screen_id, uint16_t control_id,int32_t value)
 {
 	char buffer[12] = {0};
-	sprintf(buffer,"%ld",value); //������ת��Ϊ�ַ���
+	sprintf(buffer,"%ld",value); //把整数转换为字符串
 	SetTextValue(screen_id,control_id,buffer);
 }
 
 void SetTextValueFloat(uint16_t screen_id, uint16_t control_id,float value)
 {
 	char buffer[12] = {0};
-	sprintf(buffer,"%.1f",value);//�Ѹ�����ת��Ϊ�ַ���(����һλС��)
+	sprintf(buffer,"%.1f",value);//把浮点数转换为字符串(保留一位小数)
 	SetTextValue(screen_id,control_id,buffer);
 }
 
 //check current screen size 
 void check_screen_size(void)
 {
-	SCREENSIZE = GPIO_ReadOutputDataBit(GPIOG,GPIO_Pin_0);		//check gpio to confirm screen size
-	if(SCREENSIZE)
+	SCREENLANGUAGE = GPIO_ReadOutputDataBit(GPIOG,GPIO_Pin_0);		//check gpio to confirm screen size
+	if(SCREENLANGUAGE)
 	{
 		idtable.screen_size = BIG_SIZE;			//5 inch screen 
 	}
@@ -97,7 +93,7 @@ void check_screen_size(void)
 //screen language select
 void screenlanguage(void)
 {
-	if(SCREENSIZE)
+	if(SCREENLANGUAGE)
 	{
 		biglanguage_screen = bigchinese_screen;			//Chinese
 		current_screen_id = 16;
@@ -130,7 +126,7 @@ void screen_init(void)
 	
 	sprintf(textvalue.coilsavevalue.modbus_address,"%d",1);
 
-	SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TIME_LEFT_ID,"0 h 0 min");	
+	SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TIME_LEFT_HOUR_ID," 00 ");	
 	SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_START_TIME_ID,textvalue.textvaluebuff.start_time);
 	SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_END_TIME_ID,textvalue.textvaluebuff.start_time);
 
@@ -169,49 +165,50 @@ void screen_init(void)
 		
 }
 
-//ʮ����תBCD
+//十进制转BCD
 uint8_t DectoBCD(uint8_t Dec)
 {
      return ((((Dec/10)<<4)&0xf0)|(Dec%10));
 }
-//BCDתʮ����
+//BCD转十进制
 uint8_t BcdToDec(uint8_t bcd)
 {
 	return (0xff & (bcd>>4))*10 +(0xf & bcd);
 }
 
 /*! 
- *  \brief  �����л�֪ͨ
- *  \details  ��ǰ����ı�ʱ(�����GetScreen)��ִ�д˺���
- *  \param screen_id ��ǰ����ID
+ *  \brief  画面切换通知
+ *  \details  当前画面改变时(或调用GetScreen)，执行此函数
+ *  \param screen_id 当前画面ID
  */
 void NotifyScreen(uint16_t screen_id)
 {
 	uint8_t i = 0;
 	current_screen_id = screen_id;
 //	printf("current screen id is %d \n",current_screen_id);
-	//����ҳ��
+	//按键页面
 	if(screen_id == biglanguage_screen.BIG_KEYBOARD)
 	{
 	}
-	//���������༭����
+	//换气次数编辑界面
 	if(screen_id == biglanguage_screen.BIG_AIR_CHANGE_RATE_SCREEN)
 	{
 		for (i= 0; i < 19; ++i)
 		{
-			SetTextValue(screen_id,BIG_CHANGE_AIR_TIME_SET_90+i,textvalue.change_air_times[i]);
+			SetTextValueInt32(screen_id,BIG_CHANGE_AIR_TIME_SET_90+i,dev_info.change_air_time[i]);
 		}
 	}
-	//���ŽǶȿ��Ƶ��ڽ���
+	//风门角度控制调节界面
 	if(screen_id == biglanguage_screen.BIG_AIR_DOOR_SCREEN)
 	{
 		SetTextValue(screen_id,BIG_AIR_DOOR_ANGLE_SET,textvalue.airdoor_value);
 	}
-	//��Ļ����
+	//屏幕亮度
 	if(screen_id == biglanguage_screen.BIG_BRIGHT_ADJUST_SCREEN)
 	{
+		SetTextValue(screen_id,BIG_SCREEN_BRIGHT_ADJUST,textvalue.screen_light_value);
 	}
-	//�˵�����
+	//菜单密码
 	if(screen_id == biglanguage_screen.BIG_SCREAT_PROTECT_SCREEN)
 	{
 		SetTextValue(screen_id,BIG_PASSWORD_PROTECT_INPUT,"");
@@ -219,18 +216,18 @@ void NotifyScreen(uint16_t screen_id)
 	//PID
 	if(screen_id == biglanguage_screen.BIG_PID_SET_SCREEN)
 	{
-		SetTextValue(screen_id,BIG_P_VALUE_SET,textvalue.Pidvalue[0]);
+		SetTextValueFloat(screen_id,BIG_P_VALUE_SET,dev_info.pidvalue.PID_P);
 
-		SetTextValue(screen_id,BIG_I_VALUE_SET,textvalue.Pidvalue[1]);
+		SetTextValueFloat(screen_id,BIG_I_VALUE_SET,dev_info.pidvalue.PID_I);
 
-		SetTextValue(screen_id,BIG_D_VALUE_SET,textvalue.Pidvalue[2]);	
+		SetTextValueFloat(screen_id,BIG_D_VALUE_SET,dev_info.pidvalue.PID_D);	
 	}
-	//�������ý���
+	//参数设置界面
 	if(screen_id == biglanguage_screen.BIG_PARAM_SET_SCREEN)
 	{
-		SetTextValueInt32(screen_id,BIG_TEST_TIME_VALUE,showtextvalue.test_time );
+		SetTextValueInt32(screen_id,BIG_TEST_TIME_VALUE,dev_info.testtime);
 		
-		SetTextValueInt32(screen_id,BIG_TEST_TEMP_VALUE,showtextvalue.setting_temp);
+		SetTextValueInt32(screen_id,BIG_TEST_TEMP_VALUE,dev_info.testtemp);
 	
 		SetTextValue(screen_id,BIG_WARNING1_UP_VALUE,textvalue.coilsavevalue.warning1_up);
 	
@@ -258,33 +255,33 @@ void NotifyScreen(uint16_t screen_id)
 		AnimationPlayFrame(screen_id,BIG_CHINESE_LANGUAGE,textvalue.coilsavevalue.menu_language[0]);
 		AnimationPlayFrame(screen_id,BIG_ENGLISH_LANGUAGE,textvalue.coilsavevalue.menu_language[1]);
 	}
-	//�Զ��ϵ�ʱ���趨
+	//自动断电时间设定
 	if(screen_id == biglanguage_screen.BIG_AUTO_POWEROFF_TIMESET_SCREEN)
 	{	
-		SetTextValue(screen_id,BIG_YEAR_SET,textvalue.autotime.year);
+		SetTextValueInt32(screen_id,BIG_YEAR_SET,dev_info.autonopowertime.year);
 	
-		SetTextValue(screen_id,BIG_MONTH_SET,textvalue.autotime.month);
+		SetTextValueInt32(screen_id,BIG_MONTH_SET,dev_info.autonopowertime.month);
 	
-		SetTextValue(screen_id,BIG_DAY_SET,textvalue.autotime.day);
+		SetTextValueInt32(screen_id,BIG_DAY_SET,dev_info.autonopowertime.day);
 	}
-	//�¶�ֵУ��
+	//温度值校正
 	if(screen_id == biglanguage_screen.BIG_TEMP_VALUE_REVISE_SCREEN)
 	{
 	}
-	//����������Ч����
+	//参数设置无效界面
 	if(screen_id == biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN)
 	{
 
 	}
-	//�豸ʱ������
+	//设备时间设置
 	if(screen_id == biglanguage_screen.BIG_CONTROL_TIME_SET)
 	{	
 	}
-	//�¶�������ʾ����
+	//温度曲线显示界面
 	if(screen_id == biglanguage_screen.BIG_TEMP_CURVE_SHOW_SCREEN)
 	{
 	}
-	//�Լ����
+	//自检界面
 	if(screen_id == biglanguage_screen.BIG_SELF_TEST_SCREEN)
 	{
 	}
@@ -293,10 +290,10 @@ void NotifyScreen(uint16_t screen_id)
 
 
 /*! 
- *  \brief  ���������¼���Ӧ
- *  \param press 1���´�������3�ɿ�������
- *  \param x x����
- *  \param y y����
+ *  \brief  触摸坐标事件响应
+ *  \param press 1按下触摸屏，3松开触摸屏
+ *  \param x x坐标
+ *  \param y y坐标
  */
 void NotifyTouchXY(uint8_t press,uint16_t x,uint16_t y)
 {
@@ -318,23 +315,23 @@ void NotifyTouchXY(uint8_t press,uint16_t x,uint16_t y)
 		touch_flag = 0;
 		if((current_screen_id == biglanguage_screen.BIG_PARAM_SET_SCREEN)&&(touch_press.touch_x - touch_up.touch_x < 50))
 		{
-			if((touch_press.touch_x > 650)&&(touch_press.touch_y > 350)) //���½�
+			if((touch_press.touch_x > 650)&&(touch_press.touch_y > 350)) //右下角
 			{
 				touchtimes.rightdown_times++;
 			}
-			if((touch_press.touch_x > 650)&&(touch_press.touch_y < 120)) //���Ͻ�
+			if((touch_press.touch_x > 650)&&(touch_press.touch_y < 120)) //右上角
 			{
 				touchtimes.rightup_times++;
 			}
-			if((touch_press.touch_x < 200)&&(touch_press.touch_y >= 120)&&(touch_press.touch_y <= 300)) //���м�
+			if((touch_press.touch_x < 200)&&(touch_press.touch_y >= 120)&&(touch_press.touch_y <= 300)) //左中间
 			{
 				touchtimes.leftmiddle_times++;
 			}
-			if((touch_press.touch_x < 200)&&(touch_press.touch_y > 300)) //���½�
+			if((touch_press.touch_x < 200)&&(touch_press.touch_y > 300)) //左下角
 			{
 				touchtimes.leftdown_times++;
 			}
-			if((touch_press.touch_x >= 300)&&(touch_press.touch_x <= 500)&&(touch_press.touch_y >= 120)&&(touch_press.touch_y <= 300)) //���м�
+			if((touch_press.touch_x >= 300)&&(touch_press.touch_x <= 500)&&(touch_press.touch_y >= 120)&&(touch_press.touch_y <= 300)) //上中间
 			{
 				touchtimes.upmiddle_times++;
 			}
@@ -346,35 +343,36 @@ void NotifyTouchXY(uint8_t press,uint16_t x,uint16_t y)
 
 
 /*! 
- *  \brief  ��ť�ؼ�֪ͨ
- *  \details  ����ť״̬�ı�(�����GetControlValue)ʱ��ִ�д˺���
- *  \param screen_id ����ID
- *  \param control_id �ؼ�ID
- *  \param state ��ť״̬��0����1����
+ *  \brief  按钮控件通知
+ *  \details  当按钮状态改变(或调用GetControlValue)时，执行此函数
+ *  \param screen_id 画面ID
+ *  \param control_id 控件ID
+ *  \param state 按钮状态：0弹起，1按下
  */
 void NotifyButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 {
 	press_flag = 1;
 	
-	//���������༭����
+	//换气次数编辑界面
 	if((screen_id == biglanguage_screen.BIG_AIR_CHANGE_RATE_SCREEN)&&(control_id == BIG_AIR_RETURN_BUTTON))
 	{
-		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);			//����ʾ����
+		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);			//主显示界面
 	}
-	//pidֵ���ý���
+	//pid值设置界面
 	if((screen_id == biglanguage_screen.BIG_PID_SET_SCREEN)&&(state == 1))
 	{
-		if(control_id == BIG_SELF_ADJUST)							//����������
+		if(control_id == BIG_SELF_ADJUST)							//自整定按键
 		{
 			runstatus=2;
 		}
-		else if(control_id == BIG_PID_RETURN_BUTTON)  				//����������
+		else if(control_id == BIG_PID_RETURN_BUTTON)  				//返回主界面
 		{
-			MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);			//����ʾ����
+			MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);			//主显示界面
 		}
 		
 	}
-	//�������ý���
+#if 0
+	//参数设置界面
 	if((screen_id == biglanguage_screen.BIG_PARAM_SET_SCREEN)&&(control_id == BIG_SET_RETURN_BUTTON)&&(state == 1))
 	{
 		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);			//����ʾ����
@@ -399,7 +397,8 @@ void NotifyButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 	{
 		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);	
 	}
-	//����ʾ����
+#endif
+	//主显示界面
 	if(screen_id == biglanguage_screen.BIG_MAIN_SHOW_SCREEN)
 	{
 		switch (control_id)
@@ -420,14 +419,14 @@ void NotifyButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 				if(state)
 				{
 					SPINNER_RACK_ON;
-					//����ͼ����ʾ
+					//样架图标显示
 					AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_SAMPLE_FRAME_MOTOR_ID,SHOW);
 					AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_RR_WORK_STATUS_ID,HIDE);
 				}
 				else
 				{
 					SPINNER_RACK_OFF;
-					//����ͼ����ʧ
+					//样架图标消失
 					AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_SAMPLE_FRAME_MOTOR_ID,HIDE);
 					AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_RR_WORK_STATUS_ID,SHOW);
 				}
@@ -436,7 +435,7 @@ void NotifyButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 				if(state)
 				{
 					CIRCULATING_FUN_ON;
-					//���ͼ����ʾ
+					//风机图标显示
 					AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_FAN_OPERATION_ID,SHOW);
 					AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_FR_WORK_STATUS_ID,HIDE);
 					
@@ -444,7 +443,6 @@ void NotifyButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 				else
 				{
 					CIRCULATING_FUN_OFF;
-					//���ͼ����ʧ
 					AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_FAN_OPERATION_ID,HIDE);
 					AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_FR_WORK_STATUS_ID,SHOW);
 				}
@@ -456,14 +454,12 @@ void NotifyButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 					SetPwmValue(0);
 					runstatus = 0;			//ֹͣ
 					warmflag = 0;
-					//��ʾ������ͼ����ʧ
 					AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_HEAT_SWITCH_ID,HIDE);
 				}
 				else
 				{
-					runstatus = 1;				//��	
+					runstatus = 1;			
 					warmflag = 1;
-					//��ʾ������ͼ��
 					AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_HEAT_SWITCH_ID,SHOW);
 				}
 			
@@ -476,16 +472,16 @@ void NotifyButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 
 
 /*! 
- *  \brief  �ı��ؼ�֪ͨ
- *  \details  ���ı�ͨ�����̸���(�����GetControlValue)ʱ��ִ�д˺���
- *  \param screen_id ����ID
- *  \param control_id �ؼ�ID
- *  \param str �ı��ؼ�����
+ *  \brief  文本控件通知
+ *  \details  当文本通过键盘更新(或调用GetControlValue)时，执行此函数
+ *  \param screen_id 画面ID
+ *  \param control_id 控件ID
+ *  \param str 文本控件内容
  */
 void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 {
 	uint16_t backlight = 0;
-	//ҳ��1�����������༭����
+	//页面1，换气次数编辑界面
 	
 	if(screen_id == biglanguage_screen.BIG_AIR_CHANGE_RATE_SCREEN)
 	{
@@ -589,21 +585,22 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 			default:
 				break;
 		}
-		coilvalue.change_max_time = max_change_air(dev_info.change_air_time,19);
+		coilvalue.change_max_time = max_change_air(dev_info.change_air_time);
 		SetTextValueInt32(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_CHANGE_AIR_MAX_SET,coilvalue.change_max_time);
-		FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));				//��������д��flash
+		FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));				//换气次数写入flash
 	}
-	//���ŽǶ�
+	//风门角度
 	if((screen_id == biglanguage_screen.BIG_AIR_DOOR_SCREEN)&&(control_id == BIG_AIR_DOOR_ANGLE_SET))
 	{
 		memset(textvalue.airdoor_value,0,sizeof(char)*4);
 		memcpy(textvalue.airdoor_value,str,sizeof(char)*4);
 		SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_AIR_DOOR_ANGLE_INPUT_ID,textvalue.airdoor_value);
 		coilvalue.air_door_angle = atof(textvalue.airdoor_value);
+		
 		Dac1_Set_Vol(3300*coilvalue.air_door_angle/90);
 		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);		
 	}
-	//��Ļ����
+	//屏幕亮度
 	if((screen_id == biglanguage_screen.BIG_BRIGHT_ADJUST_SCREEN)&&(control_id == BIG_SCREEN_BRIGHT_ADJUST))
 	{
 		memset(textvalue.screen_light_value,0,sizeof(char)*4);
@@ -620,11 +617,11 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 		SetBackLight(backlight);
 		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);		
 	}
-	//�˵�����
+	//菜单密码
 	if((screen_id == biglanguage_screen.BIG_SCREAT_PROTECT_SCREEN)&&(control_id == BIG_PASSWORD_PROTECT_INPUT))
 	{
-		memset(textvalue.protect_password,0,sizeof(char)*6);
-		memcpy(textvalue.protect_password ,str,sizeof(char)*6);
+		memset(textvalue.protect_password,0,sizeof(char)*PASSWORDLENGTH);
+		memcpy(textvalue.protect_password ,str,sizeof(char)*PASSWORDLENGTH);
 		coilvalue.menu_password = atoi(textvalue.protect_password);
 //		printf("password is : %s , %d ,size is %d\n",textvalue.protect_password,coilvalue.menu_password,sizeof(char)*6);
 		SetTextValue(biglanguage_screen.BIG_SCREAT_PROTECT_SCREEN,BIG_PASSWORD_PROTECT_INPUT,textvalue.protect_password);
@@ -646,138 +643,178 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 		switch (control_id)
 		{
 			case BIG_P_VALUE_SET:
-				memset(textvalue.Pidvalue[0],0,sizeof(char)*8);
-				memcpy(textvalue.Pidvalue[0],str,sizeof(char)*8);
+				memset(textvalue.Pidvalue[0],0,sizeof(char)*PASSWORDLENGTH);
+				memcpy(textvalue.Pidvalue[0],str,sizeof(char)*PASSWORDLENGTH);
 				dev_info.pidvalue.PID_P = atof(textvalue.Pidvalue[0]);
 				break;
 			case BIG_I_VALUE_SET:
-				memset(textvalue.Pidvalue[1],0,sizeof(char)*8);
-				memcpy(textvalue.Pidvalue[1],str,sizeof(char)*8);
+				memset(textvalue.Pidvalue[1],0,sizeof(char)*PASSWORDLENGTH);
+				memcpy(textvalue.Pidvalue[1],str,sizeof(char)*PASSWORDLENGTH);
 				dev_info.pidvalue.PID_I = atof(textvalue.Pidvalue[1]);
 				break;
 			case BIG_D_VALUE_SET:
-				memset(textvalue.Pidvalue[2],0,sizeof(char)*8);
-				memcpy(textvalue.Pidvalue[2],str,sizeof(char)*8);
+				memset(textvalue.Pidvalue[2],0,sizeof(char)*PASSWORDLENGTH);
+				memcpy(textvalue.Pidvalue[2],str,sizeof(char)*PASSWORDLENGTH);
 				dev_info.pidvalue.PID_D = atof(textvalue.Pidvalue[2]);
 				break;
 			default:
 				break;
 		}
-		FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));		//pid����д��flash
+		FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));		//pid数据写入flash
 	}
-	//�������ý���
+	//参数设置界面
 	if(screen_id == biglanguage_screen.BIG_PARAM_SET_SCREEN)
 	{
 		switch (control_id)
 		{
 			case BIG_TEST_TIME_VALUE:	//set time
-				memset(textvalue.coilsavevalue.test_duration,0,sizeof(char)*4);
-				memcpy(textvalue.coilsavevalue.test_duration,str,sizeof(char)*4);				
+				memset(textvalue.coilsavevalue.test_duration,0,sizeof(char)*COMMONSIZE);
+				memcpy(textvalue.coilsavevalue.test_duration,str,sizeof(char)*COMMONSIZE);				
 				SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_TEST_TIME_VALUE,textvalue.coilsavevalue.test_duration);
 				showtextvalue.test_time = atoi(textvalue.coilsavevalue.test_duration);
-				dev_info.testtime = showtextvalue.test_time;
 				if(showtextvalue.test_time < 0 || showtextvalue.test_time >= 4000)
 				{
-					AnimationPlayFrame(biglanguage_screen.BIG_PASSWORD_ERROR_SCREEN,BIG_TESTTIME_SET_FAIL,SHOW);
+					dev_info.testtime = 0;
+					AnimationPlayFrame(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN,BIG_TESTTIME_SET_FAIL,SHOW);
 					MySetScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN);
 				}
 				else 
 				{
-					strcat(textvalue.coilsavevalue.test_duration," h");
-					AnimationPlayFrame(biglanguage_screen.BIG_PASSWORD_ERROR_SCREEN,BIG_TESTTIME_SET_FAIL,HIDE);
+					dev_info.testtime = showtextvalue.test_time;
+					AnimationPlayFrame(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN,BIG_TESTTIME_SET_FAIL,HIDE);
 					SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TEST_TIME_ID,textvalue.coilsavevalue.test_duration);
 				}
 				
 				break;
 			case BIG_TEST_TEMP_VALUE:	//set temp
-				memset(textvalue.coilsavevalue.test_temp,0,sizeof(char)*4);
-				memcpy(textvalue.coilsavevalue.test_temp,str,sizeof(char)*4);	
+				memset(textvalue.coilsavevalue.test_temp,0,sizeof(char)*COMMONSIZE);
+				memcpy(textvalue.coilsavevalue.test_temp,str,sizeof(char)*COMMONSIZE);	
 				SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_TEST_TEMP_VALUE,textvalue.coilsavevalue.test_temp);
 				showtextvalue.setting_temp = atof(textvalue.coilsavevalue.test_temp);
-				dev_info.testtemp = showtextvalue.setting_temp;
+				
 				if(showtextvalue.setting_temp < 0 || showtextvalue.setting_temp >= 1000)
 				{
-					AnimationPlayFrame(biglanguage_screen.BIG_PASSWORD_ERROR_SCREEN,BIG_TESTTEMP_SET_FAIL,SHOW);
+					dev_info.testtemp = 0;
+					AnimationPlayFrame(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN,BIG_TESTTEMP_SET_FAIL,SHOW);
 					MySetScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN);
 				}
 				else
 				{
-					AnimationPlayFrame(biglanguage_screen.BIG_PASSWORD_ERROR_SCREEN,BIG_TESTTEMP_SET_FAIL,HIDE);
+					dev_info.testtemp = showtextvalue.setting_temp;
+					AnimationPlayFrame(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN,BIG_TESTTEMP_SET_FAIL,HIDE);
 					SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_SET_TEMP_ID,textvalue.coilsavevalue.test_temp);
 				}
 				break;	
 			case BIG_WARNING1_UP_VALUE:
-				memset(textvalue.coilsavevalue.warning1_up,0,sizeof(char)*4);
-				memcpy(textvalue.coilsavevalue.warning1_up,str,sizeof(char)*4);
+				memset(textvalue.coilsavevalue.warning1_up,0,sizeof(char)*COMMONSIZE);
+				memcpy(textvalue.coilsavevalue.warning1_up,str,sizeof(char)*COMMONSIZE);
 				SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_WARNING1_UP_VALUE,textvalue.coilsavevalue.warning1_up);
 				coilvalue.warning1_up = atof(textvalue.coilsavevalue.warning1_up);
 				if(coilvalue.warning1_up <= coilvalue.warning1_down)
 				{
-					AnimationPlayFrame(biglanguage_screen.BIG_PASSWORD_ERROR_SCREEN,BIG_TEMP1_UP_SET_FAIL,SHOW);
+					dev_info.flash_setvalue.warning1_up = 0;
+					AnimationPlayFrame(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN,BIG_TEMP1_UP_SET_FAIL,SHOW);
 					MySetScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN);
 				}
 				else
 				{
-					AnimationPlayFrame(biglanguage_screen.BIG_PASSWORD_ERROR_SCREEN,BIG_TEMP1_UP_SET_FAIL,HIDE);
+					dev_info.flash_setvalue.warning1_up = coilvalue.warning1_up;
+					AnimationPlayFrame(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN,BIG_TEMP1_UP_SET_FAIL,HIDE);
 				}
 				break;	
 			case BIG_WARNING1_DOWN_VALUE:
-				memset(textvalue.coilsavevalue.warning1_down,0,sizeof(char)*4);
-				memcpy(textvalue.coilsavevalue.warning1_down,str,sizeof(char)*4);
+				memset(textvalue.coilsavevalue.warning1_down,0,sizeof(char)*COMMONSIZE);
+				memcpy(textvalue.coilsavevalue.warning1_down,str,sizeof(char)*COMMONSIZE);
 				SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_WARNING1_DOWN_VALUE,textvalue.coilsavevalue.warning1_down);
 				coilvalue.warning1_down = atof(textvalue.coilsavevalue.warning1_down);
 				if(coilvalue.warning1_down >= coilvalue.warning1_up)
 				{
-					AnimationPlayFrame(biglanguage_screen.BIG_PASSWORD_ERROR_SCREEN,BIG_TEMP1_DOWN_SET_FAIL,SHOW);
+					dev_info.flash_setvalue.warning1_down = 0;
+					AnimationPlayFrame(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN,BIG_TEMP1_DOWN_SET_FAIL,SHOW);
 					MySetScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN);
 				}
 				else
 				{
-					AnimationPlayFrame(biglanguage_screen.BIG_PASSWORD_ERROR_SCREEN,BIG_TEMP1_DOWN_SET_FAIL,HIDE);
+					dev_info.flash_setvalue.warning1_down = coilvalue.warning1_down;
+					AnimationPlayFrame(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN,BIG_TEMP1_DOWN_SET_FAIL,HIDE);
 				}
 				break;	
 			case BIG_WARNING2_UP_VALUE:
-				memset(textvalue.coilsavevalue.warning2_up,0,sizeof(char)*4);
-				memcpy(textvalue.coilsavevalue.warning2_up,str,sizeof(char)*4);
+				memset(textvalue.coilsavevalue.warning2_up,0,sizeof(char)*COMMONSIZE);
+				memcpy(textvalue.coilsavevalue.warning2_up,str,sizeof(char)*COMMONSIZE);
 				SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_WARNING2_UP_VALUE,textvalue.coilsavevalue.warning2_up);
 				coilvalue.warning2_up = atof(textvalue.coilsavevalue.warning2_up);
+				
+				if(coilvalue.warning2_up <= coilvalue.warning2_down)
+				{
+					dev_info.flash_setvalue.warning2_up = 0;
+					AnimationPlayFrame(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN,BIG_TEMP2_UP_SET_FAIL,SHOW);
+					MySetScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN);
+				}
+				else
+				{
+					dev_info.flash_setvalue.warning2_up = coilvalue.warning2_up;
+					AnimationPlayFrame(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN,BIG_TEMP2_UP_SET_FAIL,HIDE);
+				}
 				break;	
 			case BIG_WARNING2_DOWN_VALUE:
-				memset(textvalue.coilsavevalue.warning2_down,0,sizeof(char)*4);
-				memcpy(textvalue.coilsavevalue.warning2_down,str,sizeof(char)*4);
+				memset(textvalue.coilsavevalue.warning2_down,0,sizeof(char)*COMMONSIZE);
+				memcpy(textvalue.coilsavevalue.warning2_down,str,sizeof(char)*COMMONSIZE);
 				SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_WARNING2_DOWN_VALUE,textvalue.coilsavevalue.warning2_down);
 				coilvalue.warning2_down = atof(textvalue.coilsavevalue.warning2_down);
+				if(coilvalue.warning2_down >= coilvalue.warning2_up)
+				{
+					dev_info.flash_setvalue.warning2_down = 0;
+					AnimationPlayFrame(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN,BIG_TEMP2_DOWN_SET_FAIL,SHOW);
+					MySetScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN);
+				}
+				else
+				{
+					dev_info.flash_setvalue.warning2_down = coilvalue.warning2_down;
+					AnimationPlayFrame(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN,BIG_TEMP2_DOWN_SET_FAIL,HIDE);
+				}
+				
 				break;	
 			case BIG_NEW_PASSWORD:
-				memset(textvalue.coilsavevalue.menu_password,0,sizeof(char)*6);
-				memcpy(textvalue.coilsavevalue.menu_password,str,sizeof(char)*6);
+				memset(textvalue.coilsavevalue.menu_password,0,sizeof(char)*PASSWORDLENGTH);
+				memcpy(textvalue.coilsavevalue.menu_password,str,sizeof(char)*PASSWORDLENGTH);
 				SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_NEW_PASSWORD,textvalue.coilsavevalue.menu_password);
 				break;
 			case BIG_SECOND_INPUT_PASSWORD:
-				memset(textvalue.coilsavevalue.secondtime_password,0,sizeof(char)*6);
-				memcpy(textvalue.coilsavevalue.secondtime_password,str,sizeof(char)*6);
+				memset(textvalue.coilsavevalue.secondtime_password,0,sizeof(char)*PASSWORDLENGTH);
+				memcpy(textvalue.coilsavevalue.secondtime_password,str,sizeof(char)*PASSWORDLENGTH);
 				SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_NEW_PASSWORD,textvalue.coilsavevalue.menu_password);
-				if(strncmp(textvalue.coilsavevalue.secondtime_password,textvalue.coilsavevalue.menu_password,4))
+				if(strncmp(textvalue.coilsavevalue.secondtime_password,textvalue.coilsavevalue.menu_password,PASSWORDLENGTH))
 				{
 					AnimationPlayFrame(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN,BIG_PASS_UPDATE_FAIL,SHOW);
 					MySetScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN);	
 				}
 				else
 				{
+					dev_info.flash_setvalue.menu_password = atoi(textvalue.coilsavevalue.secondtime_password);
 					AnimationPlayFrame(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN,BIG_PASS_UPDATE_FAIL,HIDE);
 				}
 				break;
 			case BIG_CHANGE_AIR_TIME_SET:
-				memset(textvalue.coilsavevalue.change_air_time,0,sizeof(char)*4);
-				memcpy(textvalue.coilsavevalue.change_air_time,str,sizeof(char)*4);
-				SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_CHANGE_AIR_TIME_SET,textvalue.coilsavevalue.change_air_time);
-				SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_CHANGE_AIR_TIME,textvalue.coilsavevalue.change_air_time);
+				memset(textvalue.coilsavevalue.change_air_time,0,sizeof(char)*COMMONSIZE);
+				memcpy(textvalue.coilsavevalue.change_air_time,str,sizeof(char)*COMMONSIZE);
 				coilvalue.change_air_time = atoi(textvalue.coilsavevalue.change_air_time);
-				change_air_times();
+				if(judge_changeair_time(coilvalue.change_air_time))
+				{
+					AnimationPlayFrame(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN,BIG_CHANGE_AIR_SET_FAIL,HIDE);
+					SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_CHANGE_AIR_TIME_SET,textvalue.coilsavevalue.change_air_time);
+					SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_CHANGE_AIR_TIME,textvalue.coilsavevalue.change_air_time);
+					change_air_times();
+				}
+				else
+				{
+					AnimationPlayFrame(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN,BIG_CHANGE_AIR_SET_FAIL,SHOW);
+					MySetScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN);	
+				}
 				break;
 			case BIG_MODBUS_NODE_ADDRESS:
-				memset(textvalue.coilsavevalue.modbus_address,0,sizeof(char)*4);
-				memcpy(textvalue.coilsavevalue.modbus_address,str,sizeof(char)*4);
+				memset(textvalue.coilsavevalue.modbus_address,0,sizeof(char)*COMMONSIZE);
+				memcpy(textvalue.coilsavevalue.modbus_address,str,sizeof(char)*COMMONSIZE);
 				SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_MODBUS_NODE_ADDRESS,textvalue.coilsavevalue.modbus_address);
 				coilvalue.modbus_address = atoi(textvalue.coilsavevalue.modbus_address);
 				if(coilvalue.modbus_address < 0 || coilvalue.modbus_address > 250)
@@ -787,6 +824,7 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 				}
 				else
 				{
+					dev_info.flash_setvalue.modbus_address = coilvalue.modbus_address;
 					AnimationPlayFrame(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN,BIG_MODBUS_ADDRESS_SET_FAIL,HIDE);
 				}
 				break;
@@ -795,89 +833,99 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 				break;
 		}
 //		printf("time is %f    temp is %f \r\n",dev_info.testtime,dev_info.testtemp);
-		FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));				//�������ý������ݴ���flash
+		FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));				//参数设置界面数据存入flash
 	}
-	//�Զ��ϵ�ʱ������
+	//自动断电时间设置
 	if(screen_id == biglanguage_screen.BIG_AUTO_POWEROFF_TIMESET_SCREEN)
 	{
 		switch (control_id)
 		{
 			case BIG_YEAR_SET:
-				memset(textvalue.autotime.year,0,sizeof(char)*BUFFSIZE);
-				memcpy(textvalue.autotime.year,str,sizeof(char)*BUFFSIZE);
+				memset(textvalue.autotime.year,0,sizeof(char)*COMMONSIZE);
+				memcpy(textvalue.autotime.year,str,sizeof(char)*COMMONSIZE);
 				nopowertime.year = atoi(textvalue.autotime.year);
 				nopowertime.year = DectoBCD(nopowertime.year);
+				dev_info.autonopowertime.year = nopowertime.year; 
 				break;
 			case BIG_MONTH_SET:
-				memset(textvalue.autotime.month,0,sizeof(char)*BUFFSIZE);
-				memcpy(textvalue.autotime.month,str,sizeof(char)*BUFFSIZE);
+				memset(textvalue.autotime.month,0,sizeof(char)*COMMONSIZE);
+				memcpy(textvalue.autotime.month,str,sizeof(char)*COMMONSIZE);
 				nopowertime.month = atoi(textvalue.autotime.month);
 				nopowertime.month = DectoBCD(nopowertime.month);
+				dev_info.autonopowertime.month = nopowertime.month;
 				break;	
 			case BIG_DAY_SET:
-				memset(textvalue.autotime.day,0,sizeof(char)*BUFFSIZE);
-				memcpy(textvalue.autotime.day,str,sizeof(char)*BUFFSIZE);
+				memset(textvalue.autotime.day,0,sizeof(char)*COMMONSIZE);
+				memcpy(textvalue.autotime.day,str,sizeof(char)*COMMONSIZE);
 				nopowertime.day = atoi(textvalue.autotime.day);
 				nopowertime.day = DectoBCD(nopowertime.day);
+				dev_info.autonopowertime.day = nopowertime.day;
 				break;	
 			default:
 				break;
 		}
 		FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
 	}
-	//�Զ��ϵ絯������
-	if(screen_id == biglanguage_screen.BIG_AUTO_POWEROFF_POPUPWINDOWS_SCREEN)
+	//自动断电弹出界面
+	if(screen_id == biglanguage_screen.BIG_AUTO_NOPOWER_RECOVER)
 	{
-		memset(textvalue.autonopowerpassword,0,sizeof(char)*BUFFSIZE);
-		memcpy(textvalue.autonopowerpassword,str,sizeof(char)*BUFFSIZE);
-		autonopowerpassword =  atoi(textvalue.autonopowerpassword);
+		memset(textvalue.autonopowerpassword,0,sizeof(char)*PASSWORDLENGTH);
+		memcpy(textvalue.autonopowerpassword,str,sizeof(char)*PASSWORDLENGTH);
+		if(strncmp(textvalue.autonopowerpassword,dev_info.autonopower_password,PASSWORDLENGTH) == 0)
+		{
+			//恢复电量，控制器输出恢复功能
+		}
+		else
+		{
+			//控制器输出全部中断
+		}
 	}
-	//�¶�ֵУ��
+	//温度值校正
 	if(screen_id == biglanguage_screen.BIG_TEMP_VALUE_REVISE_SCREEN)
 	{
-		memset(textvalue.temp_adjust_value,0,sizeof(char)*BUFFSIZE);
-		memcpy(textvalue.temp_adjust_value,str,sizeof(char)*BUFFSIZE);
+		memset(textvalue.temp_adjust_value,0,sizeof(char)*COMMONSIZE);
+		memcpy(textvalue.temp_adjust_value,str,sizeof(char)*COMMONSIZE);
 		adjusttemp +=  atof(textvalue.temp_adjust_value);
 		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);
 	}
-	//�豸ʱ������
+	//设备时间设置
 	if(screen_id == biglanguage_screen.BIG_CONTROL_TIME_SET)
 	{
 		switch (control_id)
 		{
 			case BIG_CONTROL_DATE_YEAR_SET:
-				memset(textvalue.device_time_setting.Year,0,sizeof(char)*BUFFSIZE);
-				memcpy(textvalue.device_time_setting.Year,str,sizeof(char)*BUFFSIZE);	
+				memset(textvalue.device_time_setting.Year,0,sizeof(char)*COMMONSIZE);
+				memcpy(textvalue.device_time_setting.Year,str,sizeof(char)*COMMONSIZE);	
 				rtctime.Year = atoi(textvalue.device_time_setting.Year);
 				rtctime.Year = DectoBCD(rtctime.Year);
 				break;
 			case BIG_CONTROL_DATE_MONTH_SET:
-				memset(textvalue.device_time_setting.Mon,0,sizeof(char)*BUFFSIZE);
-				memcpy(textvalue.device_time_setting.Mon,str,sizeof(char)*BUFFSIZE);
+				memset(textvalue.device_time_setting.Mon,0,sizeof(char)*COMMONSIZE);
+				memcpy(textvalue.device_time_setting.Mon,str,sizeof(char)*COMMONSIZE);
 				rtctime.Mon = atoi(textvalue.device_time_setting.Mon);
 				rtctime.Mon = DectoBCD(rtctime.Mon);
 				break;	
 			case BIG_CONTROL_DATE_DAY_SET:
-				memset(textvalue.device_time_setting.Day,0,sizeof(char)*BUFFSIZE);
-				memcpy(textvalue.device_time_setting.Day,str,sizeof(char)*BUFFSIZE);
+				memset(textvalue.device_time_setting.Day,0,sizeof(char)*COMMONSIZE);
+				memcpy(textvalue.device_time_setting.Day,str,sizeof(char)*COMMONSIZE);
 				rtctime.Day = atoi(textvalue.device_time_setting.Day);
 				rtctime.Day = DectoBCD(rtctime.Day);
 				break;	
 			case BIG_CONTROL_TIME_HOUR_SET:
-				memset(textvalue.device_time_setting.Hour,0,sizeof(char)*BUFFSIZE);
-				memcpy(textvalue.device_time_setting.Hour,str,sizeof(char)*BUFFSIZE);
+				memset(textvalue.device_time_setting.Hour,0,sizeof(char)*COMMONSIZE);
+				memcpy(textvalue.device_time_setting.Hour,str,sizeof(char)*COMMONSIZE);
 				rtctime.Hour = atoi(textvalue.device_time_setting.Hour);
 				rtctime.Hour = DectoBCD(rtctime.Hour);
 				break;
 			case BIG_CONTROL_TIME_MINUTE_SET:
-				memset(textvalue.device_time_setting.Min,0,sizeof(char)*BUFFSIZE);
-				memcpy(textvalue.device_time_setting.Min,str,sizeof(char)*BUFFSIZE);
+				memset(textvalue.device_time_setting.Min,0,sizeof(char)*COMMONSIZE);
+				memcpy(textvalue.device_time_setting.Min,str,sizeof(char)*COMMONSIZE);
 				rtctime.Min = atoi(textvalue.device_time_setting.Min);
 				rtctime.Min = DectoBCD(rtctime.Min);
 				break;	
 			case BIG_CONTROL_TIME_SECOND_SET:
-				memset(textvalue.device_time_setting.Sec,0,sizeof(char)*BUFFSIZE);
-				memcpy(textvalue.device_time_setting.Sec,str,sizeof(char)*BUFFSIZE);
+				memset(textvalue.device_time_setting.Sec,0,sizeof(char)*COMMONSIZE);
+				memcpy(textvalue.device_time_setting.Sec,str,sizeof(char)*COMMONSIZE);
 				rtctime.Sec = atoi(textvalue.device_time_setting.Sec);
 				rtctime.Sec = DectoBCD(rtctime.Sec);
 				break;	
@@ -886,13 +934,13 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 		}
 		SetRtcTime(rtctime.Sec,rtctime.Min,rtctime.Hour,rtctime.Day,0,rtctime.Mon,rtctime.Year);
 	}
-//	//����ʾ����
+//	//主显示界面
 //	if(screen_id == biglanguage_screen.BIG_MAIN_SHOW_SCREEN)
 //	{
 //		switch (control_id)
 //		{
 //			case BIG_CURRENT_TEMP_ID:
-//				sprintf(textvalue.textvaluebuff.current_temp_vlaue,"%.1f",showtextvalue.current_temp_vlaue);//�Ѹ�����ת��Ϊ�ַ���(����һλС��)
+//				sprintf(textvalue.textvaluebuff.current_temp_vlaue,"%.1f",showtextvalue.current_temp_vlaue);//把浮点数转换为字符串(保留一位小数)
 //				SetTextValue(screen_id,control_id,textvalue.textvaluebuff.current_temp_vlaue);
 //				SetTextValueFloat(screen_id,control_id, showtextvalue.current_temp_vlaue);
 //				break;
@@ -927,15 +975,15 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 }
 
 /*! 
- *  \brief  �������ؼ�֪ͨ
- *  \details  ����GetControlValueʱ��ִ�д˺���
- *  \param screen_id ����ID
- *  \param control_id �ؼ�ID
- *  \param value ֵ
+ *  \brief  进度条控件通知
+ *  \details  调用GetControlValue时，执行此函数
+ *  \param screen_id 画面ID
+ *  \param control_id 控件ID
+ *  \param value 值
  */
 void NotifyProgress(uint16_t screen_id, uint16_t control_id, uint32_t value)
 {
-	//TODO: ����û�����
+	//TODO: 添加用户代码
 	if((screen_id == biglanguage_screen.BIG_START_INIT_SCREEN)&&(control_id == BIG_START_INIT_ID))
 	{
 		if(value == 100)
@@ -950,25 +998,25 @@ void NotifyProgress(uint16_t screen_id, uint16_t control_id, uint32_t value)
 
 
 /*! 
- *  \brief  �������ؼ�֪ͨ
- *  \details  ���������ı�(�����GetControlValue)ʱ��ִ�д˺���
- *  \param screen_id ����ID
- *  \param control_id �ؼ�ID
- *  \param value ֵ
+ *  \brief  滑动条控件通知
+ *  \details  当滑动条改变(或调用GetControlValue)时，执行此函数
+ *  \param screen_id 画面ID
+ *  \param control_id 控件ID
+ *  \param value 值
  */
 void NotifySlider(uint16_t screen_id, uint16_t control_id, uint32_t value)
 {
-	//TODO: ����û�����
+	//TODO: 添加用户代码
 }
 
 
 /*! 
- *  \brief  �����ؼ�֪ͨ
- *  \details  �������ı�(�����GetControlValue)ʱ��ִ�д˺���
- *  \param screen_id ����ID
- *  \param control_id �ؼ�ID
- *  \param starus    0x00��ʾ�������£�0x01��ʾ����
- *  \param iconimage_id ֵ
+ *  \brief  动画控件通知
+ *  \details  当动画改变(或调用GetControlValue)时，执行此函数
+ *  \param screen_id 画面ID
+ *  \param control_id 控件ID
+ *  \param starus    0x00表示触摸按下，0x01表示弹起
+ *  \param iconimage_id 值
  */
 void  NotifyAnimation(uint16_t screen_id, uint16_t control_id,uint8_t status,uint8_t iconimage_id)
 {
@@ -977,12 +1025,12 @@ void  NotifyAnimation(uint16_t screen_id, uint16_t control_id,uint8_t status,uin
 }
 
 /*! 
- *  \brief  ͼ��ؼ�֪ͨ
- *  \details  ����GetControlValueʱ��ִ�д˺���
- *  \param screen_id ����ID
- *  \param control_id �ؼ�ID
- *  \param status    0x00��ʾ�������£�0x01��ʾ����
- *  \param iconimage_id ֵ
+ *  \brief  图标控件通知
+ *  \details  调用GetControlValue时，执行此函数
+ *  \param screen_id 画面ID
+ *  \param control_id 控件ID
+ *  \param status    0x00表示触摸按下，0x01表示弹起
+ *  \param iconimage_id 值
  */
 void NotifyIcon(uint16_t screen_id, uint16_t control_id,uint8_t status,uint8_t iconimage_id)
 {
@@ -1052,89 +1100,89 @@ void NotifyIcon(uint16_t screen_id, uint16_t control_id,uint8_t status,uint8_t i
 
 
 /*! 
- *  \brief  �Ǳ�ؼ�֪ͨ
- *  \details  ����GetControlValueʱ��ִ�д˺���
- *  \param screen_id ����ID
- *  \param control_id �ؼ�ID
- *  \param value ֵ
+ *  \brief  仪表控件通知
+ *  \details  调用GetControlValue时，执行此函数
+ *  \param screen_id 画面ID
+ *  \param control_id 控件ID
+ *  \param value 值
  */
 void NotifyMeter(uint16_t screen_id, uint16_t control_id, uint32_t value)
 {
-	//TODO: ����û�����
+	//TODO: 添加用户代码
 	
 	
 }
 
 /*! 
- *  \brief  �˵��ؼ�֪ͨ
- *  \details  ���˵���»��ɿ�ʱ��ִ�д˺���
- *  \param screen_id ����ID
- *  \param control_id �ؼ�ID
- *  \param item �˵�������
- *  \param state ��ť״̬��0�ɿ���1����
+ *  \brief  菜单控件通知
+ *  \details  当菜单项按下或松开时，执行此函数
+ *  \param screen_id 画面ID
+ *  \param control_id 控件ID
+ *  \param item 菜单项索引
+ *  \param state 按钮状态：0松开，1按下
  */
 void NotifyMenu(uint16_t screen_id, uint16_t control_id, uint8_t  item, uint8_t  state)
 {
-	//TODO: ����û�����
+	//TODO: 添加用户代码
 
 }
 
 /*! 
- *  \brief  ѡ��ؼ�֪ͨ
- *  \details  ��ѡ��ؼ��仯ʱ��ִ�д˺���
- *  \param screen_id ����ID
- *  \param control_id �ؼ�ID
- *  \param item ��ǰѡ��
+ *  \brief  选择控件通知
+ *  \details  当选择控件变化时，执行此函数
+ *  \param screen_id 画面ID
+ *  \param control_id 控件ID
+ *  \param item 当前选项
  */
 void NotifySelector(uint16_t screen_id, uint16_t control_id, uint8_t  item)
 {
-	//TODO: ����û�����
+	//TODO: 添加用户代码
 
 }
 
 /*! 
- *  \brief  ��ʱ����ʱ֪ͨ����
- *  \param screen_id ����ID
- *  \param control_id �ؼ�ID
+ *  \brief  定时器超时通知处理
+ *  \param screen_id 画面ID
+ *  \param control_id 控件ID
  */
 void NotifyTimer(uint16_t screen_id, uint16_t control_id)
 {
-	//TODO: ����û�����
+	//TODO: 添加用户代码
 	
 }
 
 /*! 
- *  \brief  ��ȡ�û�FLASH״̬����
- *  \param status 0ʧ�ܣ�1�ɹ�
- *  \param _data ��������
- *  \param length ���ݳ���
+ *  \brief  读取用户FLASH状态返回
+ *  \param status 0失败，1成功
+ *  \param _data 返回数据
+ *  \param length 数据长度
  */
 void NotifyReadFlash(uint8_t status,uint8_t *_data,uint16_t length)
 {
-	//TODO: ����û�����
+	//TODO: 添加用户代码
 	
 }
 
 /*! 
- *  \brief  д�û�FLASH״̬����
- *  \param status 0ʧ�ܣ�1�ɹ�
+ *  \brief  写用户FLASH状态返回
+ *  \param status 0失败，1成功
  */
 void NotifyWriteFlash(uint8_t status)
 {
-	//TODO: ����û�����
+	//TODO: 添加用户代码
 	
 }
 
 
 /*! 
- *  \brief  ��ȡRTCʱ�䣬ע�ⷵ�ص���BCD��
- *  \param year �꣨BCD��
- *  \param month �£�BCD��
- *  \param week ���ڣ�BCD��
- *  \param day �գ�BCD��
- *  \param hour ʱ��BCD��
- *  \param minute �֣�BCD��
- *  \param second �루BCD��
+ *  \brief  读取RTC时间，注意返回的是BCD码
+ *  \param year 年（BCD）
+ *  \param month 月（BCD）
+ *  \param week 星期（BCD）
+ *  \param day 日（BCD）
+ *  \param hour 时（BCD）
+ *  \param minute 分（BCD）
+ *  \param second 秒（BCD）
  */
 void NotifyReadRTC(uint8_t year,uint8_t month,uint8_t week,uint8_t day,uint8_t hour,uint8_t minute,uint8_t second)
 {	
@@ -1153,45 +1201,45 @@ void NotifyReadRTC(uint8_t year,uint8_t month,uint8_t week,uint8_t day,uint8_t h
 
 
 /*! 
- *  \brief  ��Ϣ��������
- *  \param msg ��������Ϣ
- *  \param size ��Ϣ����
+ *  \brief  消息处理流程
+ *  \param msg 待处理消息
+ *  \param size 消息长度
  */
 void ProcessMessage( PCTRL_MSG msg, uint16_t size )
 {
-	uint8_t cmd_type = msg->cmd_type;					//ָ������
-	uint8_t ctrl_msg = msg->ctrl_msg;   				//��Ϣ������
-	uint8_t control_type = msg->control_type;			//�ؼ�����
-	uint16_t screen_id = PTR2U16(&msg->screen_id);		//����ID
-	uint16_t control_id = PTR2U16(&msg->control_id);	//�ؼ�ID
-	uint32_t value = PTR2U32(msg->param);				//��ֵ
+	uint8_t cmd_type = msg->cmd_type;					//指令类型
+	uint8_t ctrl_msg = msg->ctrl_msg;   				//消息的类型
+	uint8_t control_type = msg->control_type;			//控件类型
+	uint16_t screen_id = PTR2U16(&msg->screen_id);		//画面ID
+	uint16_t control_id = PTR2U16(&msg->control_id);	//控件ID
+	uint32_t value = PTR2U32(msg->param);				//数值
 
 	switch(cmd_type)
 	{		
-		case NOTIFY_TOUCH_PRESS:		//����������
+		case NOTIFY_TOUCH_PRESS:		//触摸屏按下
 			NotifyTouchXY(cmd_buffer[1],PTR2U16(cmd_buffer+2),PTR2U16(cmd_buffer+4));
 			break;
-		case NOTIFY_TOUCH_RELEASE:		//�������ɿ�
+		case NOTIFY_TOUCH_RELEASE:		//触摸屏松开
 			NotifyTouchXY(cmd_buffer[1],PTR2U16(cmd_buffer+2),PTR2U16(cmd_buffer+4));
 			break;	
-		case NOTIFY_WRITE_FLASH_OK:		//дFLASH�ɹ�
+		case NOTIFY_WRITE_FLASH_OK:		//写FLASH成功
 			NotifyWriteFlash(1);
 			break;
-		case NOTIFY_WRITE_FLASH_FAILD:	//дFLASHʧ��
+		case NOTIFY_WRITE_FLASH_FAILD:	//写FLASH失败
 			NotifyWriteFlash(0);
 			break;
-		case NOTIFY_READ_FLASH_OK:		//��ȡFLASH�ɹ�
-			NotifyReadFlash(1,cmd_buffer+2,size-6);		//ȥ��֡ͷ֡β
+		case NOTIFY_READ_FLASH_OK:		//读取FLASH成功
+			NotifyReadFlash(1,cmd_buffer+2,size-6);		//去除帧头帧尾
 			break;
-		case NOTIFY_READ_FLASH_FAILD:	//��ȡFLASHʧ��
+		case NOTIFY_READ_FLASH_FAILD:	//读取FLASH失败
 			NotifyReadFlash(0,0,0);
 			break;
-		case NOTIFY_READ_RTC:			//��ȡRTCʱ��
+		case NOTIFY_READ_RTC:			//读取RTC时间
 			NotifyReadRTC(cmd_buffer[2],cmd_buffer[3],cmd_buffer[4],cmd_buffer[5],cmd_buffer[6],cmd_buffer[7],cmd_buffer[8]);
 			break;
 		case NOTIFY_CONTROL:
 			{
-				if(ctrl_msg==MSG_GET_CURRENT_SCREEN)	//����ID�仯֪ͨ
+				if(ctrl_msg==MSG_GET_CURRENT_SCREEN)	//画面ID变化通知
 				{
 					NotifyScreen(screen_id);
 				}
@@ -1203,30 +1251,30 @@ void ProcessMessage( PCTRL_MSG msg, uint16_t size )
 				{
 					switch(control_type)
 					{
-						case kCtrlButton: //��ť�ؼ�
+						case kCtrlButton: //按钮控件
 							NotifyButton(screen_id,control_id,msg->param[1]);
 							break;
-						case kCtrlText://�ı��ؼ�
+						case kCtrlText://文本控件
 							NotifyText(screen_id,control_id,msg->param);
 							break;
-						case kCtrlProgress: //�������ؼ�
+						case kCtrlProgress: //进度条控件
 							NotifyProgress(screen_id,control_id,value);
 							break;
-						case kCtrlSlider: //�������ؼ�
+						case kCtrlSlider: //滑动条控件
 							NotifySlider(screen_id,control_id,value);
 							break;
-						case kCtrlAnimation: //�����ؼ�
+						case kCtrlAnimation: //动画控件
 							NotifyAnimation(screen_id, control_id,msg->param[0],msg->param[1]);
-						case kCtrlMeter: //�Ǳ�ؼ�
+						case kCtrlMeter: //仪表控件
 							NotifyMeter(screen_id,control_id,value);
 							break;
-						case kCtrlMenu://�˵��ؼ�
+						case kCtrlMenu://菜单控件
 							NotifyMenu(screen_id,control_id,msg->param[0],msg->param[1]);
 							break;
-						case kCtrlSelector://ѡ��ؼ�
+						case kCtrlSelector://选择控件
 							NotifySelector(screen_id,control_id,msg->param[0]);
 							break;
-						case kCtrlRTC://����ʱ�ؼ�
+						case kCtrlRTC://倒计时控件
 							NotifyTimer(screen_id,control_id);
 							break;
 						default:
@@ -1242,14 +1290,14 @@ void ProcessMessage( PCTRL_MSG msg, uint16_t size )
 
 
 
-//�����
+//启动界面
 void startscreen(void)
 {
-	printf("%s\r\n",soft_ver);														//����汾
-	
-	MySetScreen(biglanguage_screen.BIG_START_INIT_SCREEN);							//��ת�������
-	SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_SOFT_VER_ID,soft_ver);	//��ʾ����汾
-	MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);							//��ת������ʾ����	
+	printf("%s\r\n",soft_ver);														//软件版本	
+	MySetScreen(biglanguage_screen.BIG_START_INIT_SCREEN);							//跳转到启动界面
+	SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_SOFT_VER_ID,soft_ver);	//显示软件版本
+	delay_s(2);
+	MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);							//跳转到主显示界面	
 }
 
 void check_pidstatus(void)
@@ -1258,13 +1306,13 @@ void check_pidstatus(void)
 	{		
 		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_PID_RUN_ID,SHOW);
 	}
-	if(runstatus==4)
+	else
 	{
 		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_PID_RUN_ID,HIDE);
 	}
 }
 
-//����������ת���溯��
+//连击触控跳转界面函数
 void  touchtoscreen(void)
 {
 	if((touch_press.touch_x - touch_up.touch_x > 100)&&(current_screen_id == biglanguage_screen.BIG_MAIN_SHOW_SCREEN))
@@ -1319,10 +1367,10 @@ void  touchtoscreen(void)
 }
 
 
-//������ť��ת���溯��
+//连击按钮跳转界面函数
 void get_combo_button_times(void)
 {
-	//�˵���ť
+	//菜单按钮
 	if(touchtimes.menu_click_times == 1)
 	{
 		printf("menu 1button times is %d \n",touchtimes.menu_click_times);
@@ -1340,10 +1388,10 @@ void get_combo_button_times(void)
 		printf("menu 1button times is %d \n",touchtimes.menu_click_times);
 	}
 
-	//�Լ찴ť
+	//自检按钮
 	if(touchtimes.self_check_times == 1)
 	{
-		if(thermocouple_flag|gpiostatus) //�й���
+		if(thermocouple_flag|gpiostatus) //有故障
 		{
 			MySetScreen(biglanguage_screen.BIG_SELF_TEST_NOTPASS_SCREEN);
 		}
@@ -1372,7 +1420,7 @@ void get_combo_button_times(void)
 
 
 
-//�¶����ߴ洢
+//温度曲线存储
 void temp_curve_save(void)
 {
 	GraphTempDataAdd(biglanguage_screen.BIG_TEMP_CURVE_SHOW_SCREEN, BIG_TEMP_CURVE_SHOW,(uint16_t)showtextvalue.current_temp_vlaue);
@@ -1384,11 +1432,11 @@ void temp_curve_save(void)
 
 
 
-//�ϲ�ʱ���ַ�
+//合并时间字符
 void  mergetimechar(RtcTime datetime)
 {
 	uint8_t buff[2] = {0};
-	sprintf(buff,"%02d",datetime.Year); //������ת��Ϊ�ַ���
+	sprintf(buff,"%02d",datetime.Year); //把整数转换为字符串
 	textvalue.textvaluebuff.start_time[0] = buff[0];
 	textvalue.textvaluebuff.start_time[1] = buff[1];
 
@@ -1414,25 +1462,9 @@ void  mergetimechar(RtcTime datetime)
 	textvalue.textvaluebuff.start_time[13] = buff[1];
 }
 
-//�ϲ�Сʱ�����ַ���
-void mergehour_min(uint16_t hour,uint16_t min)
-{
-	uint8_t buff[5] = {0};
-	sprintf(buff,"%04d",hour); //������ת��Ϊ�ַ���
-	textvalue.textvaluebuff.left_time[0] = buff[0];
-	textvalue.textvaluebuff.left_time[1] = buff[1];
-	textvalue.textvaluebuff.left_time[2] = buff[2];
-	textvalue.textvaluebuff.left_time[3] = buff[3];
-	textvalue.textvaluebuff.left_time[4] = 'h';
-	sprintf(buff,"%02d",min);
-	textvalue.textvaluebuff.left_time[5] = buff[0];
-	textvalue.textvaluebuff.left_time[6] = buff[1];
-	textvalue.textvaluebuff.left_time[7] = 'm';
-	textvalue.textvaluebuff.left_time[8] = 'i';
-	textvalue.textvaluebuff.left_time[9] = 'n';
-}
 
-//��ĳʱ�ķ���������2000��1��1�ţ�0:00��ʼ
+
+//到某时的分钟数，从2000年1月1号，0:00开始
 uint32_t to_day(RtcTime time)
 {
 	uint8_t mon[] = {31,28,31,30,31,30,31,31,30,31,30,31};
@@ -1462,7 +1494,7 @@ uint32_t to_day(RtcTime time)
 }
 
 #if 0
-//�·�ʶ��
+//月份识别
 char * monselect(char *monbuff)
 {
 	uint8_t i = 0,temp = 0;
@@ -1478,7 +1510,7 @@ char * monselect(char *monbuff)
 	}
 }
 
-//����ʱ���ʽת��
+//结束时间格式转换
 void  adjustchar(char *timebuff)
 {
 	char monbuff[2];
@@ -1517,7 +1549,7 @@ void  adjustchar(char *timebuff)
 }
 #endif
 
-//����ʱ�����
+//结束时间计算
 void endtimecalcu(RtcTime starttime,uint16_t testtime)
 {
 	char timebuff[25] = {0};
@@ -1528,7 +1560,7 @@ void endtimecalcu(RtcTime starttime,uint16_t testtime)
 	currenttime += to_day(starttime);
 	strftime(timebuff,20,"%Y/%m/%d %H:%M:%S",localtime(&currenttime));
 	memcpy(textvalue.textvaluebuff.end_time,timebuff+2,14);
-//	printf("��ʽ�������� & ʱ�� : |%s|\n", textvalue.textvaluebuff.end_time );
+//	printf("格式化的日期 & 时间 : |%s|\n", textvalue.textvaluebuff.end_time );
 //	timebuff = ctime(&currenttime);
 //	printf("time is %s\r\n",timebuff);
 //	adjustchar(timebuff);
@@ -1537,13 +1569,13 @@ void endtimecalcu(RtcTime starttime,uint16_t testtime)
 }
 
 
-//ʱ����������
+//时间差，返回秒数
 uint32_t diff_time(RtcTime starttime,RtcTime endtime)
 {
 	return (to_day(endtime) - to_day(starttime));
 }
 
-//����ʵ���ľ���ֵ
+//两个实数的绝对值
 float myabs(float a,float b)
 {
 	if(a >= b)  
@@ -1552,51 +1584,50 @@ float myabs(float a,float b)
 		return b-a;
 }
 
- uint32_t temptime = 0;		//ʣ��ʵ��ʱ��
+ uint32_t temptime = 0;		//剩余实验时间
 
-//ʣ��ʱ����� ������
+//剩余时间计算 ，分钟
 void lefttimecalculate(void)
 {
 	temptime = showtextvalue.test_time*60 - diff_time(showtextvalue.start_time, rtctime)/60;
 	showtextvalue.left_time_hou = temptime/60;
 	showtextvalue.left_time_min = temptime%60;
 //	printf("temptime is %ld , left hour is %d,left min is %d\r\n",temptime,showtextvalue.left_time_hou,showtextvalue.left_time_min);
-	mergehour_min(showtextvalue.left_time_hou ,showtextvalue.left_time_min);
-	SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TIME_LEFT_ID,textvalue.textvaluebuff.left_time);
+//	mergehour_min(showtextvalue.left_time_hou ,showtextvalue.left_time_min);
+	SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TIME_LEFT_HOUR_ID,showtextvalue.left_time_hou);
+	SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TIME_LEFT_MIN_ID,showtextvalue.left_time_min);
+
 	if(temptime == 0)
 	{
-		//ʵ�����
-		addup_testtime();   //�ۼ�ʵ��ʱ��
-		
+		//实验结束
+		addup_testtime();   //累计实验时间
+		dev_info.testtemp = 0;
+		dev_info.testtime = 0;
 		warmflag = 0;
 		lefttimeflag = 0;
 	}
 }
 
-//��ʼ����ʱ������
+//起始结束时间设置
 void start_endtime_set(void)
 {
 	RtcTime inittime = {0};
-	
-//	if(myabs(showtextvalue.setting_temp,showtextvalue.current_temp_vlaue) <= 2)
-//	{
-//		warmflag++;			//���ȵ� Ŀ���¶ȴ���
-//	}
 	if(warmflag == 0)		
 	{
 		mergetimechar(inittime);
 		SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_START_TIME_ID,textvalue.textvaluebuff.start_time);
 		SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_END_TIME_ID,textvalue.textvaluebuff.start_time); 	
-		SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TIME_LEFT_ID,"0 h 0 min");	
+		SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TIME_LEFT_HOUR_ID,"00");	
+		SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TIME_LEFT_MIN_ID,"00");	
 	}
-	else if((warmflag == 1)&&(showtextvalue.setting_temp != 0)&&(lefttimeflag == 0))	//��һ�μ��ȵ�Ŀ���¶����趨�¶Ȳ�Ϊ0
+	else if((warmflag == 1)&&(dev_info.testtemp  != 0)&&(lefttimeflag == 0))	//第一次加热到目标温度且设定温度不为0
 	{	
 		lefttimeflag = 1;
-		//��ʼʱ������
+		//开始时间设置
 		mergetimechar(rtctime);
 		showtextvalue.start_time = rtctime;
 		SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_START_TIME_ID,textvalue.textvaluebuff.start_time);
-		//����ʱ������
+		//结束时间设置
 		endtimecalcu(showtextvalue.start_time,showtextvalue.test_time);
 	}
 	if(lefttimeflag == 1)
@@ -1605,20 +1636,18 @@ void start_endtime_set(void)
 	}
 }
 
-//�ۼ�ʵ��ʱ��
+//累计实验时间
 void addup_testtime(void)
 {
 	uint32_t addtime = 0;
-	uint8_t buffer[10] = {0};
 	addtime += showtextvalue.test_time;
-	sprintf(buffer,"%09ld",addtime);
-	strcat(buffer,"h");
-	SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_ADDUP_TIME_ID,buffer);
+	dev_info.addup_testtime = addtime;
+	SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_ADDUP_TIME_ID,dev_info.addup_testtime);
 }
 
 
 
-//���ŽǶȴ�������༭
+//风门角度次数界面编辑
 void change_air_times(void)
 {
 	uint8_t i = 0;
@@ -1730,11 +1759,11 @@ void change_air_times(void)
 	}
 }
 
-//����������༭
-uint8_t max_change_air(uint8_t *buff,uint8_t size)
+//最大换气次数编辑
+uint8_t max_change_air(uint8_t *buff)
 {
 	uint8_t i = 0, temp = 0;
-	for(i = 1;i<size;i++)
+	for(i = 1;i<CHANGE_AIR_SIZE;i++)
 	{
 		temp = buff[0];
 		if(buff[i] >= temp)
@@ -1745,3 +1774,16 @@ uint8_t max_change_air(uint8_t *buff,uint8_t size)
 	return temp;
 }
 
+
+uint8_t judge_changeair_time(uint16_t change_time)
+{
+	uint8_t i;
+	for (i = 0; i < CHANGE_AIR_SIZE; ++i)
+	{
+		if(dev_info.change_air_time[i] == change_time)
+		{
+			return TRUE;
+		}
+	}
+	return FALSE;
+}

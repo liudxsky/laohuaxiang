@@ -14,9 +14,11 @@
 #define  BIG_SIZE    1
 #define  SMALL_SIZE  0
 
-
-
-#define  BUFFSIZE  20
+#define  CHANGE_AIR_SIZE 19
+#define  PASSWORDLENGTH  6
+#define  COMMONSIZE  4
+#define  RTCBUFFSIZE 16
+#define  ADDTESTTIMESIZE  10
 
 typedef struct 
 {
@@ -52,7 +54,6 @@ typedef struct
 	uint8_t BIG_ARGUEMENT_SET_ERROR_SCREEN;				//参数设置无效界面
 	uint8_t BIG_MAIN_SHOW_SCREEN;		 	 			//主显示界面
 	uint8_t BIG_TEMP_CURVE_SHOW_SCREEN;					//温度曲线显示界面
-	uint8_t BIG_AUTO_POWEROFF_POPUPWINDOWS_SCREEN;		//自动断电弹出界面
 }BIG_SCREEN_ID_TAB;
 
 
@@ -65,12 +66,15 @@ typedef struct
 //显示界面    control_id  设置
 /*--------------------------------------------------------------------------*/
 #define  BIG_CURRENT_TEMP_ID				    18		//即时测量温度控制ID
+#define  BIG_CURRENT_TEMP_DECIMAL_ID			33		//实时温度小数部分
 #define  BIG_SET_TEMP_ID						19		//设定温度控制ID
+#define  BIG_SET_TEMP_DECIMAL_ID				34		//设定温度小数部分
 #define  BIG_START_TIME_ID						11		//加热到目标温度的起始时间
 #define  BIG_END_TIME_ID						12		//实验结束时间
 #define	 BIG_TEST_TIME_ID						13		//设定的实验时间
 #define  BIG_ADDUP_TIME_ID						16		//累计实验时间
-#define	 BIG_TIME_LEFT_ID						14		//剩余时间
+#define	 BIG_TIME_LEFT_HOUR_ID					14		//剩余时间_小时
+#define  BIG_TIME_LEFT_MIN_ID					32		//剩余时间_分钟
 #define  BIG_CHANGE_AIR_TIME					15		//换气次数
 #define  BIG_SOFT_VER_ID				        17		//软件版本号
 #define	 BIG_AIR_DOOR_ANGLE_INPUT_ID			29		//风门开启角度设置
@@ -251,174 +255,6 @@ typedef struct
 
 
 
-//4.3显示屏界面宏定义
-typedef struct
-{
-	uint8_t SMALL_BRIGHT_ADJUST_SCREEN;							//屏幕亮度调节界面
-	uint8_t SMALL_SELF_TEST_NOTPASS_SCREEN;						//自检未通过弹出界面(故障界面)
-	uint8_t SMALL_SCREAT_PROTECT_SCREEN;		 				//参数设置密码保护界面
-	uint8_t SMALL_AUTO_POWEROFF_POPUPWINDOWS_SCREEN;			//自动断电弹出界面
-	uint8_t SMALL_AUTO_POWEROFF_TIMESET_SCREEN;					//自动断电时间设置界面
-	uint8_t SMALL_START_INIT_SCREEN;  		 					//启动界面
-	uint8_t SMALL_TEMP_VALUE_REVISE_SCREEN;						//温度值校正界面
-	uint8_t SMALL_SELF_TEST_SCREEN; 		 	 				//自检界面
-	uint8_t SMALL_CONTROL_TIME_SET;								//控制器时间设置界面
-	uint8_t SMALL_PASSWORD_ERROR_SCREEN;						//密码输入错误界面
-	uint8_t SMALL_ARGUEMENT_SET_ERROR_SCREEN;					//参数设置无效界面
-	uint8_t SMALL_MAIN_SHOW_SCREEN;		 	 					//主显示界面
-	uint8_t SMALL_PARAM_SET_SCREEN;			 					//参数设置界面
-	uint8_t SMALL_PID_SET_SCREEN;			 					//pid值设置界面
-}SMALL_SCREEN_ID_TAB;
-
-/*************************************SMALL***********************************************/
-/*--------------------------------------------------------------------------*/
-#define  SMALL_START_INIT_ID					2		//进度条启动控制ID
-/*--------------------------------------------------------------------------*/
-
-//主显示界面    control_id  设置
-/*--------------------------------------------------------------------------*/
-//文本id
-#define  SMALL_CURRENT_TEMP_INT_ID				15		//实时测量温度控制ID整数部分
-#define  SMALL_CURRENT_TEMP_DEC_ID				7		//实时测量温度控制ID小数部分
-
-#define  SMALL_SET_TEMP_INT_ID					16		//设定温度控制ID整数部分
-#define  SMALL_SET_TEMP_DEC_ID					12		//设定温度控制ID小数部分
-
-#define  SMALL_START_TIME_ID					17		//加热到目标温度的起始时间
-#define  SMALL_END_TIME_ID						18		//实验结束时间
-#define	 SMALL_TEST_TIME_ID						21		//设定的实验时间h
-#define  SMALL_ADDUP_TIME_ID					20		//累计实验时间h
-
-#define	 SMALL_TIME_LEFT_HOUR_ID				19		//剩余时间 Hou
-#define	 SMALL_TIME_LEFT_MIN_ID					22		//剩余时间 Min
-
-#define  SMALL_SOFT_VER_ID				        2		//软件版本号
-//图标显示ID
-#define  SMALL_HEAT_SWITCH_ID					6		//加热器通断指示
-#define	 SMALL_HEAT_OUTPUT_ID					4		//加热输出指示
-#define	 SMALL_RS485_COMMU_ID					9		//RS485通信状态
-#define  SMALL_PID_RUN_ID						8		//PID自整定运行指示
-#define  SMALL_TEMP_WARNING_ID					10		//温度报警
-#define	 SMALL_BLOWER_SAMPLE_ID					11		//风机、样架电机运行指示
-
-#define	 SMALL_AR_ID							13		//AR报警继电器
-#define  SMALL_FR_ID							14		//FR风机继电器
-
-
-//按钮控制ID
-#define  SMALL_MENU_ID							3		//菜单控制
-#define	 SMALL_BLOWER_SAMPLE_MENU_ID			23		//风机/样架	
-#define  SMALL_START_OR_PAUSE_ID				5		//启动停止按钮
-/*--------------------------------------------------------------------------*/
-
-//自检界面    control_id  设置
-/*--------------------------------------------------------------------------*/
-#define  SMALL_SELF_TEST_PROGRAM				2		//自检控制进度条
-/*--------------------------------------------------------------------------*/
-
-//密码保护界面    control_id  设置
-/*--------------------------------------------------------------------------*/
-#define  SMALL_PASSWORD_PROTECT_INPUT			2		//密码保护输入框
-/*--------------------------------------------------------------------------*/
-
-//参数设置界面    control_id 输入     设置
-/*--------------------------------------------------------------------------*/
-//文本id
-#define  SMALL_TEST_TIME_VALUE					2		//试验时间设置
-#define  SMALL_TEST_TEMP_VALUE					4		//试验温度设置
-#define	 SMALL_WARNING_UP_VALUE					5		//报警上限
-#define	 SMALL_WARNING_DOWN_VALUE				6		//报警下限
-#define  SMALL_NEW_PASSWORD						8		//新密码
-#define  SMALL_SECOND_INPUT_PASSWORD			9		//第二次输入密码
-#define  SMALL_MODBUS_NODE_ADDRESS				7		//modbus节点地址
-//图标显示id
-#define  SMALL_BPS_1200							12		//通信速率1200bps
-#define  SMALL_BPS_2400							13		//通信速率2400bps
-#define  SMALL_BPS_4800							14		//通信速率4800bps
-#define  SMALL_BPS_9600							15		//通信速率9600bps
-#define  SMALL_CHINESE_LANGUAGE					10		//中文
-#define	 SMALL_ENGLISH_LANGUAGE					11		//英语
-
-#define	 SMALL_SET_RETURN_BUTTON				3		//设置界面返回按钮
-/*--------------------------------------------------------------------------*/
-
-
-//屏幕亮度调节设置界面    control_id 文本输入     设置
-/*--------------------------------------------------------------------------*/
-#define  SMALL_SCREEN_BRIGHT_ADJUST				2		//屏幕亮度调节设置
-/*--------------------------------------------------------------------------*/
-
-
-//界面    control_id PID 设置
-/*--------------------------------------------------------------------------*/
-//图标控制id
-#define  SMALL_SELF_ADJUST						4		//自整定按键
-#define  SMALL_PID_RETURN_BUTTON				5	    //PID返回按键
-#define  SMALL_P_VALUE_SET						7		//P值设定
-#define  SMALL_I_VALUE_SET						2		//I值设定
-#define  SMALL_D_VALUE_SET						3		//D值设定
-/*--------------------------------------------------------------------------*/
-
-//界面    control_id 自动断电时间 设置
-/*--------------------------------------------------------------------------*/
-#define  SMALL_YEAR_SET							2		//年份设定
-#define  SMALL_MONTH_SET						3		//月份设定
-#define  SMALL_DAY_SET							4		//日设定
-#define  SMALL_NO_POWER_RETURN_BUTTON			8		//返回按键
-/*--------------------------------------------------------------------------*/
-
-//温度值矫正  设置界面    control_id 
-/*--------------------------------------------------------------------------*/
-#define  SMALL_TEMP_VALUE_REVUSE_SET			2		//温度值校正控制调节
-/*--------------------------------------------------------------------------*/
-
-//界面    control_id 热滞后时间记录界面
-/*--------------------------------------------------------------------------*/
-/*--------------------------------------------------------------------------*/
-
-//界面    control_id 控制器时间设置
-/*--------------------------------------------------------------------------*/
-#define  SMALL_CONTROL_DATE_YEAR_SET       		2		//控制器时间设置:年
-#define  SMALL_CONTROL_DATE_MONTH_SET       	3		//控制器时间设置:月
-#define  SMALL_CONTROL_DATE_DAY_SET       		4		//控制器时间设置:日
-#define  SMALL_CONTROL_TIME_HOUR_SET       		5		//控制器时间设置:时
-#define  SMALL_CONTROL_TIME_MINUTE_SET       	6		//控制器时间设置:分
-#define  SMALL_CONTROL_TIME_SECOND_SET       	7		//控制器时间设置:秒
-#define  SMALL_TIME_SET_RETURN_BUTTON			8		//返回按键
-/*--------------------------------------------------------------------------*/
-
-//界面    control_id自动断电密码输入框
-/*--------------------------------------------------------------------------*/
-#define  SMALL_AUTO_NO_POWER_PASSWOORD_INPUT	2		//自动断电恢复密码
-/*--------------------------------------------------------------------------*/
-
-//界面    control_id自检未通过弹出界面
-/*--------------------------------------------------------------------------*/
-#define  SMALL_ERROR1_TEXT						2		//控制器内部故障1
-#define  SMALL_ERROR2_TEXT						3		//控制器内部故障2
-#define  SMALL_ERROR3_TEXT						4		//热电偶输入故障
-/*--------------------------------------------------------------------------*/
-
-//界面    control_id参数设置无效界面
-/*--------------------------------------------------------------------------*/
-#define  SMALL_PASS_UPDATE_FAIL					2		//密码更新失败
-#define  SMALL_TESTTEMP_SET_FAIL				4		//实验温度设定无效
-#define  SMALL_TESTTIME_SET_FAIL				6		//实验时间设定无效
-#define  SMALL_TEMP_UP_SET_FAIL					7		//温度上限设定无效
-#define  SMALL_TEMP_DOWN_SET_FAIL				8		//温度下限设定无效
-#define  SMALL_MODBUS_ADDRESS_SET_FAIL			9		//MOdbus地址设定无效
-#define	 SMALL_FAIL_RETURN_BUTTON				5		//返回按键
-
-/*--------------------------------------------------------------------------*/
-
-//界面    control_id 密码错误显示界面
-/*--------------------------------------------------------------------------*/
-#define  SMALL_PASS_ERROR_RETURN_BUTTON			5		//密码错误返回
-/*--------------------------------------------------------------------------*/
-
-/************************************************************************************/
-
-
 #define NOTIFY_TOUCH_PRESS     	 	0X01   	//触摸屏按下通知
 #define NOTIFY_TOUCH_RELEASE  		0X03  	//触摸屏松开通知
 #define NOTIFY_WRITE_FLASH_OK  		0X0C  	//写FLASH成功
@@ -485,12 +321,12 @@ typedef struct
 //设备设置RTC 时间
 typedef struct
 {
-	uint8_t Year[BUFFSIZE];
-	uint8_t Mon[BUFFSIZE];
-	uint8_t Day[BUFFSIZE];
-	uint8_t Hour[BUFFSIZE];
-	uint8_t Min[BUFFSIZE];
-	uint8_t Sec[BUFFSIZE];
+	uint8_t Year[COMMONSIZE];
+	uint8_t Mon[COMMONSIZE];
+	uint8_t Day[COMMONSIZE];
+	uint8_t Hour[COMMONSIZE];
+	uint8_t Min[COMMONSIZE];
+	uint8_t Sec[COMMONSIZE];
 }RtcSetTime;
 
 
@@ -505,9 +341,9 @@ typedef struct
 //自动断电时间设置
 typedef struct 
 {
-	uint8_t year[BUFFSIZE];
-	uint8_t month[BUFFSIZE];
-	uint8_t day[BUFFSIZE];
+	uint8_t year[COMMONSIZE];
+	uint8_t month[COMMONSIZE];
+	uint8_t day[COMMONSIZE];
 }AutoNoPowerTimeSet;
 
 
@@ -530,48 +366,51 @@ typedef struct
 //主页面文本显示
 typedef struct 
 {
-	uint8_t  softversion[BUFFSIZE];
-	uint8_t current_temp_vlaue[BUFFSIZE];
-	uint8_t setting_temp[BUFFSIZE];
-	uint8_t  start_time[BUFFSIZE];
-	uint8_t  end_time[BUFFSIZE];
-	uint8_t test_time[BUFFSIZE];
-	uint8_t left_time[BUFFSIZE];
-	uint8_t add_all_time[BUFFSIZE];
-	uint8_t change_air_time[BUFFSIZE];
-	uint8_t air_door_angle[BUFFSIZE];
+	uint8_t  softversion[ADDTESTTIMESIZE];
+	uint8_t current_temp_int[COMMONSIZE];
+	uint8_t current_temp_dec[COMMONSIZE];
+	uint8_t setting_temp_int[COMMONSIZE];
+	uint8_t setting_temp_dec[COMMONSIZE];
+	uint8_t  start_time[RTCBUFFSIZE];
+	uint8_t  end_time[RTCBUFFSIZE];
+	uint8_t test_time[COMMONSIZE];
+	uint8_t left_time_hour[COMMONSIZE];
+	uint8_t left_time_min[COMMONSIZE];
+	uint8_t add_all_time[ADDTESTTIMESIZE];
+	uint8_t change_air_time[COMMONSIZE];
+	uint8_t air_door_angle[COMMONSIZE];
 }MainShowText;
 
 
 typedef struct{
-	float warning1_up;				//报警1上限
+	float warning1_up;					//报警1上限
 	float warning1_down;				//报警1下限
-	float warning2_up;				//报警2上限
+	float warning2_up;					//报警2上限
 	float warning2_down;				//报警2下限
-	uint32_t menu_password;			//菜单密码
-	uint32_t secondtime_password;	//再输入一次菜单密码
+	uint32_t menu_password;				//菜单密码
+	uint32_t secondtime_password;		//再输入一次菜单密码
 	uint16_t change_air_time;			//换气次数
 	uint16_t change_max_time;			//换气次数最大值
 	uint8_t air_door_angle;				//风门角度
 	uint8_t modbus_address;				//modbus节点地址
-	uint8_t modbus_tran_rate[4];					//modbus通信速率
-	uint8_t menu_language[2];						//菜单语言
-}CoilValue;											//保持寄存器存储值
+	uint8_t modbus_tran_rate[4];		//modbus通信速率
+	uint8_t menu_language[2];			//菜单语言
+}CoilValue;					//保持寄存器存储值
 
 
 typedef struct
 {
-	uint8_t change_air_times[19][BUFFSIZE];		//保存风门角度查表值
-	uint8_t airdoor_value[BUFFSIZE];			//保存风门角度设置值
-	uint8_t screen_light_value[BUFFSIZE];		//保存屏幕亮度值
-	uint8_t  protect_password[BUFFSIZE];		//保护界面输入密码
-	uint8_t Pidvalue[3][BUFFSIZE];				//PID值设置保存
-	uint8_t temp_adjust_value[BUFFSIZE];		//温度值校正
-	uint8_t autonopowerpassword[BUFFSIZE];		//自动断电后恢复密码
-	CoilSaveValue  coilsavevalue;				//保持寄存器存储值
-	AutoNoPowerTimeSet autotime;				//自动断电时间设定
-	MainShowText   textvaluebuff;				//主页面文本控件保存缓存数组
-	RtcSetTime  device_time_setting;			//时间设置
+	uint8_t change_air_times[19][COMMONSIZE];		//保存风门角度查表值
+	uint8_t airdoor_value[COMMONSIZE];				//保存风门角度设置值
+	uint8_t screen_light_value[COMMONSIZE];			//保存屏幕亮度值
+	uint8_t  protect_password[PASSWORDLENGTH];		//保护界面输入密码
+	uint8_t Pidvalue[3][PASSWORDLENGTH];			//PID值设置保存
+	uint8_t temp_adjust_value[COMMONSIZE];			//温度值校正
+	uint8_t autonopowerpassword[PASSWORDLENGTH];	//自动断电后恢复密码
+	CoilSaveValue  coilsavevalue;					//保持寄存器存储值
+	AutoNoPowerTimeSet autotime;					//自动断电时间设定
+	MainShowText   textvaluebuff;					//主页面文本控件保存缓存数组
+	RtcSetTime  device_time_setting;				//时间设置
 }TextValueTab;
 
 typedef struct
@@ -769,7 +608,6 @@ void check_pidstatus(void);
 
 void screen_init(void);
 
-void check_screen_size(void);
 
 void screenlanguage(void);
 
@@ -778,7 +616,9 @@ uint8_t DectoBCD(uint8_t Dec);
 
 uint8_t BcdToDec(uint8_t bcd);
 
-uint8_t max_change_air(uint8_t *buff,uint8_t size);
+uint8_t max_change_air(uint8_t *buff);
+
+uint8_t judge_changeair_time(uint16_t change_time);
 
 
 #endif

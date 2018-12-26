@@ -18,6 +18,7 @@
 #include <ctime>
 #include "./status/status.h"
 #include "pidcontroller.h"
+#include "crypto.h"
 
 uint16_t current_screen_id = 0;
 volatile uint32_t  timer_tick_count = 0; //��ʱ������
@@ -29,7 +30,7 @@ extern RtcTime rtctime;
 extern uint8_t cmd_buffer[CMD_MAX_SIZE];		//ָ���
 extern uint8_t press_flag;
 extern MainShowTextValue	showtextvalue;	//��ҳ���ı��ؼ�����ֵ
-int runstatus=2;
+int runstatus=1;
 int runstatus_last=0;
 int debuginfo=0;
 extern arm_pid_instance_f32 PID;
@@ -67,7 +68,7 @@ int main( void )
 {
 	float temperFilter=0;
 	float temperRaw=0;
-	float SetPoint=150;
+	float SetPoint=100;
 	float error=0;
 	uint16_t pwmOut=0;
 	int AutoTuningDone=0;
@@ -83,9 +84,15 @@ int main( void )
 	eStatus = eMBInit( MB_RTU, 0x01, 0x01, 9600, MB_PAR_NONE ); //��ʼ��Modbus
 	eStatus = eMBEnable();									//��Free MODBUS
 	delay_s(1);
-	SetBackLight(20);											//��ʼ��Ļ��������
-	
-	startscreen();												//start screen
+	SetBackLight(20);											//初始屏幕背光亮度
+	STM32_Read_ID();
+	startscreen();	
+
+
+
+
+//	testpassword();
+	//start screen
 	//SetPoint=showtextvalue.setting_temp;
 	PIDInit(PIDKP,PIDKI,PIDKD,SetPoint);//need to be reset after chage setpoint
 
@@ -108,9 +115,11 @@ int main( void )
 			t_thread500=getMsCounter();
 			if(runstatus>0&&runstatus_last==0)
 			{
+				SetPoint=dev_info.testtemp;
 				PIDInit(PIDKP,PIDKI,PIDKD,SetPoint);
-				runstatus_last=runstatus;
+				HEAT_ON;
 			}
+			runstatus_last=runstatus;
 		//	printf("global T:%d", t_thread500);
 			Ktemperature=Max6675_Read_Tem();
 			temperRaw=Ktemperature*0.25;
@@ -168,11 +177,13 @@ int main( void )
 			if(runstatus>0)//start heating
 			{
 				SetPwmValue(pwmOut);
+				//heat icon update
 				HEAT_ON;
 			}
 			else//(runstatus==0)
 			{
 				SetPwmValue(0);
+				//heat icon update
 				HEAT_OFF;
 			}
 		}
@@ -199,6 +210,10 @@ int main( void )
 			t_thread3s = getMsCounter();
 			//3s thread
 			//add status and relay control here.
+			if(showtextvalue.setting_temp!=SetPoint&&SetPoint!=0)
+			{
+				showtextvalue.setting_temp=SetPoint;
+			}
 			
 		}
 			device_timing_selfcheck();
@@ -218,10 +233,10 @@ void System_Init(void)
 	UartInit();										//��ʾ����������
 	screenlanguage();								//��Ļ����ѡ��
 	delay_s(1);
-	DeviceInfo_Init();								//�豸��ʼ��
-
-	TIMx_Configuration();							//pwmʱ������
-	TIMx_Init();									//��ʱtim
+	DeviceInfo_Init();								//设备初始化
+	Crypto_DeInit();								//DeInitialize STM32 Cryptographic Library
+	TIMx_Configuration();							//pwm时钟配置
+	TIMx_Init();									//计时tim
 	
 	Analog_Init();									//adc��ʼ������
 	DAC1_Init();									//DAC��ʼ������
