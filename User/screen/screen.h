@@ -620,6 +620,7 @@ uint8_t max_change_air(uint8_t *buff);
 
 uint8_t judge_changeair_time(uint16_t change_time);
 
+void update_dev_status(void);
 
 #endif
 

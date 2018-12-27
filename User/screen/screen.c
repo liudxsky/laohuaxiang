@@ -1257,9 +1257,11 @@ void ProcessMessage( PCTRL_MSG msg, uint16_t size )
 					{
 						case kCtrlButton: //按钮控件
 							NotifyButton(screen_id,control_id,msg->param[1]);
+							dev_info.dev_status_changed_flag = 1;
 							break;
 						case kCtrlText://文本控件
 							NotifyText(screen_id,control_id,msg->param);
+							dev_info.dev_status_changed_flag = 1;
 							break;
 						case kCtrlProgress: //进度条控件
 							NotifyProgress(screen_id,control_id,value);
@@ -1798,3 +1800,12 @@ uint8_t judge_changeair_time(uint16_t change_time)
 	}
 	return FALSE;
 }
+
+void update_dev_status(void)
+{
+	SetTextValueFloat(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TEST_TIME_ID,dev_info.testtime);
+	SetTextValueFloat(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_SET_TEMP_ID,dev_info.testtemp);
+	SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_CHANGE_AIR_TIME,dev_info.flash_setvalue.change_air_time);
+}
+
+

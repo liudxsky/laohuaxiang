@@ -10,12 +10,11 @@
       <TargetName>demo</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060061::V5.06 update 1 (build 61)::ARMCC</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>STM32F407ZETx</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F4xx_DFP.2.7.0</PackID>
+          <PackID>Keil.STM32F4xx_DFP.2.5.0</PackID>
           <PackURL>http://www.keil.com/pack</PackURL>
           <Cpu>IROM(0x08000000,0x80000) IRAM(0x20000000,0x20000) IRAM2(0x10000000,0x10000) CPUTYPE("Cortex-M4") FPU2 CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -230,7 +229,6 @@
             <useUlib>1</useUlib>
             <EndSel>0</EndSel>
             <uLtcg>0</uLtcg>
-            <nSecure>0</nSecure>
             <RoSelD>3</RoSelD>
             <RwSelD>3</RwSelD>
             <CodeSel>0</CodeSel>
@@ -367,13 +365,11 @@
             <useXO>0</useXO>
             <v6Lang>0</v6Lang>
             <v6LangP>0</v6LangP>
-            <vShortEn>0</vShortEn>
-            <vShortWch>0</vShortWch>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER,STM32F40_41xxx,ARM_MATH_CM4</Define>
               <Undefine></Undefine>
-              <IncludePath>..\Libraries\CMSIS\Device\ST\STM32F4xx\Include;..\Libraries\CMSIS\Include;..\Libraries\STM32F4xx_StdPeriph_Driver\inc;..\User;..\User\modbus;..\User\modbus\ascii;..\User\dataprocess;..\User\modbus\functions;..\User\modbus\include;..\User\modbus\rtu;..\User\port;..\User\SCREEN_DRIVE</IncludePath>
+              <IncludePath>..\Libraries\CMSIS\Device\ST\STM32F4xx\Include;..\Libraries\CMSIS\Include;..\Libraries\STM32F4xx_StdPeriph_Driver\inc;..\User;..\User\modbus;..\User\modbus\ascii;..\User\dataprocess;..\User\modbus\functions;..\User\modbus\include;..\User\modbus\rtu;..\User\port;..\User\SCREEN_DRIVE;..\Libraries\STM32_Cryptographic_Library\inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -536,8 +532,6 @@
                     <useXO>2</useXO>
                     <v6Lang>0</v6Lang>
                     <v6LangP>0</v6LangP>
-                    <vShortEn>0</vShortEn>
-                    <vShortWch>0</vShortWch>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -608,8 +602,6 @@
                     <useXO>2</useXO>
                     <v6Lang>0</v6Lang>
                     <v6LangP>0</v6LangP>
-                    <vShortEn>0</vShortEn>
-                    <vShortWch>0</vShortWch>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -705,8 +697,6 @@
                     <useXO>2</useXO>
                     <v6Lang>0</v6Lang>
                     <v6LangP>0</v6LangP>
-                    <vShortEn>0</vShortEn>
-                    <vShortWch>0</vShortWch>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -1021,6 +1011,21 @@
               <FileName>hmi_user_uart.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\User\SCREEN_DRIVE\hmi_user_uart.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>STM32_Crypto_library</GroupName>
+          <Files>
+            <File>
+              <FileName>M3_CryptoFW_RngHW_2_0_6.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\Libraries\STM32_Cryptographic_Library\binary\MK-ARM\M3_CryptoFW_RngHW_2_0_6.lib</FilePath>
+            </File>
+            <File>
+              <FileName>M3_CryptoHW_2_0_6.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\Libraries\STM32_Cryptographic_Library\binary\MK-ARM\M3_CryptoHW_2_0_6.lib</FilePath>
             </File>
           </Files>
         </Group>

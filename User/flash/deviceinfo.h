@@ -20,6 +20,7 @@
 typedef struct
 {
 	uint16_t valid_flag;    							//有效标志位
+	uint8_t  dev_status_changed_flag;			//数据状态标志位
 	uint16_t pwmscope;									//pwm输出范围
 	uint16_t pwmvalue;									//pwm控制温度值
 	uint8_t  change_air_time[19];						//风门角度换气次数

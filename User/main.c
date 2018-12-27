@@ -14,6 +14,7 @@
 #include "hmi_user_uart.h"
 #include "./adc/adc.h"
 #include "./flash/deviceinfo.h"
+#include "./flash/flash.h"
 #include "time.h"
 #include <ctime>
 #include "./status/status.h"
@@ -210,9 +211,15 @@ int main( void )
 			t_thread3s = getMsCounter();
 			//3s thread
 			//add status and relay control here.
-			if(showtextvalue.setting_temp!=SetPoint&&SetPoint!=0)
+			FLASH_Read_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
+			if(showtextvalue.setting_temp!=SetPoint&&SetPoint!=0&&dev_info.dev_status_changed_flag == 1)
 			{
 				showtextvalue.setting_temp=SetPoint;
+				update_dev_status();
+			}
+			else
+			{
+				dev_info.dev_status_changed_flag = 0;
 			}
 			
 		}
