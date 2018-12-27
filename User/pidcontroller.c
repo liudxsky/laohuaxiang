@@ -50,19 +50,18 @@ void pidSPinit()
 	pidSP[0].Ki_auto=0.005;
 	pidSP[0].Kd_auto=26809;
 	pidSP[0].SetPoint=100;
-	pidSP[0].kiadj=5;//integral time;
-	
+
+
 	pidSP[1].Kp_auto=38;
 	pidSP[1].Ki_auto=0.01;
 	pidSP[1].Kd_auto=29809;
 	pidSP[1].SetPoint=200;
-	pidSP[1].kiadj=10;//integral time;
+
 	
 	pidSP[2].Kp_auto=38.5;
 	pidSP[2].Ki_auto=0.01;
 	pidSP[2].Kd_auto=39697;
 	pidSP[2].SetPoint=300;
-	pidSP[2].kiadj=10;//integral time;
 }
  int PIDInit(float kp,float ki, float kd,float sp)
 {
@@ -77,9 +76,20 @@ void pidSPinit()
 	memset(temperbuff,0,T_BUFFLEN);
 	memset(&autoTuningParam,0,sizeof(autoTuningParam));
 	autoTuningParam.SetPoint=sp;
-	autoTuningParam.kpadj=0.5;
-	autoTuningParam.kiadj=0.0;
-	autoTuningParam.kdadj=1;
+	if(sp<120)
+	{
+		autoTuningParam.kpadj=0.3;
+	}
+	else if(sp>=120&&sp<220)
+	{
+		autoTuningParam.kpadj=0.4;
+	}
+	else
+	{
+		autoTuningParam.kpadj=0.5;
+	}
+	autoTuningParam.kiadj=0.5;
+	autoTuningParam.kdadj=0.7;
 	if(debuginfo)
 	{
 		printf("Kp:%5f, Ki:%5f, Kd:%5f\n",PID.Kp,PID.Ki,PID.Kd);
@@ -90,7 +100,7 @@ void pidSPinit()
 }
 uint16_t pidCalc(float e)
 {
-	float errorNow=e;
+	float errorNow=e-0.5;
 	float  duty=0;
 	float outKp,outKi,outKd;
 	float derror=0;
@@ -98,6 +108,11 @@ uint16_t pidCalc(float e)
 	if(autoTuningParam.SetPoint<150)
 	{
 		error_threashold=5;
+		if(f_errorreset&&errorNow==0)
+		{
+			errorSum=0;
+			f_errorreset=0;
+		}
 	}
 	else
 	{

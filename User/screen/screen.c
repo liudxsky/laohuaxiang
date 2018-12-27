@@ -934,6 +934,8 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 		}
 		SetRtcTime(rtctime.Sec,rtctime.Min,rtctime.Hour,rtctime.Day,0,rtctime.Mon,rtctime.Year);
 	}
+	
+	FLASH_Read_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
 //	//主显示界面
 //	if(screen_id == biglanguage_screen.BIG_MAIN_SHOW_SCREEN)
 //	{
@@ -1094,6 +1096,8 @@ void NotifyIcon(uint16_t screen_id, uint16_t control_id,uint8_t status,uint8_t i
 				break;
 		}
 	}
+	
+	FLASH_Read_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
 
 }
 
@@ -1315,11 +1319,11 @@ void check_pidstatus(void)
 //连击触控跳转界面函数
 void  touchtoscreen(void)
 {
-	if((touch_press.touch_x - touch_up.touch_x > 100)&&(current_screen_id == biglanguage_screen.BIG_MAIN_SHOW_SCREEN))
+	if((touch_press.touch_x - touch_up.touch_x > 200)&&(current_screen_id == biglanguage_screen.BIG_MAIN_SHOW_SCREEN))
 	{
 		MySetScreen(biglanguage_screen.BIG_TEMP_CURVE_SHOW_SCREEN);
 	}
-	else if((touch_up.touch_x - touch_press.touch_x > 100)&&(current_screen_id == biglanguage_screen.BIG_TEMP_CURVE_SHOW_SCREEN))
+	else if((touch_up.touch_x - touch_press.touch_x > 200)&&(current_screen_id == biglanguage_screen.BIG_TEMP_CURVE_SHOW_SCREEN))
 	{
 		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);
 	}
@@ -1557,7 +1561,7 @@ void endtimecalcu(RtcTime starttime,uint16_t testtime)
 
 	time_t currenttime = 946684800;
 //	timebuff=malloc(sizeof(char)*25);
-	currenttime += to_day(starttime);
+	currenttime += to_day(starttime) + testtime*3600;
 	strftime(timebuff,20,"%Y/%m/%d %H:%M:%S",localtime(&currenttime));
 	memcpy(textvalue.textvaluebuff.end_time,timebuff+2,14);
 //	printf("格式化的日期 & 时间 : |%s|\n", textvalue.textvaluebuff.end_time );
@@ -1565,7 +1569,8 @@ void endtimecalcu(RtcTime starttime,uint16_t testtime)
 //	printf("time is %s\r\n",timebuff);
 //	adjustchar(timebuff);
 //	free(timebuff);
-	SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_END_TIME_ID,textvalue.textvaluebuff.end_time);		
+	memcpy(dev_info.warmend_time,textvalue.textvaluebuff.end_time,sizeof(textvalue.textvaluebuff.end_time));
+	SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_END_TIME_ID,dev_info.warmend_time);		
 }
 
 
@@ -1614,21 +1619,25 @@ void start_endtime_set(void)
 	RtcTime inittime = {0};
 	if(warmflag == 0)		
 	{
-		mergetimechar(inittime);
-		SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_START_TIME_ID,textvalue.textvaluebuff.start_time);
-		SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_END_TIME_ID,textvalue.textvaluebuff.start_time); 	
-		SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TIME_LEFT_HOUR_ID,"00");	
-		SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TIME_LEFT_MIN_ID,"00");	
+//		mergetimechar(inittime);
+//		SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_START_TIME_ID,textvalue.textvaluebuff.start_time);
+//		SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_END_TIME_ID,textvalue.textvaluebuff.start_time); 	
+//		SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TIME_LEFT_HOUR_ID,"00");	
+//		SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TIME_LEFT_MIN_ID,"00");	
 	}
-	else if((warmflag == 1)&&(dev_info.testtemp  != 0)&&(lefttimeflag == 0))	//第一次加热到目标温度且设定温度不为0
+	else if((warmflag == 1)&&(dev_info.testtemp != 0)&&(lefttimeflag == 0))	//第一次加热到目标温度且设定温度不为0
 	{	
 		lefttimeflag = 1;
 		//开始时间设置
-		mergetimechar(rtctime);
 		showtextvalue.start_time = rtctime;
+		mergetimechar(showtextvalue.start_time);
+		memcpy(dev_info.warmstart_time,textvalue.textvaluebuff.start_time,sizeof(textvalue.textvaluebuff.start_time));
+		
 		SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_START_TIME_ID,textvalue.textvaluebuff.start_time);
 		//结束时间设置
 		endtimecalcu(showtextvalue.start_time,showtextvalue.test_time);
+		FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));		
+		FLASH_Read_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
 	}
 	if(lefttimeflag == 1)
 	{
@@ -1642,6 +1651,8 @@ void addup_testtime(void)
 	uint32_t addtime = 0;
 	addtime += showtextvalue.test_time;
 	dev_info.addup_testtime = addtime;
+	FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));		
+	FLASH_Read_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
 	SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_ADDUP_TIME_ID,dev_info.addup_testtime);
 }
 

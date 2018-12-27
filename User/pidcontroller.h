@@ -4,8 +4,8 @@
 #include "stdlib.h"
 //#define FromUart
 #define PIDKP 25//sp100->25
-#define PIDKI 0.005
-#define PIDKD 26809
+#define PIDKI 0.0055//0.0055
+#define PIDKD 36809
 #define T_BUFFLEN 64
 #define BLOCK_SIZE T_BUFFLEN
 #define PWMOUTLIMIT 1000

@@ -31,6 +31,8 @@ typedef struct
 	CoilValue flash_setvalue;							//参数设置
 	AutoNoPowerTime autonopowertime;					//自动断电时间
 	uint8_t autonopower_password[PASSWORDLENGTH];		//自动断电密码
+	uint8_t  warmstart_time[RTCBUFFSIZE];
+	uint8_t  warmend_time[RTCBUFFSIZE];
 }dev_info_t;
 
 typedef enum {FAILED = 0, PASSED = !FAILED} TestStatus;
