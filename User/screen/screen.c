@@ -171,7 +171,7 @@ void NotifyScreen(uint16_t screen_id)
 	{
 		SetTextValueFloat(screen_id,BIG_P_VALUE_SET,dev_info.pidvalue.PID_P);
 
-		SetTextValueFloat(screen_id,BIG_I_VALUE_SET,dev_info.pidvalue.PID_I);
+		SetTextValueFloat(screen_id,BIG_I_VALUE_SET,dev_info.pidvalue.PID_I*10000);
 
 		SetTextValueFloat(screen_id,BIG_D_VALUE_SET,dev_info.pidvalue.PID_D);	
 	}
@@ -275,6 +275,8 @@ void NotifyButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 		if(control_id == BIG_SELF_ADJUST)							//self adjust
 		{
 			runstatus=2;
+			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_HEAT_SWITCH_ID,SHOW);
+			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_HEAT_OUTPUT_ID,SHOW);
 		}
 		else if(control_id == BIG_PID_RETURN_BUTTON)  				
 		{
@@ -339,6 +341,7 @@ void NotifyButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 				{
 					runstatus = 1;			
 					AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_HEAT_SWITCH_ID,SHOW);
+					AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_HEAT_OUTPUT_ID,SHOW);
 				}
 			
 				break;
@@ -495,6 +498,7 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 	//PID
 	if(screen_id == biglanguage_screen.BIG_PID_SET_SCREEN)
 	{
+		
 		switch (control_id)
 		{
 			case BIG_P_VALUE_SET:
@@ -506,6 +510,7 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 				memset(textvalue.Pidvalue[1],0,sizeof(char)*PASSWORDLENGTH);
 				memcpy(textvalue.Pidvalue[1],str,sizeof(char)*PASSWORDLENGTH);
 				dev_info.pidvalue.PID_I = atof(textvalue.Pidvalue[1]);
+				dev_info.pidvalue.PID_I=dev_info.pidvalue.PID_I/10000;
 				break;
 			case BIG_D_VALUE_SET:
 				memset(textvalue.Pidvalue[2],0,sizeof(char)*PASSWORDLENGTH);
@@ -817,7 +822,7 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 	}
 }
 
-//½ø¶ÈÌõ
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void NotifyProgress(uint16_t screen_id, uint16_t control_id, uint32_t value)
 {
 	//TODO
@@ -1084,10 +1089,12 @@ void check_pidstatus(void)
 	if(runstatus==3)
 	{		
 		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_PID_RUN_ID,SHOW);
+		
 	}
 	else
 	{
 		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_PID_RUN_ID,HIDE);
+		
 	}
 }
 
@@ -1189,7 +1196,7 @@ float myabs(float a,float b)
 uint32_t temptime = 0,nowtesttime = 0,lasttesttime = 0;	
 
 
-//ÀÛ¼ÆÊÔÑéÊ±¼ä
+//ï¿½Û¼ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½
 void addup_testtime(void)
 {
 	uint32_t addtime = 0;
@@ -1203,7 +1210,7 @@ void addup_testtime(void)
 
 
 
-//Ê£ÓàÊ±¼ä¼ÆËã
+//Ê£ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½
 void lefttimecalculate(void)
 {
 	if((runstatus)&&(dev_info.testtime != 0))

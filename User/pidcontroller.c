@@ -108,7 +108,7 @@ uint16_t pidCalc(float e)
 	if(autoTuningParam.SetPoint<150)
 	{
 		error_threashold=5;
-		if(f_errorreset&&errorNow==0)
+		if(f_errorreset&&errorNow<1)
 		{
 			errorSum=0;
 			f_errorreset=0;

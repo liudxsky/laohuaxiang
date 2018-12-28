@@ -30,8 +30,8 @@ extern dev_info_t dev_info;
 extern RtcTime rtctime;
 extern uint8_t cmd_buffer[CMD_MAX_SIZE];		//ָInstruction cache
 extern uint8_t press_flag;
-extern MainShowTextValue	showtextvalue;		//main screen text save value
-int runstatus=1;
+extern MainShowTextValue	showtextvalue;	//��ҳ���ı��ؼ�����ֵ
+int runstatus=0;
 int runstatus_last=0;
 int debuginfo=0;
 extern arm_pid_instance_f32 PID;
@@ -75,6 +75,7 @@ int main( void )
 	volatile uint32_t t_thread100=0;
 	volatile uint32_t t_thread500=0;
 	volatile uint32_t t_thread3s=0;
+	
 	uint16_t Ktemperature = 0;
   	eMBErrorCode    eStatus;
 	qsize  size = 0;
@@ -93,8 +94,13 @@ int main( void )
 	testpassword();
 	//start screen
 	//SetPoint=showtextvalue.setting_temp;
-	PIDInit(PIDKP,PIDKI,PIDKD,SetPoint);//need to be reset after chage setpoint
-
+	SetPoint=dev_info.testtemp;
+	PIDInit(dev_info.pidvalue.PID_P,dev_info.pidvalue.PID_I,dev_info.pidvalue.PID_D,SetPoint);//need to be reset after chage setpoint
+	dev_info.dev_status_changed_flag=1;
+	//dev_info.pidvalue.PID_P=PIDKP;
+	//dev_info.pidvalue.PID_I=PIDKI;
+	//dev_info.pidvalue.PID_D=PIDKD;
+	//dev_info.pwmscope=1000;
 	while(1)
     {
       eMBPoll(  );											//analyze Modbus data 
@@ -115,7 +121,7 @@ int main( void )
 			if(runstatus>0&&runstatus_last==0)
 			{
 				SetPoint=dev_info.testtemp;
-				PIDInit(PIDKP,PIDKI,PIDKD,SetPoint);
+				PIDInit(dev_info.pidvalue.PID_P,dev_info.pidvalue.PID_I,dev_info.pidvalue.PID_D,SetPoint);
 				HEAT_ON;
 			}
 			runstatus_last=runstatus;
@@ -156,16 +162,15 @@ int main( void )
 						dev_info.pidvalue.PID_P=autoTuneParam.Kp_auto;
 						dev_info.pidvalue.PID_I=autoTuneParam.Ki_auto;
 						dev_info.pidvalue.PID_D=autoTuneParam.Kd_auto;
+						dev_info.dev_status_changed_flag=1;
 						printf("Kp:%f,Ki:%f,Kd%f\n",PID.Kp,PID.Ki,PID.Kd);
+						FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));	
 					}
 					else
 					{
 						//autotune failed
 					}
 					
-					while(1)
-					{
-					}
 				}
 				else
 				{
@@ -201,10 +206,10 @@ int main( void )
 			t_thread3s = getMsCounter();
 			//3s thread
 			//add status and relay control here.
-			FLASH_Read_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
-			if(showtextvalue.setting_temp!=SetPoint&&SetPoint!=0&&dev_info.dev_status_changed_flag == 1)
+			if(dev_info.testtemp!=SetPoint&&SetPoint!=0&&dev_info.dev_status_changed_flag == 1)
 			{
-				showtextvalue.setting_temp=SetPoint;
+				dev_info.dev_status_changed_flag=0;
+				SetPoint=dev_info.testtemp;
 				update_dev_status();
 			}
 			else
