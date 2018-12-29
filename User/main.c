@@ -22,34 +22,34 @@
 #include "crypto.h"
 
 uint16_t current_screen_id = 0;
-volatile uint32_t  timer_tick_count = 0; //��ʱ������
+volatile uint32_t  timer_tick_count = 0; // tick timer
 
 extern uint16_t ADC_ConvertedValue[ADC_NOFCHANEL];
 
 extern dev_info_t dev_info;
 extern RtcTime rtctime;
-extern uint8_t cmd_buffer[CMD_MAX_SIZE];		//ָ���
+extern uint8_t cmd_buffer[CMD_MAX_SIZE];		//ָInstruction cache
 extern uint8_t press_flag;
-extern MainShowTextValue	showtextvalue;	//��ҳ���ı��ؼ�����ֵ
+extern MainShowTextValue	showtextvalue;		//main screen text save value
 int runstatus=1;
 int runstatus_last=0;
 int debuginfo=0;
 extern arm_pid_instance_f32 PID;
 /* ----------------------- Defines ------------------------------------------*/
 
-//����Ĵ�������
+//input register
 uint16_t    usRegInputBuf[REG_INPUT_NREGS]= {0};
 
 
-//���ּĴ�������
+//holding register
 uint16_t	usRegHoldingBuf[REG_HOLDING_NREGS] = {0};
 
 
-//��Ȧ�Ĵ�������
+//coil  register
 uint16_t	ucRegCoilsBuf[REG_COILS_SIZE] = {0};
 
 
-//��������Ĵ�������
+//switch input register
 uint16_t	ucRegDiscreteBuf[REG_DISCRETE_SIZE] = {0};
 
 /* --------------------------------------------------------------------------*/
@@ -59,7 +59,6 @@ extern  uint32_t password1;
 extern uint32_t password2;
 extern float adjusttemp;
 extern Touch_Times touchtimes;
-extern MainShowTextValue showtextvalue;	//��ҳ���ı��ؼ�����ֵ
 float temper_usart;
 
 
@@ -80,30 +79,30 @@ int main( void )
 	uint16_t Ktemperature = 0;
   eMBErrorCode    eStatus;
 	qsize  size = 0;
-	System_Init();												//ϵͳ��ʼ������
+	System_Init();												//init
 
-	eStatus = eMBInit( MB_RTU, 0x01, 0x01, 9600, MB_PAR_NONE ); //��ʼ��Modbus
-	eStatus = eMBEnable();									//��Free MODBUS
+	eStatus = eMBInit( MB_RTU, 0x01, 0x01, 9600, MB_PAR_NONE ); //Modbus Init
+	eStatus = eMBEnable();									//Free MODBUS enable
 	delay_s(1);
-	SetBackLight(20);											//初始屏幕背光亮度
+	SetBackLight(20);											//set screen Backlight brightness
 	STM32_Read_ID();
 	startscreen();	
 
 
 
 
-//	testpassword();
+	testpassword();
 	//start screen
 	//SetPoint=showtextvalue.setting_temp;
 	PIDInit(PIDKP,PIDKI,PIDKD,SetPoint);//need to be reset after chage setpoint
 
 	while(1)
     {
-      eMBPoll(  );											//��ѯ����֡ 
-      size = queue_find_cmd(cmd_buffer,CMD_MAX_SIZE); 		//�ӻ������л�ȡһ��ָ��        
-		if(size>0)												//���յ�ָ��
+      eMBPoll(  );											//analyze Modbus data 
+      size = queue_find_cmd(cmd_buffer,CMD_MAX_SIZE); 		//get one screen   command     
+		if(size>0)												//received valid instructions
 		{
-			ProcessMessage((PCTRL_MSG)cmd_buffer, size);//ָ���
+			ProcessMessage((PCTRL_MSG)cmd_buffer, size);//ָinstruction deal
 		}
 		#if 1
 		if(getMsCounter()-t_thread100>200)
@@ -126,7 +125,7 @@ int main( void )
 			temperRaw=Ktemperature*0.25;
 			//SetPoint=100;
 			temperFilter=getFilterTemper(temperRaw);
-			printf("%f\n",temperFilter);
+//			printf("%f\n",temperFilter);
 			//temperFilter=temper_usart;
 			error=SetPoint-temperFilter;
 //			if(debuginfo)
@@ -192,12 +191,12 @@ int main( void )
 		if(getMsCounter() - timer_tick_count > 1000)
 		{
 			timer_tick_count = getMsCounter();
-			ReadRtcTime();		
-			start_endtime_set();							
-			temp_detection(temperFilter);				
+			ReadRtcTime();											//read current RTC time
+			start_endtime_set();								//start and end time setting
+			temp_detection(temperFilter);				//temp detection
 			if(press_flag)
 			{
-				get_combo_button_times();					
+				get_combo_button_times();					//double heit to J\jump interface
 				touchtimes.self_check_times = 0;
 				touchtimes.menu_click_times = 0;
 				press_flag = 0;
@@ -231,26 +230,26 @@ int main( void )
 
 
 
-//ϵͳ��ʼ��
+//SYSTEM init
 void System_Init(void)
 {
-	delay_init();									//��ʱ������ʼ��
-	Gpio_Init();									//GPIO��ʼ������
-	USART1_Config();								//����1����		
-	UartInit();										//��ʾ����������
-	screenlanguage();								//��Ļ����ѡ��
+	delay_init();			//delay function init					
+	Gpio_Init();			//gpio init						
+	USART1_Config();		//debug usart1 config			
+	UartInit();				//screen usart init						
+	screenlanguage();		//screen language select						
 	delay_s(1);
-	DeviceInfo_Init();								//设备初始化
-	Crypto_DeInit();								//DeInitialize STM32 Cryptographic Library
-	TIMx_Configuration();							//pwm时钟配置
-	TIMx_Init();									//计时tim
+	DeviceInfo_Init();		//device message init
+	Crypto_DeInit();		//DeInitialize STM32 Cryptographic Library												
+	TIMx_Configuration();	//pwm time config						
+	TIMx_Init();			//timekeeping init						
 	
-	Analog_Init();									//adc��ʼ������
-	DAC1_Init();									//DAC��ʼ������
-	Dac_Select_Init();
-	Max6675_Gpio_Init();							//�ȵ�żGPIO��ʼ��	 
-	control_mode_select();							//���ſ���ѡ��
-	screen_init();									//��Ļ���ݳ�ʼ��
+	Analog_Init();			//adc init						
+	DAC1_Init();			//dac init						
+	Dac_Select_Init();		//dac select
+	Max6675_Gpio_Init();	//thermocouple gpio init						
+	control_mode_select();	//control mode select						
+	screen_init();			//screen data init						
 	
 }
 
@@ -265,76 +264,56 @@ void System_Init(void)
 
 
 #if 1
-
-
-
-
-
-
-/**
-* @brief ����Ĵ���������������Ĵ����ɶ���������д��
-* @param pucRegBuffer ��������ָ��
-* usAddress �Ĵ�����ʼ��ַ
-* usNRegs �Ĵ�������
-* @retval eStatus �Ĵ���״̬
-*/
+//input register deal with function
 eMBErrorCode
 eMBRegInputCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs )
 {
     eMBErrorCode    eStatus = MB_ENOERR;
    	int16_t iRegIndex;
-	/*��ѯ�Ƿ��ڼĴ�����Χ��.Ϊ�˱��⾯�棬�޸�Ϊ�з�������*/
 	if( ( (int16_t)usAddress >= REG_INPUT_START ) \
 	&& ( usAddress + usNRegs <= REG_INPUT_START + REG_INPUT_NREGS ) )
 	{
-		/*��ò���ƫ���������β�����ʼ��ַ-����Ĵ����ĳ�ʼ��ַ*/
+
 		iRegIndex = ( int16_t )( usAddress - REG_INPUT_START );
 		
-		while( usNRegs > 0 )			//�����ֵ
+		while( usNRegs > 0 )			
 		{
 			
-			*pucRegBuffer++ = ( uint8_t )( usRegInputBuf[iRegIndex] >> 8 );			//��ֵ���ֽ�
+			*pucRegBuffer++ = ( uint8_t )( usRegInputBuf[iRegIndex] >> 8 );			
 			
-			*pucRegBuffer++ = ( uint8_t )( usRegInputBuf[iRegIndex] & 0xFF );		//��ֵ���ֽ�
+			*pucRegBuffer++ = ( uint8_t )( usRegInputBuf[iRegIndex] & 0xFF );		
 			
-			iRegIndex++;		//ƫ��������
+			iRegIndex++;		
 			
-			usNRegs--;			//�������Ĵ��������ݼ�
+			usNRegs--;			
 		}
 	}
 	else
 	{
-		eStatus = MB_ENOREG;		//���ش���״̬���޼Ĵ��� 
+		eStatus = MB_ENOREG;	 
 	}
     return eStatus;
 }
 
 
 
+//holding register deal with function
 
-/**
-* @brief ���ּĴ��������������ּĴ����ɶ����ɶ���д
-* @param pucRegBuffer ������ʱ--��������ָ�룬д����ʱ--��������ָ��
-* usAddress �Ĵ�����ʼ��ַ
-* usNRegs �Ĵ�������
-* eMode ������ʽ��������д
-* @retval eStatus �Ĵ���״̬
-*/
 eMBErrorCode
 eMBRegHoldingCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs,
                  eMBRegisterMode eMode )
 {
-	eMBErrorCode eStatus = MB_ENOERR;			//����״̬	
-	int16_t iRegIndex;							//ƫ����
-	/*�жϼĴ����ǲ����ڷ�Χ��*/
+	eMBErrorCode eStatus = MB_ENOERR;				
+	int16_t iRegIndex;							
+
 	if( ( (int16_t)usAddress >= REG_HOLDING_START ) \
 	&& ( usAddress + usNRegs <= REG_HOLDING_START + REG_HOLDING_NREGS ) )
 	{	
-		iRegIndex = ( int16_t )( usAddress - REG_HOLDING_START);   //����ƫ����
+		iRegIndex = ( int16_t )( usAddress - REG_HOLDING_START);   
 
 		switch ( eMode )
 		{	
-			case MB_REG_READ:			//�������� 
+			case MB_REG_READ:			
 				while( usNRegs > 0 )
 				{
 					*pucRegBuffer++ = ( uint8_t )( usRegHoldingBuf[iRegIndex] >> 8 );
@@ -343,7 +322,7 @@ eMBRegHoldingCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs,
 					usNRegs--;
 				}
 			break;
-			case MB_REG_WRITE:			//д������ 
+			case MB_REG_WRITE:			
 				while( usNRegs > 0 )
 				{
 					usRegHoldingBuf[iRegIndex] = *pucRegBuffer++ << 8;
@@ -356,42 +335,31 @@ eMBRegHoldingCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs,
 	}
 	else
 	{
-		eStatus = MB_ENOREG;			//���ش���״̬
+		eStatus = MB_ENOREG;			
 	}
     return eStatus;
 }
 
 
-
-/**
-* @brief ��Ȧ�Ĵ�������������Ȧ�Ĵ����ɶ����ɶ���д
-* @param pucRegBuffer ������---��������ָ�룬д����--��������ָ��
-* usAddress �Ĵ�����ʼ��ַ
-* usNRegs �Ĵ�������
-* eMode ������ʽ��������д
-* @retval eStatus �Ĵ���״̬
-*/
-
+//coils register deal with function
 eMBErrorCode
 eMBRegCoilsCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNCoils,
                eMBRegisterMode eMode )
 {
 
-	eMBErrorCode eStatus = MB_ENOERR;		    	//����״̬
+	eMBErrorCode eStatus = MB_ENOERR;		    	
 
-	int16_t iNCoils = ( int16_t )usNCoils;			//�Ĵ�������
+	int16_t iNCoils = ( int16_t )usNCoils;			
 	
-	int16_t usBitOffset;							//�Ĵ���ƫ����
+	int16_t usBitOffset;						
 
-	/*���Ĵ����Ƿ���ָ����Χ��*/
 	if( ( (int16_t)usAddress >= REG_COILS_START ) &&
 	( usAddress + usNCoils <= REG_COILS_START + REG_COILS_SIZE ) )
 	{
-		/*����Ĵ���ƫ����*/
 		usBitOffset = ( int16_t )( usAddress - REG_COILS_START );
 		switch ( eMode )
 		{
-			case MB_REG_READ:								//������
+			case MB_REG_READ:								
 				while( iNCoils > 0 )
 				{
 					*pucRegBuffer++ = xMBUtilGetBits( ucRegCoilsBuf, usBitOffset,
@@ -402,7 +370,7 @@ eMBRegCoilsCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNCoils,
 			break;
 
 	
-			case MB_REG_WRITE:								//д����
+			case MB_REG_WRITE:								
 				while( iNCoils > 0 )
 				{
 					xMBUtilSetBits( ucRegCoilsBuf, usBitOffset,
@@ -423,30 +391,19 @@ eMBRegCoilsCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNCoils,
 
 
 
-/**
-* @brief ��������Ĵ�������������������Ĵ������ɶ�
-* @param pucRegBuffer ������---��������ָ�룬д����--��������ָ��
-* usAddress �Ĵ�����ʼ��ַ
-* usNRegs �Ĵ�������
-* eMode ������ʽ��������д
-* @retval eStatus �Ĵ���״̬
-*/
-
+//switch register deal with function
 eMBErrorCode
 eMBRegDiscreteCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNDiscrete )
-{
-   
-	eMBErrorCode eStatus = MB_ENOERR;		 			//����״̬
+{  
+	eMBErrorCode eStatus = MB_ENOERR;		 			
 	
-	int16_t iNDiscrete = ( int16_t )usNDiscrete;		//�����Ĵ�������
+	int16_t iNDiscrete = ( int16_t )usNDiscrete;		
 	
-	uint16_t usBitOffset;								//ƫ����
-
-	/*�жϼĴ���ʱ�����ƶ���Χ��*/
+	uint16_t usBitOffset;								
+	
 	if( ( (int16_t)usAddress >= REG_DISCRETE_START ) &&
 	( usAddress + usNDiscrete <= REG_DISCRETE_START + REG_DISCRETE_SIZE ) )
 	{
-		/*���ƫ����*/
 		usBitOffset = ( uint16_t )( usAddress - REG_DISCRETE_START );
 
 		while( iNDiscrete > 0 )

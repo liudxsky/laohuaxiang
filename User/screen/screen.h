@@ -584,10 +584,6 @@ void mergehour_min(uint16_t hour,uint16_t min);
 
 uint32_t to_day(RtcTime time);
 
-//char * monselect(char *monbuff);
-
-//void  adjustchar(char *timebuff);
-
 void endtimecalcu(RtcTime starttime,uint16_t testtime);
 
 uint32_t diff_time(RtcTime starttime,RtcTime endtime);

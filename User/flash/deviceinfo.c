@@ -176,7 +176,8 @@ void Formula_74(uint8_t *D,uint8_t *Result)
 
 
 
-uint8_t InputMessage[] =  "Sample #1";
+
+uint8_t InputMessage[] =  "Huangloong";
 /* string length only, without '\0' end of string marker */
 uint32_t InputLength = (sizeof(InputMessage) - 1);
 
@@ -205,10 +206,6 @@ const uint8_t Expected_OutputMessage[HMAC_LENGTH] =
     0x08, 0xc9, 0xc6, 0x1e, 0x9c,
     0x5d, 0xa0, 0x40, 0x3c, 0x0a
 };
-
-
-
-
 
 
 
@@ -294,11 +291,73 @@ TestStatus Buffercmp(const uint8_t* pBuffer, uint8_t* pBuffer1, uint16_t BufferL
   return PASSED;
 }
 
+static const char *ALPHA_BASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+ 
+char *encode(const char *buf, const long size, char *base64Char) {
+    int a = 0,i = 0;
+	int int63 = 0x3F; //  00111111
+    int int255 = 0xFF; // 11111111
+    char b0,b1,b2;
+    while (i < size) {
+        b0 = buf[i++];
+        b1 = (i < size) ? buf[i++] : 0;
+        b2 = (i < size) ? buf[i++] : 0;
+         
+        base64Char[a++] = ALPHA_BASE[(b0 >> 2) & int63];
+        base64Char[a++] = ALPHA_BASE[((b0 << 4) | ((b1 & int255) >> 4)) & int63];
+        base64Char[a++] = ALPHA_BASE[((b1 << 2) | ((b2 & int255) >> 6)) & int63];
+        base64Char[a++] = ALPHA_BASE[b2 & int63];
+    }
+    switch (size % 3) {
+        case 1:
+            base64Char[--a] = '=';
+        case 2:
+            base64Char[--a] = '=';
+    }
+    return base64Char;
+}
+ 
+char *decode(const char *base64Char, const long base64CharSize, char *originChar, long originCharSize) {
+    int toInt[128] = {-1};
+	int i;
+	int int255 = 0xFF;
+    int index = 0;
+	int c0,c1,c2,c3;
+    for (i = 0; i < 64; i++) {
+        toInt[ALPHA_BASE[i]] = i;
+    }
+  
+    for ( i = 0; i < base64CharSize; i += 4) {
+        c0 = toInt[base64Char[i]];
+        c1 = toInt[base64Char[i + 1]];
+        originChar[index++] = (((c0 << 2) | (c1 >> 4)) & int255);
+        if (index >= originCharSize) {
+            return originChar;
+        }
+        c2 = toInt[base64Char[i + 2]];
+        originChar[index++] = (((c1 << 4) | (c2 >> 2)) & int255);
+        if (index >= originCharSize) {
+            return originChar;
+        }
+        c3 = toInt[base64Char[i + 3]];
+        originChar[index++] = (((c2 << 6) | c3) & int255);
+    }
+    return originChar;
+}
 
 void testpassword(void)
 {
 	int32_t status = HASH_SUCCESS;
 	uint8_t i;
+	char * basedata = (char *)malloc(sizeof(unsigned char)*KeyLength+1); 
+	memcpy(HMAC_Key,ChipUniqueID,sizeof(ChipUniqueID));
+	
+	printf("\r\n*************************************************************** :\r\n");
+	for (i = 0; i < KeyLength; ++i)
+		{
+		printf("%.2X ",HMAC_Key[i]);
+		}
+	printf("\r\n*************************************************************** :\r\n");
 	status = STM32_SHA1_HMAC_Compute((uint8_t*)InputMessage,
                              InputLength,
                              HMAC_Key,
@@ -307,11 +366,17 @@ void testpassword(void)
                              &MACLength);
 	if(status == HASH_SUCCESS)
 	{
+		printf("out buff is :");
+		printf("\r\n*************************************************************** :\r\n");
 		for(i = 0;i<MACLength;i++)
 		{
-			printf("MAC[%hhd] is %x\n",i,MAC[i]);
+			printf("%.2x  ",MAC[i]);
 		}
+		
+		printf("\r\n*************************************************************** :\r\n");
+		encode(MAC,MACLength,basedata);
+		printf("base data is \n%s\r\n",basedata);
 	}
-
+	free(basedata);
 }
 

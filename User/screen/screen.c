@@ -13,12 +13,11 @@
 #include "./dac/dac.h"
 
 uint8_t  soft_ver[10] = "Ver:1.0";
-
-uint16_t warmflag = 0;					//开始加热标志
-uint8_t lefttimeflag = 0;				//剩余时间计算标识符
-uint8_t SCREENLANGUAGE = 1;					//屏幕语言标识，1为中文，0为英文
-uint8_t cmd_buffer[CMD_MAX_SIZE];		//指令缓存
-uint8_t press_flag = 0,touch_flag = 0;	//点击和连击状态标志
+uint16_t warmflag = 0;					//start warm flag
+uint8_t lefttimeflag = 0;			
+uint8_t SCREENLANGUAGE = 1;				//1 is chinese , 0 is english
+uint8_t cmd_buffer[CMD_MAX_SIZE];		//screen data buffer
+uint8_t press_flag = 0,touch_flag = 0;	//double click flag 
 uint8_t change_air_time[CHANGE_AIR_SIZE] = {0};
 uint32_t  timercount = 0;
 
@@ -33,19 +32,19 @@ extern uint16_t gpiostatus;
 extern uint8_t thermocouple_flag;
 extern int runstatus;
 
-uint8_t slidervalue = 0;			//滑动进度条值
-uint8_t autonopowerpassword[PASSWORDLENGTH] = {0};	//自动断电恢复密码
+uint8_t slidervalue = 0;		
+uint8_t autonopowerpassword[PASSWORDLENGTH] = {0};	
 
 
 ID_Table idtable;					//screen size id 
-float adjusttemp = 0;				//温度值校正
-RtcTime rtctime;					//RTC控制时间
-AutoNoPowerTime  nopowertime;		//自动断电时间	
+float adjusttemp = 0;			
+RtcTime rtctime;					
+AutoNoPowerTime  nopowertime;			
 
-PCTRL_MSG msg;						//串口屏发送信息
-TextValueTab  textvalue;			//文本控件保存值
-MainShowTextValue	showtextvalue;	//主页面文本控件缓存值
-CoilValue  coilvalue;				//设置界面值
+PCTRL_MSG msg;						
+TextValueTab  textvalue;			//text control_id buff
+MainShowTextValue	showtextvalue;	//text control_id value
+CoilValue  coilvalue;				//menu text value
 
 Touch_Coord touch_press,touch_up;
 
@@ -60,18 +59,18 @@ BIG_SCREEN_ID_TAB biglanguage_screen = {0};
 
 
 
-
+//convert  int to string
 void SetTextValueInt32(uint16_t screen_id, uint16_t control_id,int32_t value)
 {
 	char buffer[12] = {0};
-	sprintf(buffer,"%ld",value); //把整数转换为字符串
+	sprintf(buffer,"%ld",value); 
 	SetTextValue(screen_id,control_id,buffer);
 }
-
+//convert float to string
 void SetTextValueFloat(uint16_t screen_id, uint16_t control_id,float value)
 {
 	char buffer[12] = {0};
-	sprintf(buffer,"%.1f",value);//把浮点数转换为字符串(保留一位小数)
+	sprintf(buffer,"%.1f",value);
 	SetTextValue(screen_id,control_id,buffer);
 }
 
@@ -165,32 +164,29 @@ void screen_init(void)
 		
 }
 
-//十进制转BCD
+//DEC TO BCD
 uint8_t DectoBCD(uint8_t Dec)
 {
      return ((((Dec/10)<<4)&0xf0)|(Dec%10));
 }
-//BCD转十进制
+//BCD TO DEC
 uint8_t BcdToDec(uint8_t bcd)
 {
 	return (0xff & (bcd>>4))*10 +(0xf & bcd);
 }
 
 /*! 
- *  \brief  画面切换通知
- *  \details  当前画面改变时(或调用GetScreen)，执行此函数
- *  \param screen_id 当前画面ID
+ screen changed inform
  */
 void NotifyScreen(uint16_t screen_id)
 {
 	uint8_t i = 0;
 	current_screen_id = screen_id;
-//	printf("current screen id is %d \n",current_screen_id);
-	//按键页面
+	//keyboard
 	if(screen_id == biglanguage_screen.BIG_KEYBOARD)
 	{
 	}
-	//换气次数编辑界面
+	//change air editor
 	if(screen_id == biglanguage_screen.BIG_AIR_CHANGE_RATE_SCREEN)
 	{
 		for (i= 0; i < 19; ++i)
@@ -198,17 +194,17 @@ void NotifyScreen(uint16_t screen_id)
 			SetTextValueInt32(screen_id,BIG_CHANGE_AIR_TIME_SET_90+i,dev_info.change_air_time[i]);
 		}
 	}
-	//风门角度控制调节界面
+	//air door angle
 	if(screen_id == biglanguage_screen.BIG_AIR_DOOR_SCREEN)
 	{
 		SetTextValue(screen_id,BIG_AIR_DOOR_ANGLE_SET,textvalue.airdoor_value);
 	}
-	//屏幕亮度
+	//screen light 
 	if(screen_id == biglanguage_screen.BIG_BRIGHT_ADJUST_SCREEN)
 	{
 		SetTextValue(screen_id,BIG_SCREEN_BRIGHT_ADJUST,textvalue.screen_light_value);
 	}
-	//菜单密码
+	//menu password
 	if(screen_id == biglanguage_screen.BIG_SCREAT_PROTECT_SCREEN)
 	{
 		SetTextValue(screen_id,BIG_PASSWORD_PROTECT_INPUT,"");
@@ -222,7 +218,7 @@ void NotifyScreen(uint16_t screen_id)
 
 		SetTextValueFloat(screen_id,BIG_D_VALUE_SET,dev_info.pidvalue.PID_D);	
 	}
-	//参数设置界面
+	//param setting screen 
 	if(screen_id == biglanguage_screen.BIG_PARAM_SET_SCREEN)
 	{
 		SetTextValueInt32(screen_id,BIG_TEST_TIME_VALUE,dev_info.testtime);
@@ -255,7 +251,7 @@ void NotifyScreen(uint16_t screen_id)
 		AnimationPlayFrame(screen_id,BIG_CHINESE_LANGUAGE,textvalue.coilsavevalue.menu_language[0]);
 		AnimationPlayFrame(screen_id,BIG_ENGLISH_LANGUAGE,textvalue.coilsavevalue.menu_language[1]);
 	}
-	//自动断电时间设定
+	//auto no power
 	if(screen_id == biglanguage_screen.BIG_AUTO_POWEROFF_TIMESET_SCREEN)
 	{	
 		SetTextValueInt32(screen_id,BIG_YEAR_SET,dev_info.autonopowertime.year);
@@ -264,24 +260,24 @@ void NotifyScreen(uint16_t screen_id)
 	
 		SetTextValueInt32(screen_id,BIG_DAY_SET,dev_info.autonopowertime.day);
 	}
-	//温度值校正
+	//temp adjust
 	if(screen_id == biglanguage_screen.BIG_TEMP_VALUE_REVISE_SCREEN)
 	{
 	}
-	//参数设置无效界面
+	//param setting no invalid
 	if(screen_id == biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN)
 	{
 
 	}
-	//设备时间设置
+	//device time setting
 	if(screen_id == biglanguage_screen.BIG_CONTROL_TIME_SET)
 	{	
 	}
-	//温度曲线显示界面
+	//curve show screen 
 	if(screen_id == biglanguage_screen.BIG_TEMP_CURVE_SHOW_SCREEN)
 	{
 	}
-	//自检界面
+	//self check
 	if(screen_id == biglanguage_screen.BIG_SELF_TEST_SCREEN)
 	{
 	}
@@ -290,10 +286,7 @@ void NotifyScreen(uint16_t screen_id)
 
 
 /*! 
- *  \brief  触摸坐标事件响应
- *  \param press 1按下触摸屏，3松开触摸屏
- *  \param x x坐标
- *  \param y y坐标
+ touch x,y response
  */
 void NotifyTouchXY(uint8_t press,uint16_t x,uint16_t y)
 {
@@ -315,23 +308,23 @@ void NotifyTouchXY(uint8_t press,uint16_t x,uint16_t y)
 		touch_flag = 0;
 		if((current_screen_id == biglanguage_screen.BIG_PARAM_SET_SCREEN)&&(touch_press.touch_x - touch_up.touch_x < 50))
 		{
-			if((touch_press.touch_x > 650)&&(touch_press.touch_y > 350)) //右下角
+			if((touch_press.touch_x > 650)&&(touch_press.touch_y > 350)) //right down
 			{
 				touchtimes.rightdown_times++;
 			}
-			if((touch_press.touch_x > 650)&&(touch_press.touch_y < 120)) //右上角
+			if((touch_press.touch_x > 650)&&(touch_press.touch_y < 120)) //right up
 			{
 				touchtimes.rightup_times++;
 			}
-			if((touch_press.touch_x < 200)&&(touch_press.touch_y >= 120)&&(touch_press.touch_y <= 300)) //左中间
+			if((touch_press.touch_x < 200)&&(touch_press.touch_y >= 120)&&(touch_press.touch_y <= 300)) //left middle
 			{
 				touchtimes.leftmiddle_times++;
 			}
-			if((touch_press.touch_x < 200)&&(touch_press.touch_y > 300)) //左下角
+			if((touch_press.touch_x < 200)&&(touch_press.touch_y > 300)) //left down
 			{
 				touchtimes.leftdown_times++;
 			}
-			if((touch_press.touch_x >= 300)&&(touch_press.touch_x <= 500)&&(touch_press.touch_y >= 120)&&(touch_press.touch_y <= 300)) //上中间
+			if((touch_press.touch_x >= 300)&&(touch_press.touch_x <= 500)&&(touch_press.touch_y >= 120)&&(touch_press.touch_y <= 300)) //up middle
 			{
 				touchtimes.upmiddle_times++;
 			}
@@ -343,62 +336,56 @@ void NotifyTouchXY(uint8_t press,uint16_t x,uint16_t y)
 
 
 /*! 
- *  \brief  按钮控件通知
- *  \details  当按钮状态改变(或调用GetControlValue)时，执行此函数
- *  \param screen_id 画面ID
- *  \param control_id 控件ID
- *  \param state 按钮状态：0弹起，1按下
+	button control inform
  */
 void NotifyButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 {
 	press_flag = 1;
 	
-	//换气次数编辑界面
+	//change air times editor
 	if((screen_id == biglanguage_screen.BIG_AIR_CHANGE_RATE_SCREEN)&&(control_id == BIG_AIR_RETURN_BUTTON))
 	{
-		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);			//主显示界面
+		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);			
 	}
-	//pid值设置界面
+	//pid
 	if((screen_id == biglanguage_screen.BIG_PID_SET_SCREEN)&&(state == 1))
 	{
-		if(control_id == BIG_SELF_ADJUST)							//自整定按键
+		if(control_id == BIG_SELF_ADJUST)							//self adjust
 		{
 			runstatus=2;
 		}
-		else if(control_id == BIG_PID_RETURN_BUTTON)  				//返回主界面
+		else if(control_id == BIG_PID_RETURN_BUTTON)  				
 		{
-			MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);			//主显示界面
+			MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);		
 		}
 		
 	}
 #if 0
-	//参数设置界面
 	if((screen_id == biglanguage_screen.BIG_PARAM_SET_SCREEN)&&(control_id == BIG_SET_RETURN_BUTTON)&&(state == 1))
 	{
-		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);			//����ʾ����
+		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);			
 	}
-	//�Զ��ϵ�ʱ�����ý���
+	
 	if((screen_id == biglanguage_screen.BIG_AUTO_POWEROFF_TIMESET_SCREEN)&&(control_id == BIG_NO_POWER_RETURN_BUTTON)&&(state == 1))
 	{
-		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);			//����ʾ����
-	}
-	//ʱ�����ý���
+		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);			
+
 	if((screen_id == biglanguage_screen.BIG_CONTROL_TIME_SET)&&(control_id == BIG_TIME_SET_RETURN_BUTTON)&&(state == 1))
 	{
-		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);			//����ʾ����
+		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);			
 	}
-	//���������ʾ����
+
 	if((screen_id == biglanguage_screen.BIG_PASSWORD_ERROR_SCREEN)&&(control_id == BIG_PASS_ERROR_RETURN_BUTTON)&&(state == 1))
 	{
-		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);			//����ʾ����
+		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);			
 	}
-	//����������Ч����
+
 	if((screen_id == biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN)&&(control_id == BIG_FAIL_RETURN_BUTTON)&&(state == 1))
 	{
 		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);	
 	}
 #endif
-	//主显示界面
+	//main show screen
 	if(screen_id == biglanguage_screen.BIG_MAIN_SHOW_SCREEN)
 	{
 		switch (control_id)
@@ -419,14 +406,12 @@ void NotifyButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 				if(state)
 				{
 					SPINNER_RACK_ON;
-					//样架图标显示
 					AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_SAMPLE_FRAME_MOTOR_ID,SHOW);
 					AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_RR_WORK_STATUS_ID,HIDE);
 				}
 				else
 				{
 					SPINNER_RACK_OFF;
-					//样架图标消失
 					AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_SAMPLE_FRAME_MOTOR_ID,HIDE);
 					AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_RR_WORK_STATUS_ID,SHOW);
 				}
@@ -435,7 +420,6 @@ void NotifyButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 				if(state)
 				{
 					CIRCULATING_FUN_ON;
-					//风机图标显示
 					AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_FAN_OPERATION_ID,SHOW);
 					AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_FR_WORK_STATUS_ID,HIDE);
 					
@@ -472,17 +456,12 @@ void NotifyButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 
 
 /*! 
- *  \brief  文本控件通知
- *  \details  当文本通过键盘更新(或调用GetControlValue)时，执行此函数
- *  \param screen_id 画面ID
- *  \param control_id 控件ID
- *  \param str 文本控件内容
+text control inform
  */
 void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 {
 	uint16_t backlight = 0;
-	//页面1，换气次数编辑界面
-	
+	//change air times
 	if(screen_id == biglanguage_screen.BIG_AIR_CHANGE_RATE_SCREEN)
 	{
 		switch (control_id)
@@ -589,7 +568,7 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 		SetTextValueInt32(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_CHANGE_AIR_MAX_SET,coilvalue.change_max_time);
 		FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));				//换气次数写入flash
 	}
-	//风门角度
+	//ait door angle
 	if((screen_id == biglanguage_screen.BIG_AIR_DOOR_SCREEN)&&(control_id == BIG_AIR_DOOR_ANGLE_SET))
 	{
 		memset(textvalue.airdoor_value,0,sizeof(char)*4);
@@ -600,7 +579,7 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 		Dac1_Set_Vol(3300*coilvalue.air_door_angle/90);
 		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);		
 	}
-	//屏幕亮度
+	//screen light
 	if((screen_id == biglanguage_screen.BIG_BRIGHT_ADJUST_SCREEN)&&(control_id == BIG_SCREEN_BRIGHT_ADJUST))
 	{
 		memset(textvalue.screen_light_value,0,sizeof(char)*4);
@@ -617,7 +596,7 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 		SetBackLight(backlight);
 		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);		
 	}
-	//菜单密码
+	//menu password
 	if((screen_id == biglanguage_screen.BIG_SCREAT_PROTECT_SCREEN)&&(control_id == BIG_PASSWORD_PROTECT_INPUT))
 	{
 		memset(textvalue.protect_password,0,sizeof(char)*PASSWORDLENGTH);
@@ -662,7 +641,7 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 		}
 		FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));		//pid数据写入flash
 	}
-	//参数设置界面
+	//menu setting screen
 	if(screen_id == biglanguage_screen.BIG_PARAM_SET_SCREEN)
 	{
 		switch (control_id)
@@ -835,7 +814,7 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 //		printf("time is %f    temp is %f \r\n",dev_info.testtime,dev_info.testtemp);
 		FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));				//参数设置界面数据存入flash
 	}
-	//自动断电时间设置
+	//auto no power time setting
 	if(screen_id == biglanguage_screen.BIG_AUTO_POWEROFF_TIMESET_SCREEN)
 	{
 		switch (control_id)
@@ -866,21 +845,21 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 		}
 		FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
 	}
-	//自动断电弹出界面
+	//auto no power will show screen
 	if(screen_id == biglanguage_screen.BIG_AUTO_NOPOWER_RECOVER)
 	{
 		memset(textvalue.autonopowerpassword,0,sizeof(char)*PASSWORDLENGTH);
 		memcpy(textvalue.autonopowerpassword,str,sizeof(char)*PASSWORDLENGTH);
 		if(strncmp(textvalue.autonopowerpassword,dev_info.autonopower_password,PASSWORDLENGTH) == 0)
 		{
-			//恢复电量，控制器输出恢复功能
+			//have power , control device work normal
 		}
 		else
 		{
-			//控制器输出全部中断
+			//control device no work
 		}
 	}
-	//温度值校正
+	//temp adjust
 	if(screen_id == biglanguage_screen.BIG_TEMP_VALUE_REVISE_SCREEN)
 	{
 		memset(textvalue.temp_adjust_value,0,sizeof(char)*COMMONSIZE);
@@ -888,7 +867,7 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 		adjusttemp +=  atof(textvalue.temp_adjust_value);
 		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);
 	}
-	//设备时间设置
+	//device time set
 	if(screen_id == biglanguage_screen.BIG_CONTROL_TIME_SET)
 	{
 		switch (control_id)
@@ -936,56 +915,12 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 	}
 	
 	FLASH_Read_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
-//	//主显示界面
-//	if(screen_id == biglanguage_screen.BIG_MAIN_SHOW_SCREEN)
-//	{
-//		switch (control_id)
-//		{
-//			case BIG_CURRENT_TEMP_ID:
-//				sprintf(textvalue.textvaluebuff.current_temp_vlaue,"%.1f",showtextvalue.current_temp_vlaue);//把浮点数转换为字符串(保留一位小数)
-//				SetTextValue(screen_id,control_id,textvalue.textvaluebuff.current_temp_vlaue);
-//				SetTextValueFloat(screen_id,control_id, showtextvalue.current_temp_vlaue);
-//				break;
-//			case BIG_SET_TEMP_ID:
-//				SetTextValue(screen_id,control_id,textvalue.textvaluebuff.setting_temp);
-//				break;	
-//			case BIG_START_TIME_ID:
-//				SetTextValue(screen_id,control_id,textvalue.textvaluebuff.start_time);
-//				break;	
-//			case BIG_END_TIME_ID:
-//				SetTextValue(screen_id,control_id,textvalue.textvaluebuff.end_time);
-//				break;
-//			case BIG_TEST_TIME_ID:
-//				SetTextValue(screen_id,control_id,textvalue.textvaluebuff.test_time);
-//				break;	
-//			case BIG_ADDUP_TIME_ID:
-//				SetTextValue(screen_id,control_id,textvalue.textvaluebuff.add_all_time);
-//				break;	
-//			case BIG_TIME_LEFT_ID:
-//				SetTextValueInt32(screen_id,control_id,textvalue.textvaluebuff.left_time_hou);
-//				break;	
-//			case BIG_CHANGE_AIR_TIME:
-//				SetTextValue(screen_id,control_id,textvalue.textvaluebuff.change_air_time);
-//				break;		
-//			case BIG_AIR_DOOR_ANGLE_INPUT_ID:
-//				SetTextValue(screen_id,control_id,textvalue.textvaluebuff.air_door_angle);
-//				break;	
-//			default:
-//				break;
-//		}
-//	}
 }
 
-/*! 
- *  \brief  进度条控件通知
- *  \details  调用GetControlValue时，执行此函数
- *  \param screen_id 画面ID
- *  \param control_id 控件ID
- *  \param value 值
- */
+
 void NotifyProgress(uint16_t screen_id, uint16_t control_id, uint32_t value)
 {
-	//TODO: 添加用户代码
+	
 	if((screen_id == biglanguage_screen.BIG_START_INIT_SCREEN)&&(control_id == BIG_START_INIT_ID))
 	{
 		if(value == 100)
@@ -999,41 +934,21 @@ void NotifyProgress(uint16_t screen_id, uint16_t control_id, uint32_t value)
 }
 
 
-/*! 
- *  \brief  滑动条控件通知
- *  \details  当滑动条改变(或调用GetControlValue)时，执行此函数
- *  \param screen_id 画面ID
- *  \param control_id 控件ID
- *  \param value 值
- */
+
 void NotifySlider(uint16_t screen_id, uint16_t control_id, uint32_t value)
 {
-	//TODO: 添加用户代码
+	//TODO
 }
 
 
-/*! 
- *  \brief  动画控件通知
- *  \details  当动画改变(或调用GetControlValue)时，执行此函数
- *  \param screen_id 画面ID
- *  \param control_id 控件ID
- *  \param starus    0x00表示触摸按下，0x01表示弹起
- *  \param iconimage_id 值
- */
+
 void  NotifyAnimation(uint16_t screen_id, uint16_t control_id,uint8_t status,uint8_t iconimage_id)
 {
 	
 		
 }
 
-/*! 
- *  \brief  图标控件通知
- *  \details  调用GetControlValue时，执行此函数
- *  \param screen_id 画面ID
- *  \param control_id 控件ID
- *  \param status    0x00表示触摸按下，0x01表示弹起
- *  \param iconimage_id 值
- */
+
 void NotifyIcon(uint16_t screen_id, uint16_t control_id,uint8_t status,uint8_t iconimage_id)
 {
 	if(screen_id == biglanguage_screen.BIG_PARAM_SET_SCREEN)
@@ -1103,90 +1018,58 @@ void NotifyIcon(uint16_t screen_id, uint16_t control_id,uint8_t status,uint8_t i
 
 
 
-/*! 
- *  \brief  仪表控件通知
- *  \details  调用GetControlValue时，执行此函数
- *  \param screen_id 画面ID
- *  \param control_id 控件ID
- *  \param value 值
- */
+
 void NotifyMeter(uint16_t screen_id, uint16_t control_id, uint32_t value)
 {
-	//TODO: 添加用户代码
+	//TODO
 	
 	
 }
 
-/*! 
- *  \brief  菜单控件通知
- *  \details  当菜单项按下或松开时，执行此函数
- *  \param screen_id 画面ID
- *  \param control_id 控件ID
- *  \param item 菜单项索引
- *  \param state 按钮状态：0松开，1按下
- */
+
 void NotifyMenu(uint16_t screen_id, uint16_t control_id, uint8_t  item, uint8_t  state)
 {
-	//TODO: 添加用户代码
+	//TODO
 
 }
 
-/*! 
- *  \brief  选择控件通知
- *  \details  当选择控件变化时，执行此函数
- *  \param screen_id 画面ID
- *  \param control_id 控件ID
- *  \param item 当前选项
- */
+
 void NotifySelector(uint16_t screen_id, uint16_t control_id, uint8_t  item)
 {
-	//TODO: 添加用户代码
+	//TODO
 
 }
 
-/*! 
- *  \brief  定时器超时通知处理
- *  \param screen_id 画面ID
- *  \param control_id 控件ID
- */
+
 void NotifyTimer(uint16_t screen_id, uint16_t control_id)
 {
-	//TODO: 添加用户代码
+	//TODO
 	
 }
 
-/*! 
- *  \brief  读取用户FLASH状态返回
- *  \param status 0失败，1成功
- *  \param _data 返回数据
- *  \param length 数据长度
- */
+
 void NotifyReadFlash(uint8_t status,uint8_t *_data,uint16_t length)
 {
-	//TODO: 添加用户代码
+	//TODO
 	
 }
 
-/*! 
- *  \brief  写用户FLASH状态返回
- *  \param status 0失败，1成功
- */
+
 void NotifyWriteFlash(uint8_t status)
 {
-	//TODO: 添加用户代码
-	
+	//TODO
 }
 
 
 /*! 
- *  \brief  读取RTC时间，注意返回的是BCD码
- *  \param year 年（BCD）
- *  \param month 月（BCD）
- *  \param week 星期（BCD）
- *  \param day 日（BCD）
- *  \param hour 时（BCD）
- *  \param minute 分（BCD）
- *  \param second 秒（BCD）
+ *  \brief  read RTC time,return BCD
+ *  \param year 
+ *  \param month 
+ *  \param week
+ *  \param day 
+ *  \param hour 
+ *  \param minute 
+ *  \param second 
  */
 void NotifyReadRTC(uint8_t year,uint8_t month,uint8_t week,uint8_t day,uint8_t hour,uint8_t minute,uint8_t second)
 {	
@@ -1205,45 +1088,43 @@ void NotifyReadRTC(uint8_t year,uint8_t month,uint8_t week,uint8_t day,uint8_t h
 
 
 /*! 
- *  \brief  消息处理流程
- *  \param msg 待处理消息
- *  \param size 消息长度
+	message deal process
  */
 void ProcessMessage( PCTRL_MSG msg, uint16_t size )
 {
-	uint8_t cmd_type = msg->cmd_type;					//指令类型
-	uint8_t ctrl_msg = msg->ctrl_msg;   				//消息的类型
-	uint8_t control_type = msg->control_type;			//控件类型
-	uint16_t screen_id = PTR2U16(&msg->screen_id);		//画面ID
-	uint16_t control_id = PTR2U16(&msg->control_id);	//控件ID
-	uint32_t value = PTR2U32(msg->param);				//数值
+	uint8_t cmd_type = msg->cmd_type;					//cmd type
+	uint8_t ctrl_msg = msg->ctrl_msg;   				//message type
+	uint8_t control_type = msg->control_type;			//control type
+	uint16_t screen_id = PTR2U16(&msg->screen_id);		//screen id
+	uint16_t control_id = PTR2U16(&msg->control_id);	//control id
+	uint32_t value = PTR2U32(msg->param);				//value
 
 	switch(cmd_type)
 	{		
-		case NOTIFY_TOUCH_PRESS:		//触摸屏按下
+		case NOTIFY_TOUCH_PRESS:		
 			NotifyTouchXY(cmd_buffer[1],PTR2U16(cmd_buffer+2),PTR2U16(cmd_buffer+4));
 			break;
-		case NOTIFY_TOUCH_RELEASE:		//触摸屏松开
+		case NOTIFY_TOUCH_RELEASE:		
 			NotifyTouchXY(cmd_buffer[1],PTR2U16(cmd_buffer+2),PTR2U16(cmd_buffer+4));
 			break;	
-		case NOTIFY_WRITE_FLASH_OK:		//写FLASH成功
+		case NOTIFY_WRITE_FLASH_OK:		
 			NotifyWriteFlash(1);
 			break;
-		case NOTIFY_WRITE_FLASH_FAILD:	//写FLASH失败
+		case NOTIFY_WRITE_FLASH_FAILD:	
 			NotifyWriteFlash(0);
 			break;
-		case NOTIFY_READ_FLASH_OK:		//读取FLASH成功
-			NotifyReadFlash(1,cmd_buffer+2,size-6);		//去除帧头帧尾
+		case NOTIFY_READ_FLASH_OK:		
+			NotifyReadFlash(1,cmd_buffer+2,size-6);		
 			break;
-		case NOTIFY_READ_FLASH_FAILD:	//读取FLASH失败
+		case NOTIFY_READ_FLASH_FAILD:	
 			NotifyReadFlash(0,0,0);
 			break;
-		case NOTIFY_READ_RTC:			//读取RTC时间
+		case NOTIFY_READ_RTC:			
 			NotifyReadRTC(cmd_buffer[2],cmd_buffer[3],cmd_buffer[4],cmd_buffer[5],cmd_buffer[6],cmd_buffer[7],cmd_buffer[8]);
 			break;
 		case NOTIFY_CONTROL:
 			{
-				if(ctrl_msg==MSG_GET_CURRENT_SCREEN)	//画面ID变化通知
+				if(ctrl_msg==MSG_GET_CURRENT_SCREEN)	
 				{
 					NotifyScreen(screen_id);
 				}
@@ -1255,32 +1136,32 @@ void ProcessMessage( PCTRL_MSG msg, uint16_t size )
 				{
 					switch(control_type)
 					{
-						case kCtrlButton: //按钮控件
+						case kCtrlButton: 
 							NotifyButton(screen_id,control_id,msg->param[1]);
 							dev_info.dev_status_changed_flag = 1;
 							break;
-						case kCtrlText://文本控件
+						case kCtrlText:
 							NotifyText(screen_id,control_id,msg->param);
 							dev_info.dev_status_changed_flag = 1;
 							break;
-						case kCtrlProgress: //进度条控件
+						case kCtrlProgress:
 							NotifyProgress(screen_id,control_id,value);
 							break;
-						case kCtrlSlider: //滑动条控件
+						case kCtrlSlider: 
 							NotifySlider(screen_id,control_id,value);
 							break;
-						case kCtrlAnimation: //动画控件
+						case kCtrlAnimation: 
 							NotifyAnimation(screen_id, control_id,msg->param[0],msg->param[1]);
-						case kCtrlMeter: //仪表控件
+						case kCtrlMeter: 
 							NotifyMeter(screen_id,control_id,value);
 							break;
-						case kCtrlMenu://菜单控件
+						case kCtrlMenu:
 							NotifyMenu(screen_id,control_id,msg->param[0],msg->param[1]);
 							break;
-						case kCtrlSelector://选择控件
+						case kCtrlSelector:
 							NotifySelector(screen_id,control_id,msg->param[0]);
 							break;
-						case kCtrlRTC://倒计时控件
+						case kCtrlRTC:
 							NotifyTimer(screen_id,control_id);
 							break;
 						default:
@@ -1296,16 +1177,16 @@ void ProcessMessage( PCTRL_MSG msg, uint16_t size )
 
 
 
-//启动界面
+//start screen 
 void startscreen(void)
 {
-	printf("%s\r\n",soft_ver);														//软件版本	
-	MySetScreen(biglanguage_screen.BIG_START_INIT_SCREEN);							//跳转到启动界面
-	SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_SOFT_VER_ID,soft_ver);	//显示软件版本
+	printf("%s\r\n",soft_ver);														
+	MySetScreen(biglanguage_screen.BIG_START_INIT_SCREEN);						
+	SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_SOFT_VER_ID,soft_ver);	
 	delay_s(2);
-	MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);							//跳转到主显示界面	
+	MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);							
 }
-
+//check pid's status
 void check_pidstatus(void)
 {
 	if(runstatus==3)
@@ -1318,7 +1199,7 @@ void check_pidstatus(void)
 	}
 }
 
-//连击触控跳转界面函数
+//click screen more times to screen
 void  touchtoscreen(void)
 {
 	if((touch_press.touch_x - touch_up.touch_x > 200)&&(current_screen_id == biglanguage_screen.BIG_MAIN_SHOW_SCREEN))
@@ -1373,7 +1254,7 @@ void  touchtoscreen(void)
 }
 
 
-//连击按钮跳转界面函数
+//click button more times to screen 
 void get_combo_button_times(void)
 {
 	//菜单按钮
@@ -1394,10 +1275,9 @@ void get_combo_button_times(void)
 		printf("menu 1button times is %d \n",touchtimes.menu_click_times);
 	}
 
-	//自检按钮
 	if(touchtimes.self_check_times == 1)
 	{
-		if(thermocouple_flag|gpiostatus) //有故障
+		if(thermocouple_flag|gpiostatus) 
 		{
 			MySetScreen(biglanguage_screen.BIG_SELF_TEST_NOTPASS_SCREEN);
 		}
@@ -1426,7 +1306,7 @@ void get_combo_button_times(void)
 
 
 
-//温度曲线存储
+
 void temp_curve_save(void)
 {
 	GraphTempDataAdd(biglanguage_screen.BIG_TEMP_CURVE_SHOW_SCREEN, BIG_TEMP_CURVE_SHOW,(uint16_t)showtextvalue.current_temp_vlaue);
@@ -1438,11 +1318,11 @@ void temp_curve_save(void)
 
 
 
-//合并时间字符
+//merge time str
 void  mergetimechar(RtcTime datetime)
 {
 	uint8_t buff[2] = {0};
-	sprintf(buff,"%02d",datetime.Year); //把整数转换为字符串
+	sprintf(buff,"%02d",datetime.Year); 
 	textvalue.textvaluebuff.start_time[0] = buff[0];
 	textvalue.textvaluebuff.start_time[1] = buff[1];
 
@@ -1470,7 +1350,7 @@ void  mergetimechar(RtcTime datetime)
 
 
 
-//到某时的分钟数，从2000年1月1号，0:00开始
+//to time total what minutes,start time is : 2000\1\1 0:00
 uint32_t to_day(RtcTime time)
 {
 	uint8_t mon[] = {31,28,31,30,31,30,31,31,30,31,30,31};
@@ -1499,90 +1379,27 @@ uint32_t to_day(RtcTime time)
 	return seconds;
 }
 
-#if 0
-//月份识别
-char * monselect(char *monbuff)
-{
-	uint8_t i = 0,temp = 0;
-	char * buffer;
-	for(i = 0; i < 12;i++)
-	{
-		temp = strncmp(monbuff,Month[i],3);
-		if(temp == 0)
-		{
-			sprintf(buffer,"%d",i+1); 
-			return buffer;
-		}
-	}
-}
 
-//结束时间格式转换
-void  adjustchar(char *timebuff)
-{
-	char monbuff[2];
-	char yearbuff[4]= {0},daybuff[2]= {0},clockbuff[5]= {0};
-	//monbuff=malloc(sizeof(char)*2);
-	memcpy(yearbuff,timebuff+22,4);
-	textvalue.textvaluebuff.end_time[0] = yearbuff[0];
-	textvalue.textvaluebuff.end_time[1] = yearbuff[1];
-	textvalue.textvaluebuff.end_time[2] = '/';
-	
-	strncpy(monbuff,timebuff+4,3);
-	//monbuff = monselect(monbuff);
-	memcpy(monbuff,monselect(monbuff),2);
-	textvalue.textvaluebuff.end_time[3] = monbuff[0];
-	textvalue.textvaluebuff.end_time[4] = monbuff[1];
-	textvalue.textvaluebuff.end_time[5] = '/';
-	
-	memcpy(daybuff,timebuff+8,2);
-	if(daybuff[0] == ' ')
-	{
-		daybuff[0] = '0';
-	}
-	textvalue.textvaluebuff.end_time[6] = daybuff[0];
-	textvalue.textvaluebuff.end_time[7] = daybuff[1];
-	textvalue.textvaluebuff.end_time[8] = ' ';
-	
-	memcpy(clockbuff,timebuff+11,5);
-	textvalue.textvaluebuff.end_time[9] = clockbuff[0];
-	textvalue.textvaluebuff.end_time[10] = clockbuff[1];
-	textvalue.textvaluebuff.end_time[11] = clockbuff[2];
-	textvalue.textvaluebuff.end_time[12] = clockbuff[3];
-	textvalue.textvaluebuff.end_time[13] = clockbuff[4];
-//	free(monbuff);
-//	printf("### %s ###\n",textvalue.textvaluebuff.end_time);
-	
-}
-#endif
-
-//结束时间计算
+//end time calculate
 void endtimecalcu(RtcTime starttime,uint16_t testtime)
 {
 	char timebuff[25] = {0};
-//	char timebuff[80];
-
 	time_t currenttime = 946684800;
-//	timebuff=malloc(sizeof(char)*25);
 	currenttime += to_day(starttime) + testtime*3600;
 	strftime(timebuff,20,"%Y/%m/%d %H:%M:%S",localtime(&currenttime));
 	memcpy(textvalue.textvaluebuff.end_time,timebuff+2,14);
-//	printf("格式化的日期 & 时间 : |%s|\n", textvalue.textvaluebuff.end_time );
-//	timebuff = ctime(&currenttime);
-//	printf("time is %s\r\n",timebuff);
-//	adjustchar(timebuff);
-//	free(timebuff);
 	memcpy(dev_info.warmend_time,textvalue.textvaluebuff.end_time,sizeof(textvalue.textvaluebuff.end_time));
 	SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_END_TIME_ID,dev_info.warmend_time);		
 }
 
 
-//时间差，返回秒数
+
 uint32_t diff_time(RtcTime starttime,RtcTime endtime)
 {
 	return (to_day(endtime) - to_day(starttime));
 }
 
-//两个实数的绝对值
+
 float myabs(float a,float b)
 {
 	if(a >= b)  
@@ -1591,23 +1408,20 @@ float myabs(float a,float b)
 		return b-a;
 }
 
- uint32_t temptime = 0;		//剩余实验时间
+ uint32_t temptime = 0;		
 
-//剩余时间计算 ，分钟
+
 void lefttimecalculate(void)
 {
 	temptime = showtextvalue.test_time*60 - diff_time(showtextvalue.start_time, rtctime)/60;
 	showtextvalue.left_time_hou = temptime/60;
 	showtextvalue.left_time_min = temptime%60;
-//	printf("temptime is %ld , left hour is %d,left min is %d\r\n",temptime,showtextvalue.left_time_hou,showtextvalue.left_time_min);
-//	mergehour_min(showtextvalue.left_time_hou ,showtextvalue.left_time_min);
 	SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TIME_LEFT_HOUR_ID,showtextvalue.left_time_hou);
 	SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TIME_LEFT_MIN_ID,showtextvalue.left_time_min);
 
 	if(temptime == 0)
 	{
-		//实验结束
-		addup_testtime();   //累计实验时间
+		addup_testtime();  
 		dev_info.testtemp = 0;
 		dev_info.testtime = 0;
 		warmflag = 0;
@@ -1615,7 +1429,6 @@ void lefttimecalculate(void)
 	}
 }
 
-//起始结束时间设置
 void start_endtime_set(void)
 {
 	RtcTime inittime = {0};
@@ -1627,16 +1440,14 @@ void start_endtime_set(void)
 //		SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TIME_LEFT_HOUR_ID,"00");	
 //		SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TIME_LEFT_MIN_ID,"00");	
 	}
-	else if((warmflag == 1)&&(dev_info.testtemp != 0)&&(lefttimeflag == 0))	//第一次加热到目标温度且设定温度不为0
+	else if((warmflag == 1)&&(dev_info.testtemp != 0)&&(lefttimeflag == 0))	//第一次加热到目标温度且设定温度不�?
 	{	
 		lefttimeflag = 1;
-		//开始时间设置
 		showtextvalue.start_time = rtctime;
 		mergetimechar(showtextvalue.start_time);
 		memcpy(dev_info.warmstart_time,textvalue.textvaluebuff.start_time,sizeof(textvalue.textvaluebuff.start_time));
 		
 		SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_START_TIME_ID,textvalue.textvaluebuff.start_time);
-		//结束时间设置
 		endtimecalcu(showtextvalue.start_time,showtextvalue.test_time);
 		FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));		
 		FLASH_Read_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
@@ -1647,7 +1458,6 @@ void start_endtime_set(void)
 	}
 }
 
-//累计实验时间
 void addup_testtime(void)
 {
 	uint32_t addtime = 0;
@@ -1660,7 +1470,6 @@ void addup_testtime(void)
 
 
 
-//风门角度次数界面编辑
 void change_air_times(void)
 {
 	uint8_t i = 0;
@@ -1772,7 +1581,6 @@ void change_air_times(void)
 	}
 }
 
-//最大换气次数编辑
 uint8_t max_change_air(uint8_t *buff)
 {
 	uint8_t i = 0, temp = 0;

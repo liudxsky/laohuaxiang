@@ -204,27 +204,27 @@ void check_warning(void)
 {
 	if(showtextvalue.current_temp_vlaue >= coilvalue.warning1_down &&  showtextvalue.current_temp_vlaue <= coilvalue.warning1_up)
 	{
-		ALARM1_ON;
-		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TEMP_WARNING1_ID,SHOW);
-		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_AR1_WORK_STATUS_ID,HIDE);
-	}
-	else
-	{
 		ALARM1_OFF;
 		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TEMP_WARNING1_ID,HIDE);
 		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_AR1_WORK_STATUS_ID,SHOW);
 	}
-	if(showtextvalue.current_temp_vlaue >= coilvalue.warning2_down &&  showtextvalue.current_temp_vlaue <= coilvalue.warning2_up)
-	{
-		ALARM2_ON;
-		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TEMP_WARNING2_ID,SHOW);
-		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_AR2_WORK_STATUS_ID,HIDE);
-	}
 	else
+	{
+		ALARM1_ON;
+		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TEMP_WARNING1_ID,SHOW);
+		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_AR1_WORK_STATUS_ID,HIDE);
+	}
+	if(showtextvalue.current_temp_vlaue >= coilvalue.warning2_down &&  showtextvalue.current_temp_vlaue <= coilvalue.warning2_up)
 	{
 		ALARM2_OFF;
 		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TEMP_WARNING2_ID,HIDE);
 		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_AR2_WORK_STATUS_ID,SHOW);
+	}
+	else
+	{
+		ALARM2_ON;
+		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TEMP_WARNING2_ID,SHOW);
+		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_AR2_WORK_STATUS_ID,HIDE);
 	}
 }
 

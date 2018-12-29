@@ -12,6 +12,8 @@
 #define HMAC_LENGTH 		20
 #define PLAINTEXT_LENGTH    64
 
+typedef enum {FAILED = 0, PASSED = !FAILED} TestStatus;
+
 
 #pragma pack(push)
 #pragma pack(1)						//°´×Ö½Ú¶ÔÆë
@@ -36,7 +38,7 @@ typedef struct
 	uint8_t  warmend_time[RTCBUFFSIZE];
 }dev_info_t;
 
-typedef enum {FAILED = 0, PASSED = !FAILED} TestStatus;
+
 
 
 
