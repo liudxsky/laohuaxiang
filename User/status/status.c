@@ -17,9 +17,7 @@ extern uint16_t current_screen_id;
 extern RtcTime rtctime;							//系统当前时间
 extern TextValueTab  textvalue;					//文本控件保存值
 extern MainShowTextValue	showtextvalue;		//主页面文本控件缓存值
-extern uint8_t SCREENLANGUAGE; 
 extern CoilValue  coilvalue;				//设置界面值
-extern float adjusttemp;
 extern uint8_t slidervalue;					//滑动进度条值
 extern uint16_t autonopowerpassword;
 extern AutoNoPowerTime  nopowertime;		//自动断电时间	
@@ -32,6 +30,8 @@ extern uint8_t  soft_ver[10];
 uint8_t  pwmgpiostatus = 0;
 uint16_t gpiostatus = 0;
 uint32_t door_openstatus = 0,door_closestatus = 0;
+uint16_t Modbus_rate = 9600;
+
 
 
 ThermalLag heattime_log;						//热滞后时间记录结构体
@@ -78,27 +78,9 @@ void check_screen_connect(void)
 {
 	if(screen_flag)
 	{
-		if(current_screen_id == biglanguage_screen.BIG_START_INIT_SCREEN)
+		if(current_screen_id == biglanguage_screen.BIG_MAIN_SHOW_SCREEN)
 		{
 			
-//			SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_TEST_TEMP_VALUE,textvalue.coilsavevalue.test_temp);
-//			delay_ms(100);
-//			SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_SOFT_VER_ID,soft_ver);
-//			delay_ms(100);
-//			SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_START_TIME_ID,textvalue.textvaluebuff.start_time);
-//			delay_ms(100);
-//			SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_END_TIME_ID,textvalue.textvaluebuff.end_time); 	
-//			delay_ms(100);
-//			SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TIME_LEFT_ID,textvalue.textvaluebuff.left_time);
-//			delay_ms(100);
-//			SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_TEST_TIME_VALUE,textvalue.coilsavevalue.test_duration);
-//			delay_ms(100);
-//			SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_CHANGE_AIR_TIME,textvalue.coilsavevalue.change_air_time);
-//			delay_ms(100);
-
-//			check_pwmicon();
-//			Check_Rs485();
-//			door_open_status();
 			MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);
 		}
 	}
@@ -113,23 +95,16 @@ void check_screen_connect(void)
 //检测是否到定时断电时间
 void check_nopowertime(void)
 {
-	if(SCREENLANGUAGE)
+	if((rtctime.Year == nopowertime.year)&&(rtctime.Mon == nopowertime.month)&&(rtctime.Day == nopowertime.day))
 	{
-		if((rtctime.Year == nopowertime.year)&&(rtctime.Mon == nopowertime.month)&&(rtctime.Day == nopowertime.day))
-		{
-			MySetScreen(biglanguage_screen.BIG_AUTO_NOPOWER_RECOVER);
-			RCC_AHB1PeriphClockCmd(DRIVER_GPIO_CLK|BACK_GPIO_CLK|BOX_DOOR_GPIO_CLK,DISABLE);
+		MySetScreen(biglanguage_screen.BIG_AUTO_NOPOWER_RECOVER);
+		RCC_AHB1PeriphClockCmd(DRIVER_GPIO_CLK|BACK_GPIO_CLK|BOX_DOOR_GPIO_CLK,DISABLE);
 
-			if(autonopowerpassword == coilvalue.menu_password)
-			{
-				RCC_AHB1PeriphClockCmd(DRIVER_GPIO_CLK|BACK_GPIO_CLK|BOX_DOOR_GPIO_CLK,ENABLE);
-				MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);
-			}			
-			
-		}
-	}
-	else
-	{
+		if(autonopowerpassword == coilvalue.menu_password)
+		{
+			RCC_AHB1PeriphClockCmd(DRIVER_GPIO_CLK|BACK_GPIO_CLK|BOX_DOOR_GPIO_CLK,ENABLE);
+			MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);
+		}			
 		
 	}
 
@@ -193,6 +168,42 @@ void check_powertime(void)
 	}		
 }
 
+void check_language_select(void)
+{
+	if(dev_info.biglanguagestatus == 1)
+	{
+		biglanguage_screen = bigchinese_screen; 		//Chinese
+		current_screen_id = 11;
+	}
+	else
+	{
+		biglanguage_screen = bigenglish_screen; 		//English
+		current_screen_id = 24;
+	}
+}
+
+void check_modbuss_rate(void)
+{
+	switch(dev_info.modbus_tran_rate_flag)
+	{
+		case 0:
+			Modbus_rate = 1200;
+			break;
+		case 1:
+			Modbus_rate = 2400;
+			break;
+		case 2:
+			Modbus_rate = 4800;
+			break;
+		case 3:
+			Modbus_rate = 9600;
+			break;
+		default:
+			Modbus_rate = 9600;
+	}
+}
+
+
 //检测PWM输出
 void check_pwm(void)
 {
@@ -202,7 +213,7 @@ void check_pwm(void)
 //检测报警
 void check_warning(void)
 {
-	if(showtextvalue.current_temp_vlaue >= coilvalue.warning1_down &&  showtextvalue.current_temp_vlaue <= coilvalue.warning1_up)
+	if(showtextvalue.current_temp_vlaue <= dev_info.flash_setvalue.warning1_up)
 	{
 		ALARM1_OFF;
 		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TEMP_WARNING1_ID,HIDE);
@@ -214,7 +225,7 @@ void check_warning(void)
 		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TEMP_WARNING1_ID,SHOW);
 		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_AR1_WORK_STATUS_ID,HIDE);
 	}
-	if(showtextvalue.current_temp_vlaue >= coilvalue.warning2_down &&  showtextvalue.current_temp_vlaue <= coilvalue.warning2_up)
+	if( showtextvalue.current_temp_vlaue <= dev_info.flash_setvalue.warning2_up)
 	{
 		ALARM2_OFF;
 		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TEMP_WARNING2_ID,HIDE);
@@ -228,15 +239,15 @@ void check_warning(void)
 	}
 }
 
-
+ 
 //温度测量
 void temp_detection(float dispTemper)
 {
-	showtextvalue.current_temp_vlaue = adjusttemp + dispTemper;
-//	showtextvalue.current_temp_vlaue = adjusttemp + (float)Max6675_Read_Tem()*0.25;		//实时温度显示
+	showtextvalue.current_temp_vlaue = dev_info.flash_adjusttemp + dispTemper + dev_info.compensatetemp;
 	if(thermocouple_flag)
 	{
-		SetTextValueFloat(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_CURRENT_TEMP_ID, 999.9);	
+		SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_CURRENT_TEMP_ID, 999);
+		SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_CURRENT_TEMP_DECIMAL_ID, 9);
 	}
 	else
 	{

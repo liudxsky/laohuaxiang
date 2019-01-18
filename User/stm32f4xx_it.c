@@ -199,8 +199,10 @@ const uart_cmd_t uart_cmd[] =
 	{"run",3},
 	{"debug",5},
 	{"setpoint",8},
-	{"simtemp",7}
+	{"simtemp",7},
+	{"compensatetemp",14}
 };
+
 
 //串口1中断函数
 void RS232_USART_IRQHandler(void)
@@ -259,7 +261,7 @@ void RS232_USART_IRQHandler(void)
 				printf("\r\n\r\nair valve angle value is set: \r\n------dec: %d\r\n------hex: 0x%x\r\n",dev_info.flash_setvalue.air_door_angle,dev_info.flash_setvalue.air_door_angle);
 				printf("\r\n\r\nback value  is : %04x  %d\r\n",dev_info.flash_setvalue.air_door_angle,dev_info.flash_setvalue.air_door_angle);
 				Dac1_Set_Vol(dev_info.flash_setvalue.air_door_angle);
-			}
+			}	
 			else if(strstr((char *)RxBuffer,uart_cmd[SHOWVALUE].cmd))			//显示当前设备存储值
 			{		
 //				FLASH_Read_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
@@ -276,7 +278,8 @@ void RS232_USART_IRQHandler(void)
 				printf("1  ->show_value(show All param)\r\n");
 				printf("2  ->set_pwmscope (set pwm parameter scope)\r\n");
 				printf("3  ->set_pwmvalue (set pwm/temperature parameter value)\r\n");
-				printf("2  ->set_angle (set air valve angle value)\r\n");
+				printf("4  ->set_angle (set air valve angle value)\r\n");
+				printf("5  ->compensatetemp (set compensatetemp valve)\r\n");
 				printf("\r\n");
 			}
 			else if(strstr((char *)RxBuffer,uart_cmd[RUN].cmd))
@@ -303,11 +306,21 @@ void RS232_USART_IRQHandler(void)
 			else if(strstr((char *)RxBuffer,uart_cmd[SIMTEMP].cmd))
 			{
 				index = uart_cmd[SIMTEMP].len;
-				memset((void *)floatbuff,0,32);
+				memset((void *)floatbuff,0,dstlen);
 				strncpy(floatbuff,(char *)&RxBuffer[index],RxCounter-index);
 				temper_usart=atof(floatbuff);
 				printf("%d\n",dev_info.pwmvalue);
 			}
+			else if(strstr((char *)RxBuffer,uart_cmd[BUCHAGTEMP].cmd)) 	
+			{					
+				index = uart_cmd[BUCHAGTEMP].len;
+				memset((void *)dst_vale,0,dstlen);
+				strncpy(dst_vale,(char *)&RxBuffer[index],RxCounter-index);
+				dev_info.valid_flag = true;
+				dev_info.compensatetemp = atoi(dst_vale);		
+				printf("\r\n\r\ncompensatetemp value is set: \r\n------dec: %d\r\n",dev_info.compensatetemp);
+				
+			}	
 			else
 			{
 				printf("\r\nCmd Error! please input again!\r\n");		

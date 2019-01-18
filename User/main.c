@@ -57,8 +57,7 @@ uint16_t	ucRegDiscreteBuf[REG_DISCRETE_SIZE] = {0};
 
 extern  uint32_t password1;
 extern uint32_t password2;
-extern float adjusttemp;
-extern Touch_Times touchtimes;
+extern uint16_t Modbus_rate;
 float temper_usart;
 
 
@@ -77,11 +76,11 @@ int main( void )
 	volatile uint32_t t_thread500=0;
 	volatile uint32_t t_thread3s=0;
 	uint16_t Ktemperature = 0;
-  eMBErrorCode    eStatus;
+  	eMBErrorCode    eStatus;
 	qsize  size = 0;
 	System_Init();												//init
 
-	eStatus = eMBInit( MB_RTU, 0x01, 0x01, 9600, MB_PAR_NONE ); //Modbus Init
+	eStatus = eMBInit( MB_RTU, dev_info.Modbus_address, 0x01, Modbus_rate, MB_PAR_NONE ); //Modbus Init
 	eStatus = eMBEnable();									//Free MODBUS enable
 	delay_s(1);
 	SetBackLight(20);											//set screen Backlight brightness
@@ -191,19 +190,11 @@ int main( void )
 		if(getMsCounter() - timer_tick_count > 1000)
 		{
 			timer_tick_count = getMsCounter();
-			ReadRtcTime();											//read current RTC time
+			ReadRtcTime();										//read current RTC time
 			start_endtime_set();								//start and end time setting
-			temp_detection(temperFilter);				//temp detection
-			if(press_flag)
-			{
-				get_combo_button_times();					//double heit to J\jump interface
-				touchtimes.self_check_times = 0;
-				touchtimes.menu_click_times = 0;
-				press_flag = 0;
-			}
-				
-			temp_curve_save();								
+			temp_detection(temperFilter);						//temp detection						
 			Check_All_Status();	
+			modbus_register_handle();
 		}
 		if(getMsCounter() - t_thread3s > 3000)
 		{
@@ -219,8 +210,7 @@ int main( void )
 			else
 			{
 				dev_info.dev_status_changed_flag = 0;
-			}
-			
+			}	
 		}
 			device_timing_selfcheck();
     }
@@ -236,14 +226,14 @@ void System_Init(void)
 	delay_init();			//delay function init					
 	Gpio_Init();			//gpio init						
 	USART1_Config();		//debug usart1 config			
-	UartInit();				//screen usart init						
-	screenlanguage();		//screen language select						
+	UartInit();				//screen usart init											
 	delay_s(1);
 	DeviceInfo_Init();		//device message init
 	Crypto_DeInit();		//DeInitialize STM32 Cryptographic Library												
 	TIMx_Configuration();	//pwm time config						
-	TIMx_Init();			//timekeeping init						
-	
+	TIMx_Init();			//timekeeping init	
+	check_modbuss_rate();	//modbus rate
+	check_language_select();//language select
 	Analog_Init();			//adc init						
 	DAC1_Init();			//dac init						
 	Dac_Select_Init();		//dac select

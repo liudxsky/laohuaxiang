@@ -78,7 +78,10 @@ void read_input_register(void)
 {
 	uint8_t i = 0;
 	//即时温度
-	usRegInputBuf[0] = 	(uint16_t)showtextvalue.current_temp_vlaue;
+	usRegInputBuf[0] = datatohex(showtextvalue.current_temp_vlaue);
+	usRegInputBuf[1] =  datatohex(showtextvalue.current_temp_vlaue)>>16;
+	printf("temp is %x,%x\r\n",usRegInputBuf[0],usRegInputBuf[1]);
+	
 //	for(i = 0;i < TIMERECORDNUM;i++)
 //	{
 //		usRegInputBuf[38*i] = thermalbuff[i];
@@ -270,12 +273,12 @@ void readgpiostatus(void)
 
 void modbus_register_handle(void)
 {
-	read_coil();		//读线圈
+//	read_coil();		//读线圈
 //	write_coil();		//写线圈
 
 	read_input_register();	//读输入寄存器
-	read_coilregister();	//读保持寄存器值
-	read_coilregister();	//写入保持寄存器值，自己定义输入类型
+//	read_coilregister();	//读保持寄存器值
+//	read_coilregister();	//写入保持寄存器值，自己定义输入类型
 }
 
 
@@ -290,6 +293,25 @@ void modbus_register_handle(void)
 
 
 
+uint32_t datatohex(float data)  
+{
+	uint32_t temp;  
+	uint8_t i=0;  
+  	printf("data is : %.2f\r\n",data);
+	temp = data;				//转存需要计算的数值  
+	while(temp)  
+	{         
+		temp >>= 1;  
+		i++;					//计算当前值的尾数占有的位数  
+	}  
+	i--;						//计算下来，i会多加一次，这儿减掉  
+	temp = data;  				//再次赋值，准备合并
+	temp = temp<<(23-i);		//补足23位尾数  
+	temp = (i+127)<<23 | temp;	//计算指数，并与尾数合并起来   
+	temp = temp & ~(1<<23);		//确定正负  我这儿都是正数，就没管负数了  
+	
+	return temp;				//这里就已经是以浮点数的存储方式表示的传进来的参数了
+}
 
 
 

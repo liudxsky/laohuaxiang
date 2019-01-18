@@ -11,7 +11,7 @@ uint8_t ChipUniqueID[12] = {0};
 uint32_t * const  p = (uint32_t *)(0x08070000); 
 #define INVALID_INFO		0xFFFF
 dev_info_t dev_info;
-extern uint8_t SCREENLANGUAGE;
+extern uint8_t Modbus_rate;
 
 void DeviceInfo_Init(void)
 {
@@ -24,25 +24,24 @@ void DeviceInfo_Init(void)
 		dev_info.pwmscope = 1000;
 		dev_info.pwmvalue = 0;
 		dev_info.flash_setvalue.air_door_angle = 0;
-		dev_info.biglanguagestatus = 1;
-		for (i = 0; i < 19; ++i)
+		for (i = 0; i < 21; ++i)
 		{
 			dev_info.change_air_time[i] = 0;
 		}
+		dev_info.flash_setvalue.warning1_up = 1000;
+		dev_info.flash_setvalue.warning2_up = 1000;
+		dev_info.Modbus_address = 1;					
+		dev_info.biglanguagestatus = 1;
+		dev_info.modbus_tran_rate_flag = 3;
+		dev_info.flash_adjusttemp = 0;
+		dev_info.compensatetemp = 0;
 		/*赋初值*/
 		FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
 		/*串口打印信息*/
 		printf("\r\n device curren pwm scope is %d \r\n",dev_info.pwmscope);
 		printf("\r\n device current pwm value is %d \r\n",dev_info.pwmvalue);
 		printf("\r\n device current air valve angle value is %d \r\n",dev_info.flash_setvalue.air_door_angle);
-		if(SCREENLANGUAGE)
-		{
-			printf("\r\n device current language is selected %d (1 is chinese ,0 is english)\r\n",dev_info.biglanguagestatus);
-		}
-		else
-		{
-			printf("\r\n device current language is selected %d (1 is chinese ,0 is english)\r\n",dev_info.biglanguagestatus);
-		}
+		
 	}
 	else
 	{
@@ -54,9 +53,9 @@ void DeviceInfo_Init(void)
 		printf("\r\n device current air valve angle value is %d \r\n",dev_info.flash_setvalue.air_door_angle);
 		printf("\r\n device current Pid value is : \r\nP :%f\r\nI :%f\r\n D : %f\r\n",dev_info.pidvalue.PID_P,dev_info.pidvalue.PID_I,dev_info.pidvalue.PID_D);
 		printf("\r\n device current change air times is :\r\n");
-		for (i = 0; i < 19; ++i)
+		for (i = 0; i < CHANGE_AIR_SIZE; ++i)
 		{
-			printf("%d : %d \r\n",90 - 5*i,dev_info.change_air_time[i]);
+			printf("%d : %d \r\n",100 - 5*i,dev_info.change_air_time[i]);
 		}
 		printf("\r\n device current set testtime is :%f\r\n",dev_info.testtime);		
 		printf("\r\n device current set tempvalue is :%f\r\n",dev_info.testtemp);
@@ -183,13 +182,13 @@ uint32_t InputLength = (sizeof(InputMessage) - 1);
 
 uint8_t HMAC_Key[] =
   {
-    0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09,
-    0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11, 0x12, 0x13,
-    0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d,
-    0x1e, 0x1f, 0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27,
-    0x28, 0x29, 0x2a, 0x2b, 0x2c, 0x2d, 0x2e, 0x2f, 0x30, 0x31,
-    0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x3a, 0x3b,
-    0x3c, 0x3d, 0x3e, 0x3f
+    0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39,
+    0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39,
+    0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39,
+    0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39,
+    0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39,
+   	0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39,
+    0x30, 0x31, 0x32, 0x33
   };
 
 /* string length only, without '\0' end of string marker */
@@ -350,7 +349,7 @@ void testpassword(void)
 	int32_t status = HASH_SUCCESS;
 	uint8_t i;
 	char * basedata = (char *)malloc(sizeof(unsigned char)*KeyLength+1); 
-	memcpy(HMAC_Key,ChipUniqueID,sizeof(ChipUniqueID));
+//	memcpy(HMAC_Key,ChipUniqueID,sizeof(ChipUniqueID));
 	
 	printf("\r\n*************************************************************** :\r\n");
 	for (i = 0; i < KeyLength; ++i)

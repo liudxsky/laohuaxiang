@@ -22,20 +22,24 @@ typedef enum {FAILED = 0, PASSED = !FAILED} TestStatus;
 typedef struct
 {
 	uint16_t valid_flag;    							//有效标志位
-	uint8_t  dev_status_changed_flag;			//数据状态标志位
+	uint8_t  dev_status_changed_flag;					//数据状态标志位
 	uint16_t pwmscope;									//pwm输出范围
 	uint16_t pwmvalue;									//pwm控制温度值
-	uint8_t  change_air_time[19];						//风门角度换气次数
+	uint8_t  change_air_time[CHANGE_AIR_SIZE];			//风门角度换气次数
 	uint8_t  biglanguagestatus;							//语言选择
 	float testtime;										//实验时间
 	float testtemp;										//实验温度
+	float flash_adjusttemp;								//调整温度值
 	uint32_t  addup_testtime;							//累计试验时间
+	uint8_t  Modbus_address;							//Modbus地址
+	uint8_t  modbus_tran_rate_flag;						//Modbus传输速率
 	Pid_Value pidvalue;									//pid值
 	CoilValue flash_setvalue;							//参数设置
 	AutoNoPowerTime autonopowertime;					//自动断电时间
 	uint8_t autonopower_password[PASSWORDLENGTH];		//自动断电密码
 	uint8_t  warmstart_time[RTCBUFFSIZE];
 	uint8_t  warmend_time[RTCBUFFSIZE];
+	int compensatetemp;
 }dev_info_t;
 
 
