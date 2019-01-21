@@ -29,6 +29,7 @@ typedef struct
 	uint8_t  biglanguagestatus;							//语言选择
 	float testtime;										//实验时间
 	float testtemp;										//实验温度
+	float temp_backdiff;								//温度回差
 	float flash_adjusttemp;								//调整温度值
 	uint32_t  addup_testtime;							//累计试验时间
 	uint8_t  Modbus_address;							//Modbus地址
@@ -39,7 +40,7 @@ typedef struct
 	uint8_t autonopower_password[PASSWORDLENGTH];		//自动断电密码
 	uint8_t  warmstart_time[RTCBUFFSIZE];
 	uint8_t  warmend_time[RTCBUFFSIZE];
-	int compensatetemp;
+	int compensatetemp;									//补偿温度
 }dev_info_t;
 
 

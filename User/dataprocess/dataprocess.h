@@ -21,6 +21,7 @@ typedef struct{
 	uint8_t test_temp[COILNUM];					//实验温度，单位：摄氏度
 	uint8_t warning1_up[COILNUM];				//报警1上限
 	uint8_t warning2_up[COILNUM];				//报警2上限
+	uint8_t temp_backdiff[COILNUM];				//温度回差
 	uint8_t menu_password[COILNUM];				//菜单密码
 	uint8_t secondtime_password[COILNUM];		//再输入一次菜单密码
 	uint8_t autonopowerpassword[COILNUM];		//断电恢复密码

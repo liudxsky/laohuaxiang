@@ -13,7 +13,6 @@
 #include "./dac/dac.h"
 
 uint8_t  soft_ver[10] = "Ver:1.0";
-uint16_t warmflag = 0;					//start warm flag
 uint8_t lefttimeflag = 0;			
 
 uint8_t cmd_buffer[CMD_MAX_SIZE];		//screen data buffer
@@ -332,16 +331,13 @@ void NotifyButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 			case BIG_START_OR_PAUSE_ID:
 				if(runstatus>0)
 				{
-					runstatus=0;
 					SetPwmValue(0);
 					runstatus = 0;			//Õ£÷π
-					warmflag = 0;
 					AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_HEAT_SWITCH_ID,HIDE);
 				}
 				else
 				{
 					runstatus = 1;			
-					warmflag = 1;
 					AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_HEAT_SWITCH_ID,SHOW);
 				}
 			
@@ -519,7 +515,7 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 			default:
 				break;
 		}
-		FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));		//pidÊï∞ÊçÆÂÜôÂÖ•flash
+		FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));		
 	}
 	//menu setting screen
 	if(screen_id == biglanguage_screen.BIG_PARAM_SET_SCREEN)
@@ -562,11 +558,26 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 				{
 					dev_info.testtemp = showtextvalue.setting_temp;
 					AnimationPlayFrame(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN,BIG_TESTTEMP_SET_FAIL,HIDE);
-					SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_SET_TEMP_ID,(int32_t)dev_info.testtemp/1);
+					SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_SET_TEMP_ID,(int32_t)(dev_info.testtemp/1));
 					SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_SET_TEMP_DECIMAL_ID,(int32_t)(dev_info.testtemp*10)%10);
 				}
 				break;	
 			case BIG_TEMP_RETURN_DIFF:
+				memset(textvalue.coilsavevalue.temp_backdiff,0,sizeof(char)*COMMONSIZE);
+				memcpy(textvalue.coilsavevalue.temp_backdiff,str,sizeof(char)*COMMONSIZE);
+				SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_TEMP_RETURN_DIFF,textvalue.coilsavevalue.temp_backdiff);			
+				coilvalue.temp_backdiff = atof(textvalue.coilsavevalue.temp_backdiff);
+				if(coilvalue.temp_backdiff < 0)
+				{
+					dev_info.temp_backdiff = 0;
+					AnimationPlayFrame(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN,BIG_RETURN_DIFF_SET_FAIL,SHOW);
+					MySetScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN);
+				}
+				else
+				{
+					dev_info.temp_backdiff = coilvalue.temp_backdiff;
+					AnimationPlayFrame(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN,BIG_RETURN_DIFF_SET_FAIL,HIDE);
+				}
 				break;
 				
 			case BIG_WARNING1_UP_VALUE:
@@ -680,7 +691,7 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 		}
 		FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));				//ÂèÇÊï∞ËÆæÁΩÆÁïåÈù¢Êï∞ÊçÆÂ≠òÂÖ•flash
 	}
-	//auto no power time setting
+	//adjust screen setting
 	if(screen_id == biglanguage_screen.BIG_ADJUST_SCREEN)
 	{
 		switch (control_id)
@@ -1148,7 +1159,7 @@ uint32_t to_day(RtcTime time)
 
 
 //end time calculate
-void endtimecalcu(RtcTime starttime,uint16_t testtime)
+void endtimecalcu(RtcTime starttime,float testtime)
 {
 	char timebuff[25] = {0};
 	time_t currenttime = 946684800;
@@ -1175,40 +1186,61 @@ float myabs(float a,float b)
 		return b-a;
 }
 
- uint32_t temptime = 0;		
+uint32_t temptime = 0,nowtesttime = 0,lasttesttime = 0;	
 
 
-void lefttimecalculate(void)
+//¿€º∆ ‘—È ±º‰
+void addup_testtime(void)
 {
-	temptime = showtextvalue.test_time*60 - diff_time(showtextvalue.start_time, rtctime)/60;
-	showtextvalue.left_time_hou = temptime/60;
-	showtextvalue.left_time_min = temptime%60;
-	SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TIME_LEFT_HOUR_ID,showtextvalue.left_time_hou);
-	SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TIME_LEFT_MIN_ID,showtextvalue.left_time_min);
-
-	if(temptime == 0)
+	uint32_t addtime = 0;
+	if(nowtesttime/60 - lasttesttime)
 	{
-		addup_testtime();  
-		dev_info.testtemp = 0;
-		dev_info.testtime = 0;
-		warmflag = 0;
-		lefttimeflag = 0;
+		dev_info.addup_testtime += 1;
+		lasttesttime = nowtesttime/60;
+		SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_ADDUP_TIME_ID,dev_info.addup_testtime);
 	}
 }
 
+
+
+// £”‡ ±º‰º∆À„
+void lefttimecalculate(void)
+{
+	if((runstatus)&&(dev_info.testtime != 0))
+	{
+		nowtesttime = diff_time(showtextvalue.start_time, rtctime)/60;
+		temptime = showtextvalue.test_time*60 - nowtesttime;
+		showtextvalue.left_time_hou = temptime/60;
+		showtextvalue.left_time_min = temptime%60;
+		SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TIME_LEFT_HOUR_ID,showtextvalue.left_time_hou);
+		SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TIME_LEFT_MIN_ID,showtextvalue.left_time_min);
+		
+		addup_testtime();  
+		
+		if(temptime == 0)
+		{
+			dev_info.testtemp = 0;
+			dev_info.testtime = 0;
+			runstatus = 0;
+			lefttimeflag = 0;
+		}
+	}
+}
+
+
+uint8_t steadytempcount = 0;
 void start_endtime_set(void)
 {
-	RtcTime inittime = {0};
-	if(warmflag == 0)		
+	if(myabs(dev_info.testtemp,showtextvalue.current_temp_vlaue)<=3)
 	{
-//		mergetimechar(inittime);
-//		SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_START_TIME_ID,textvalue.textvaluebuff.start_time);
-//		SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_END_TIME_ID,textvalue.textvaluebuff.start_time); 	
-//		SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TIME_LEFT_HOUR_ID,"00");	
-//		SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TIME_LEFT_MIN_ID,"00");	
+		steadytempcount++;
 	}
-	else if((warmflag == 1)&&(dev_info.testtemp != 0)&&(lefttimeflag == 0))	
+	else
 	{
+		steadytempcount = 0;
+	}
+	if((runstatus)&&(dev_info.testtemp != 0)&&(lefttimeflag == 0)&&(steadytempcount>=120))
+	{	
 		lefttimeflag = 1;
 		showtextvalue.start_time = rtctime;
 		mergetimechar(showtextvalue.start_time);
@@ -1217,22 +1249,11 @@ void start_endtime_set(void)
 		SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_START_TIME_ID,textvalue.textvaluebuff.start_time);
 		endtimecalcu(showtextvalue.start_time,showtextvalue.test_time);
 		FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));		
-		FLASH_Read_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
 	}
 	if(lefttimeflag == 1)
 	{
 		lefttimecalculate();
 	}
-}
-
-void addup_testtime(void)
-{
-	uint32_t addtime = 0;
-	addtime += showtextvalue.test_time;
-	dev_info.addup_testtime = addtime;
-	FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));		
-	FLASH_Read_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
-	SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_ADDUP_TIME_ID,dev_info.addup_testtime);
 }
 
 
@@ -1280,7 +1301,7 @@ uint8_t judge_changeair_time(uint16_t change_time)
 void update_dev_status(void)
 {
 	SetTextValueFloat(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TEST_TIME_ID,dev_info.testtime);
-	SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_SET_TEMP_ID,(int32_t)dev_info.testtemp/1);
+	SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_SET_TEMP_ID,(int32_t)(dev_info.testtemp/1));
 	SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_SET_TEMP_DECIMAL_ID,(int32_t)(dev_info.testtemp*10)%10);
 	SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_CHANGE_AIR_TIME,dev_info.flash_setvalue.change_air_time);
 }

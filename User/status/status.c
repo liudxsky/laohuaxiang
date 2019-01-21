@@ -213,29 +213,29 @@ void check_pwm(void)
 //¼ì²â±¨¾¯
 void check_warning(void)
 {
-	if(showtextvalue.current_temp_vlaue <= dev_info.flash_setvalue.warning1_up)
-	{
-		ALARM1_OFF;
-		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TEMP_WARNING1_ID,HIDE);
-		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_AR1_WORK_STATUS_ID,SHOW);
-	}
-	else
+	if(showtextvalue.current_temp_vlaue >= dev_info.flash_setvalue.warning1_up)
 	{
 		ALARM1_ON;
 		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TEMP_WARNING1_ID,SHOW);
 		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_AR1_WORK_STATUS_ID,HIDE);
 	}
-	if( showtextvalue.current_temp_vlaue <= dev_info.flash_setvalue.warning2_up)
+	else if(showtextvalue.current_temp_vlaue < (dev_info.flash_setvalue.warning1_up - dev_info.temp_backdiff))
 	{
-		ALARM2_OFF;
-		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TEMP_WARNING2_ID,HIDE);
-		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_AR2_WORK_STATUS_ID,SHOW);
+		ALARM1_OFF;
+		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TEMP_WARNING1_ID,HIDE);
+		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_AR1_WORK_STATUS_ID,SHOW);
 	}
-	else
+	if( showtextvalue.current_temp_vlaue >= dev_info.flash_setvalue.warning2_up)
 	{
 		ALARM2_ON;
 		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TEMP_WARNING2_ID,SHOW);
 		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_AR2_WORK_STATUS_ID,HIDE);
+	}
+	else if(showtextvalue.current_temp_vlaue < (dev_info.flash_setvalue.warning2_up - dev_info.temp_backdiff))
+	{
+		ALARM2_OFF;
+		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TEMP_WARNING2_ID,HIDE);
+		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_AR2_WORK_STATUS_ID,SHOW);
 	}
 }
 
@@ -357,20 +357,6 @@ void devicefunc_selfcheck(void)
 	{
 		AnimationPlayFrame(biglanguage_screen.BIG_SELF_TEST_NOTPASS_SCREEN,BIG_ERROR1_TEXT,HIDE);
 	}
-//	if(!pwmgpiostatus)
-//	{
-//		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TROUBLE_INDICATE_ID,SHOW);
-//		AnimationPlayFrame(biglanguage_screen.BIG_SELF_TEST_NOTPASS_SCREEN,BIG_ERROR2_TEXT,SHOW);
-//		MySetScreen(biglanguage_screen.BIG_SELF_TEST_NOTPASS_SCREEN);
-//	}
-//	else
-//	{
-//		AnimationPlayFrame(biglanguage_screen.BIG_SELF_TEST_NOTPASS_SCREEN,BIG_ERROR2_TEXT,HIDE);
-//		if(current_screen_id == biglanguage_screen.BIG_SELF_TEST_NOTPASS_SCREEN)
-//		{
-//			MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);
-//		}
-//	}
 	if(gpiostatus)//ÓÐ¹ÊÕÏ
 	{
 		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TROUBLE_INDICATE_ID,SHOW);

@@ -348,6 +348,7 @@ typedef struct
 typedef struct{
 	float warning1_up;								//报警1上限
 	float warning2_up;								//报警2上限
+	float temp_backdiff;							//温度回差
 	uint32_t menu_password;							//菜单密码
 	uint32_t secondtime_password;					//再输入一次菜单密码
 	uint32_t no_power_protect_password;				//保护界面密码
@@ -526,7 +527,7 @@ void mergehour_min(uint16_t hour,uint16_t min);
 
 uint32_t to_day(RtcTime time);
 
-void endtimecalcu(RtcTime starttime,uint16_t testtime);
+void endtimecalcu(RtcTime starttime,float testtime);
 
 uint32_t diff_time(RtcTime starttime,RtcTime endtime);
 

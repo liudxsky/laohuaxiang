@@ -35,6 +35,7 @@ void DeviceInfo_Init(void)
 		dev_info.modbus_tran_rate_flag = 3;
 		dev_info.flash_adjusttemp = 0;
 		dev_info.compensatetemp = 0;
+		dev_info.addup_testtime = 0;
 		/*赋初值*/
 		FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
 		/*串口打印信息*/
