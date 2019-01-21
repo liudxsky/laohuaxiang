@@ -206,7 +206,7 @@ int main( void )
 			t_thread3s = getMsCounter();
 			//3s thread
 			//add status and relay control here.
-			if(dev_info.testtemp!=SetPoint&&SetPoint!=0&&dev_info.dev_status_changed_flag == 1)
+			if(dev_info.dev_status_changed_flag == 1)
 			{
 				dev_info.dev_status_changed_flag=0;
 				SetPoint=dev_info.testtemp;
