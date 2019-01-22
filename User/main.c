@@ -87,11 +87,9 @@ int main( void )
 	SetBackLight(20);											//set screen Backlight brightness
 	STM32_Read_ID();
 	startscreen();	
+	printf("shiliu jinzhi is : %x\r\n",datatohex(27.5));
 
 
-
-
-	testpassword();
 	//start screen
 	//SetPoint=showtextvalue.setting_temp;
 	SetPoint=dev_info.testtemp;
@@ -245,7 +243,7 @@ void System_Init(void)
 	Max6675_Gpio_Init();	//thermocouple gpio init						
 	control_mode_select();	//control mode select						
 	screen_init();			//screen data init						
-	
+	autogeneratepassword();	//generatepassword
 }
 
 

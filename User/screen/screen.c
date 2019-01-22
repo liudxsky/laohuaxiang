@@ -114,7 +114,7 @@ void screen_init(void)
 	delay_ms(100);
 	AnimationPlayFrame(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN,BIG_MODBUS_ADDRESS_SET_FAIL,HIDE);
 	
-	sprintf(textvalue.coilsavevalue.menu_password,"%06d",123456);
+	
 		
 }
 
@@ -481,9 +481,8 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 	{
 		memset(textvalue.protect_password,0,sizeof(char)*PASSWORDLENGTH);
 		memcpy(textvalue.protect_password ,str,sizeof(char)*PASSWORDLENGTH);
-		coilvalue.menu_password = atoi(textvalue.protect_password);
 		SetTextValue(biglanguage_screen.BIG_SCREAT_PROTECT_SCREEN,BIG_PASSWORD_PROTECT_INPUT,textvalue.protect_password);
-		if(!strncmp(textvalue.protect_password,textvalue.coilsavevalue.menu_password,6))
+		if(!strncmp(textvalue.protect_password,dev_info.flash_setvalue.menu_password,PASSWORDLENGTH))
 		{
 			AnimationPlayFrame(biglanguage_screen.BIG_PASSWORD_ERROR_SCREEN,BIG_PASS_UPDATE_FAIL,HIDE);
 			MySetScreen(biglanguage_screen.BIG_PARAM_SET_SCREEN);	
@@ -638,7 +637,7 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 				}
 				else
 				{
-					dev_info.flash_setvalue.menu_password = atoi(textvalue.coilsavevalue.secondtime_password);
+					memcpy(dev_info.flash_setvalue.menu_password,textvalue.coilsavevalue.secondtime_password,sizeof(char)*COMMONSIZE);
 					AnimationPlayFrame(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN,BIG_PASS_UPDATE_FAIL,HIDE);
 				}
 				break;
@@ -694,7 +693,7 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 			default:
 				break;
 		}
-		FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));				//参数设置界面数据存入flash
+		FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));			
 	}
 	//adjust screen setting
 	if(screen_id == biglanguage_screen.BIG_ADJUST_SCREEN)
@@ -717,8 +716,7 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 				}
 				else
 				{
-					memcpy(dev_info.autonopower_password,textvalue.coilsavevalue.autonopower_secondpassword,sizeof(char)*PASSWORDLENGTH);
-					dev_info.flash_setvalue.no_power_protect_password = atoi(textvalue.coilsavevalue.autonopowerpassword);
+					memcpy(dev_info.flash_setvalue.no_power_protect_password,textvalue.coilsavevalue.autonopower_secondpassword,sizeof(char)*PASSWORDLENGTH);
 					AnimationPlayFrame(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN,BIG_PASS_UPDATE_FAIL,HIDE);
 				}
 				break;
@@ -765,7 +763,8 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 	{
 		memset(textvalue.autonopowerpassword,0,sizeof(char)*PASSWORDLENGTH);
 		memcpy(textvalue.autonopowerpassword,str,sizeof(char)*PASSWORDLENGTH);
-		if(strncmp(textvalue.autonopowerpassword,dev_info.autonopower_password,PASSWORDLENGTH) == 0)
+		SetTextValue(biglanguage_screen.BIG_SCREAT_PROTECT_SCREEN,BIG_PASSWORD_PROTECT_INPUT,textvalue.autonopowerpassword);		
+		if(!strncmp(coilvalue.no_power_protect_password,dev_info.flash_setvalue.no_power_protect_password,PASSWORDLENGTH))
 		{
 			//have power , control device work normal
 		}
@@ -822,7 +821,6 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 	}
 }
 
-//������
 void NotifyProgress(uint16_t screen_id, uint16_t control_id, uint32_t value)
 {
 	//TODO
@@ -1080,7 +1078,6 @@ void startscreen(void)
 {
 	printf("%s\r\n",soft_ver);																			
 	SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_SOFT_VER_ID,soft_ver);	
-	delay_s(2);
 	MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);							
 }
 //check pid's status
@@ -1196,7 +1193,7 @@ float myabs(float a,float b)
 uint32_t temptime = 0,nowtesttime = 0,lasttesttime = 0;	
 
 
-//�ۼ�����ʱ��
+
 void addup_testtime(void)
 {
 	uint32_t addtime = 0;
@@ -1210,7 +1207,7 @@ void addup_testtime(void)
 
 
 
-//ʣ��ʱ�����
+
 void lefttimecalculate(void)
 {
 	if((runstatus)&&(dev_info.testtime != 0))

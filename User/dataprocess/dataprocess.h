@@ -13,9 +13,6 @@
 
 
 
-
-
-
 typedef struct{
 	uint8_t test_duration[COILNUM];				//实验时长，单位：小时
 	uint8_t test_temp[COILNUM];					//实验温度，单位：摄氏度
