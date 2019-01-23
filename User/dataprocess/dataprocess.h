@@ -49,7 +49,6 @@ void  writer_register(void);
 
 void modbus_register_handle(void);
 
-uint32_t datatohex(float data);  
 
 
 

@@ -36,7 +36,7 @@ uint8_t autonopowerpassword[PASSWORDLENGTH] = {0};
 
 float adjusttemp = 0;			
 RtcTime rtctime;					
-AutoNoPowerTime  nopowertime;			
+AutoNoPowerTime  nopowertime = {1985,12,12};			
 
 PCTRL_MSG msg;						
 TextValueTab  textvalue;			//text control_id buff

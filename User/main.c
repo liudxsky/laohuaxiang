@@ -87,7 +87,7 @@ int main( void )
 	SetBackLight(20);											//set screen Backlight brightness
 	STM32_Read_ID();
 	startscreen();	
-	printf("shiliu jinzhi is : %x\r\n",datatohex(27.5));
+	
 
 
 	//start screen
@@ -197,7 +197,7 @@ int main( void )
 			start_endtime_set();								//start and end time setting
 			temp_detection(temperFilter);						//temp detection						
 			Check_All_Status();	
-			modbus_register_handle();
+//			modbus_register_handle();
 		}
 		if(getMsCounter() - t_thread3s > 3000)
 		{
