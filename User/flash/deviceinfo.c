@@ -43,6 +43,7 @@ void DeviceInfo_Init(void)
 		printf("\r\n device curren pwm scope is %d \r\n",dev_info.pwmscope);
 		printf("\r\n device current pwm value is %d \r\n",dev_info.pwmvalue);
 		printf("\r\n device current air valve angle value is %d \r\n",dev_info.flash_setvalue.air_door_angle);
+		printf("\r\n device current set modbus address is :%d\r\n",dev_info.Modbus_address);
 		
 	}
 	else
@@ -59,8 +60,9 @@ void DeviceInfo_Init(void)
 		{
 			printf("%d : %d \r\n",100 - 5*i,dev_info.change_air_time[i]);
 		}
+		printf("\r\n device current set testtime is :%f\r\n",dev_info.testtime);
 		printf("\r\n device current set testtime is :%f\r\n",dev_info.testtime);		
-		printf("\r\n device current set tempvalue is :%f\r\n",dev_info.testtemp);
+		printf("\r\n device current set modbus address is :%d\r\n",dev_info.Modbus_address);
 	}
 
 }

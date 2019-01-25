@@ -5,6 +5,7 @@
 #include "./status/status.h"
 #include "hmi_driver.h"
 #include "./screen/screen.h"
+#include "./flash/deviceinfo.h"
 
 
 
@@ -19,7 +20,7 @@ extern uint16_t		usRegHoldingBuf[REG_HOLDING_NREGS];			//保持寄存器	操作码：03,0
 extern uint16_t		ucRegCoilsBuf[REG_COILS_SIZE];					//线圈寄存器	操作码：01,05,15
 extern uint16_t		ucRegDiscreteBuf[REG_DISCRETE_SIZE];		//开关输入寄存器	操作码：02
 
-
+extern dev_info_t dev_info;
 extern MainShowTextValue showtextvalue;									//主页面文本控件缓存值
 extern uint8_t cmd_buffer[CMD_MAX_SIZE];								//指令缓存
 extern BIG_SCREEN_ID_TAB biglanguage_screen;;							//界面语言选择
@@ -60,9 +61,8 @@ void  read_coil(void)
 
 
 //写线圈状态
-void  write_coil(uint8_t coilvalue)
+void  write_coil(void)
 {
-	ucRegCoilsBuf[0] |= coilvalue;
 	GPIO_WriteBit(DRIVER_GPIO_PORT,HEAT_CONTROL_PIN,ucRegCoilsBuf[0] & 0x01);
 	GPIO_WriteBit(DRIVER_GPIO_PORT,SPINNER_RACK_CONTROL_PIN,ucRegCoilsBuf[0] & 0x02);
 	GPIO_WriteBit(DRIVER_GPIO_PORT,CIRCULATING_FUN_CONTROL_PIN,ucRegCoilsBuf[0] & 0x04);
@@ -77,10 +77,11 @@ extern uint8_t thermalbuff[38];
 void read_input_register(void)
 {
 	uint8_t i = 0;
+	uint32_t testtemp = showtextvalue.current_temp_vlaue*100;
 	//即时温度
-	usRegInputBuf[0] = (uint16_t)((uint32_t)showtextvalue.current_temp_vlaue*100)>>16;
-	usRegInputBuf[1] = (uint16_t)((uint32_t)showtextvalue.current_temp_vlaue*100)&0x00ff;
-	printf("temp is %x,%x\r\n",usRegInputBuf[0],usRegInputBuf[1]);
+	usRegInputBuf[0] = testtemp;
+	usRegInputBuf[1] = testtemp>>16;
+//	printf("temp is %d,%d\r\n",usRegInputBuf[0],usRegInputBuf[1]);
 	
 //	for(i = 0;i < TIMERECORDNUM;i++)
 //	{
@@ -98,8 +99,8 @@ void read_input_register(void)
 //读保持寄存器值
 void read_coilregister(void)
 {
-	usRegHoldingBuf[0] = 56;
-//	usRegHoldingBuf[1] = coilsavevalue.test_duration;
+	usRegHoldingBuf[0] = dev_info.testtime*100;
+	usRegHoldingBuf[1] = dev_info.testtemp*100;
 //	usRegHoldingBuf[2] = coilsavevalue.test_temp;
 //	usRegHoldingBuf[3] = coilsavevalue.warning1_up;
 //	usRegHoldingBuf[4] = coilsavevalue.warning1_down;
@@ -117,86 +118,12 @@ void read_coilregister(void)
 
 
 
-//写入保持寄存器值，自己定义输入类型
+//写入保持寄存器值
 void  writer_register(void)
 {
-
-	usRegHoldingBuf[0]  = 34;
-
-//	uint16_t cmdvalue16;
-//	uint32_t cmdvalue32;
-
-//	cmdvalue16 = PTR2U16(tempmessage->param);				//从缓冲区中取16位数据
-//	cmdvalue32 = PTR2U32(tempmessage->param);				//从缓冲区中取32位数据
-	
-//	//试验时间
-//	if((tempmessage.screen_id == language_screen.SCREAT_PROTECT_SCREEN) && tempmessage.control_id == TEST_TIME_VALUE && tempmessage.ctrl_msg == 0x11 )
-//	{
-//		usRegHoldingBuf[0] = cmdvalue16;
-//	}
-
-//	//试验温度
-//	if((tempmessage.screen_id == language_screen.SCREAT_PROTECT_SCREEN) && tempmessage.control_id == TEST_TEMP_VALUE && tempmessage.ctrl_msg == 0x11 )
-//	{
-//		usRegHoldingBuf[1] = cmdvalue16;
-//	}
-
-//	//报警1上限
-//	if((tempmessage.screen_id == language_screen.SCREAT_PROTECT_SCREEN) && tempmessage.control_id == WARNING1_UP_VALUE && tempmessage.ctrl_msg == 0x11 )
-//	{
-//		usRegHoldingBuf[2] = cmdvalue16;
-//	}
-
-//	//报警1下限
-//	if((tempmessage.screen_id == language_screen.SCREAT_PROTECT_SCREEN) && tempmessage.control_id == WARNING1_DOWN_VALUE && tempmessage.ctrl_msg == 0x11 )
-//	{
-//		usRegHoldingBuf[3] = cmdvalue16;
-//	}
-
-//	//报警2上限
-//	if((tempmessage.screen_id == language_screen.SCREAT_PROTECT_SCREEN) && tempmessage.control_id == WARNING2_UP_VALUE && tempmessage.ctrl_msg == 0x11 )
-//	{
-//		usRegHoldingBuf[4] = cmdvalue16;
-//	}
-
-//	//报警2下限
-//	if((tempmessage.screen_id == language_screen.SCREAT_PROTECT_SCREEN) && tempmessage.control_id == WARNING2_DOWN_VALUE && tempmessage.ctrl_msg == 0x11 )
-//	{
-//		usRegHoldingBuf[5] = cmdvalue16;
-//	}
-
-//	//模拟信号输出
-//	if((tempmessage.screen_id == language_screen.SCREAT_PROTECT_SCREEN) && tempmessage.control_id == ANALOG_OUTPUT && tempmessage.ctrl_msg == 0x11 )
-//	{
-//		usRegHoldingBuf[6] = cmdvalue16;
-//	}
-
-//	//菜单新密码
-//	if((tempmessage.screen_id == language_screen.SCREAT_PROTECT_SCREEN) && tempmessage.control_id == NEW_PASSWORD && tempmessage.ctrl_msg == 0x11 )
-//	{
-//		usRegHoldingBuf[7] = cmdvalue32&0x00ff;
-//		usRegHoldingBuf[8] = (cmdvalue32&0xff00)>>16;
-//	}
-
-//	//菜单新密码二次输入
-//	if((tempmessage.screen_id == language_screen.SCREAT_PROTECT_SCREEN) && tempmessage.control_id == SECOND_INPUT_PASSWORD && tempmessage.ctrl_msg == 0x11 )
-//	{
-//		usRegHoldingBuf[9] = cmdvalue32&0x00ff;
-//		usRegHoldingBuf[10] = (cmdvalue32&0xff00)>>16;
-//	}
-
-//	//换气次数设定
-//	if((tempmessage.screen_id == language_screen.SCREAT_PROTECT_SCREEN) && tempmessage.control_id == CHANGE_AIR_TIME_SET && tempmessage.ctrl_msg == 0x11 )
-//	{
-//		usRegHoldingBuf[11] = cmdvalue16;
-//	}
-
-//	//菜单语言设定
-//	if((tempmessage.screen_id == language_screen.SCREAT_PROTECT_SCREEN) && tempmessage.control_id == MENU_LENGUAGE && tempmessage.ctrl_msg == 0x11 )
-//	{
-//		usRegHoldingBuf[12] = cmdvalue16;
-//	}
-			
+	dev_info.testtime = (float)usRegHoldingBuf[0]/100;
+	dev_info.testtemp = (float)usRegHoldingBuf[1]/100;
+	update_dev_status();			
 }
 
 
@@ -273,12 +200,13 @@ void readgpiostatus(void)
 
 void modbus_register_handle(void)
 {
-//	read_coil();		//读线圈
-//	write_coil();		//写线圈
+	read_coil();		//读线圈
+	write_coil();		//写线圈
+	
+	writer_register();
 
 	read_input_register();	//读输入寄存器
-//	read_coilregister();	//读保持寄存器值
-//	read_coilregister();	//写入保持寄存器值，自己定义输入类型
+	read_coilregister();	//读保持寄存器值
 }
 
 

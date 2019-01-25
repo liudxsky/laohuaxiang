@@ -36,7 +36,7 @@ typedef struct{
 
 void  read_coil(void);
 
-void  write_coil(uint8_t coilvalue);
+void  write_coil(void);
 
 
 void read_input_register(void);

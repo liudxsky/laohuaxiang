@@ -197,7 +197,7 @@ int main( void )
 			start_endtime_set();								//start and end time setting
 			temp_detection(temperFilter);						//temp detection						
 			Check_All_Status();	
-//			modbus_register_handle();
+			modbus_register_handle();
 		}
 		if(getMsCounter() - t_thread3s > 3000)
 		{
@@ -244,6 +244,7 @@ void System_Init(void)
 	control_mode_select();	//control mode select						
 	screen_init();			//screen data init						
 	autogeneratepassword();	//generatepassword
+	ReadRtcTime();
 }
 
 
