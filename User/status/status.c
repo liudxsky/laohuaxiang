@@ -243,7 +243,7 @@ void check_warning(void)
 //ÎÂ¶È²âÁ¿
 void temp_detection(float dispTemper)
 {
-	showtextvalue.current_temp_vlaue = dev_info.flash_adjusttemp + dispTemper + dev_info.compensatetemp;
+	showtextvalue.current_temp_vlaue = dev_info.flash_adjusttemp + dispTemper+0.4;
 	if(thermocouple_flag)
 	{
 		SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_CURRENT_TEMP_ID, 999);
@@ -261,8 +261,10 @@ void temp_detection(float dispTemper)
 void Check_All_Status(void)
 {
 	gpiostatus = Get_GPIO_Status();
-	check_pwm();
-	check_pidstatus();
+	check_pwm();//pwm hardware self check
+	check_pwmicon();//heat output icon
+	check_heat_switch();//heat switch icon
+	check_pidstatus();//auto turn icon
 	Check_Rs485();
 	check_powertime();
 	check_screen_connect();

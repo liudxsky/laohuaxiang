@@ -65,6 +65,6 @@ void device_timing_selfcheck(void);
 void control_mode_select(void);
 
 void Check_All_Status(void);
-
+void check_heat_switch();
 
 #endif

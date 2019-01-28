@@ -41,6 +41,7 @@ typedef struct
 	uint8_t  warmstart_time[RTCBUFFSIZE];
 	uint8_t  warmend_time[RTCBUFFSIZE];
 	int compensatetemp;									//²¹³¥ÎÂ¶È
+	
 }dev_info_t;
 
 

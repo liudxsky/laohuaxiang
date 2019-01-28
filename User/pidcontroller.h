@@ -45,3 +45,4 @@ int PIDInit(float kp,float ki, float kd,float sp);
 uint16_t pidCalc(float e);
 float getFilterTemper(float in);
 uint16_t autoTuning(float errornow,int * pwm_out,struct AutoTuningParamStruct* ats);
+float adj_display(float in_temp);

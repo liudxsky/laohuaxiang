@@ -35,6 +35,7 @@ int runstatus=0;
 int runstatus_last=0;
 int debuginfo=0;
 extern arm_pid_instance_f32 PID;
+float kalman_temp=0;
 /* ----------------------- Defines ------------------------------------------*/
 
 //input register
@@ -126,7 +127,7 @@ int main( void )
 			}
 			runstatus_last=runstatus;
 		//	printf("global T:%d", t_thread500);
-			Ktemperature=Max6675_Read_Tem();
+			Ktemperature=Max6675_Read_Tem()+ dev_info.compensatetemp;
 			temperRaw=Ktemperature*0.25;
 			//SetPoint=100;
 			temperFilter=getFilterTemper(temperRaw);
@@ -197,9 +198,11 @@ int main( void )
 			timer_tick_count = getMsCounter();
 			ReadRtcTime();										//read current RTC time
 			start_endtime_set();								//start and end time setting
-			temp_detection(temperFilter);						//temp detection						
+			kalman_temp=adj_display(temperFilter);
+			temp_detection(kalman_temp);						//temp detection						
 			Check_All_Status();	
 			modbus_register_handle();
+			printf("%f,%f\n",temperFilter,showtextvalue.current_temp_vlaue);
 		}
 		if(getMsCounter() - t_thread3s > 3000)
 		{
@@ -215,7 +218,8 @@ int main( void )
 			else
 			{
 				dev_info.dev_status_changed_flag = 0;
-			}	
+			}
+			addup_testtime();			
 		}
 			device_timing_selfcheck();
     }

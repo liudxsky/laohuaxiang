@@ -114,7 +114,7 @@ void screen_init(void)
 	delay_ms(100);
 	AnimationPlayFrame(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN,BIG_MODBUS_ADDRESS_SET_FAIL,HIDE);
 	
-	sprintf(textvalue.coilsavevalue.menu_password,"%06d",123456);
+	sprintf(textvalue.coilsavevalue.menu_password,"%06d",dev_info.flash_setvalue.menu_password);
 		
 }
 
@@ -549,6 +549,8 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 				
 				break;
 			case BIG_TEST_TEMP_VALUE:	//set temp
+				if(runstatus>0)
+					return;
 				memset(textvalue.coilsavevalue.test_temp,0,sizeof(char)*COMMONSIZE);
 				memcpy(textvalue.coilsavevalue.test_temp,str,sizeof(char)*COMMONSIZE);	
 				SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_TEST_TEMP_VALUE,textvalue.coilsavevalue.test_temp);			
@@ -630,7 +632,7 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 			case BIG_SECOND_INPUT_PASSWORD:
 				memset(textvalue.coilsavevalue.secondtime_password,0,sizeof(char)*PASSWORDLENGTH);
 				memcpy(textvalue.coilsavevalue.secondtime_password,str,sizeof(char)*PASSWORDLENGTH);
-				SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_NEW_PASSWORD,textvalue.coilsavevalue.menu_password);
+				
 				if(strncmp(textvalue.coilsavevalue.secondtime_password,textvalue.coilsavevalue.menu_password,PASSWORDLENGTH))
 				{
 					AnimationPlayFrame(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN,BIG_PASS_UPDATE_FAIL,SHOW);
@@ -641,6 +643,7 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 					dev_info.flash_setvalue.menu_password = atoi(textvalue.coilsavevalue.secondtime_password);
 					AnimationPlayFrame(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN,BIG_PASS_UPDATE_FAIL,HIDE);
 				}
+				
 				break;
 			case BIG_CHANGE_AIR_TIME_SET:
 				memset(textvalue.coilsavevalue.change_air_time,0,sizeof(char)*COMMONSIZE);
@@ -1089,7 +1092,6 @@ void check_pidstatus(void)
 	if(runstatus==3)
 	{		
 		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_PID_RUN_ID,SHOW);
-		
 	}
 	else
 	{
@@ -1097,7 +1099,18 @@ void check_pidstatus(void)
 		
 	}
 }
-
+void check_heat_switch()
+{
+	if(runstatus>0)
+	{
+		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_HEAT_SWITCH_ID,SHOW);
+	}
+	else
+	{
+		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_HEAT_SWITCH_ID,HIDE);
+	}
+	
+}
 
 
 //merge time str
@@ -1193,26 +1206,42 @@ float myabs(float a,float b)
 		return b-a;
 }
 
-uint32_t temptime = 0,nowtesttime = 0,lasttesttime = 0;	
+uint32_t nowtimediff_addup=0,lasttimediff_addup=0;	
+RtcTime starttime_addup={0};
 
-
-//�ۼ�����ʱ��
 void addup_testtime(void)
 {
-	uint32_t addtime = 0;
-	if(nowtesttime/60 - lasttesttime)
+	
+	if(runstatus>0)
 	{
-		dev_info.addup_testtime += 1;
-		lasttesttime = nowtesttime/60;
-		SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_ADDUP_TIME_ID,dev_info.addup_testtime);
+		if(starttime_addup.Year==0)//init, runstatus pos edge ____|````
+		{
+			starttime_addup=rtctime;
+			
+		}
+		nowtimediff_addup=diff_time(starttime_addup, rtctime)/60;
+		if(nowtimediff_addup/60 - lasttimediff_addup)
+		{
+			dev_info.addup_testtime += 1;
+			lasttimediff_addup = nowtimediff_addup/60;
+			SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_ADDUP_TIME_ID,dev_info.addup_testtime);
+			FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));				//update addup time
+		}
+	}
+	else//runstatus=0
+	{
+		if(starttime_addup.Year!=0)  // runstatus neg edge````|____
+		{
+			//shutdown action
+			starttime_addup.Year=0;
+		}
 	}
 }
 
 
-
-//ʣ��ʱ�����
 void lefttimecalculate(void)
 {
+	uint32_t nowtesttime,temptime;	
 	if((runstatus)&&(dev_info.testtime != 0))
 	{
 		nowtesttime = diff_time(showtextvalue.start_time, rtctime)/60;
@@ -1221,8 +1250,6 @@ void lefttimecalculate(void)
 		showtextvalue.left_time_min = temptime%60;
 		SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TIME_LEFT_HOUR_ID,showtextvalue.left_time_hou);
 		SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TIME_LEFT_MIN_ID,showtextvalue.left_time_min);
-		
-		addup_testtime();  
 		
 		if(temptime == 0)
 		{

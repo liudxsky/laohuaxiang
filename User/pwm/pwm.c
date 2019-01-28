@@ -74,7 +74,7 @@ void TIM_PWMOUTPUT_Config(void)
 	
   // ͨ�ÿ��ƶ�ʱ��ʱ��ԴTIMxCLK = HCLK/2=84MHz 
   // �趨��ʱ��Ƶ��Ϊ=TIMxCLK/(TIM_Prescaler+1)=100KHz
-  TIM_TimeBaseStructure.TIM_Prescaler = 8400-1;	
+  TIM_TimeBaseStructure.TIM_Prescaler = (uint16_t)(84000-1);	
   // ����ʱ�ӷ�Ƶ
   TIM_TimeBaseStructure.TIM_ClockDivision=TIM_CKD_DIV1;
   // ������ʽ�������Ķ�ʱ

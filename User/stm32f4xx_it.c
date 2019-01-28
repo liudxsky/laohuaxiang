@@ -392,13 +392,17 @@ uint8_t screen_flag = 0;
 //显示屏串口
 void SCREEN_USART_IRQHandler(void)
 {
+	if(USART_GetITStatus(SCREEN_USART, USART_FLAG_ORE)!=RESET)
+	{
+		USART_ClearITPendingBit(SCREEN_USART, USART_FLAG_ORE);
+	}
  if (USART_GetITStatus(SCREEN_USART, USART_IT_RXNE) != RESET)
     {
         uint8_t data = USART_ReceiveData(SCREEN_USART);
         queue_push(data);
 			screen_flag = 1;
     }  
-// USART_ClearITPendingBit(SCREEN_USART, USART_IT_RXNE);   //清除中断标志位
+ USART_ClearITPendingBit(SCREEN_USART, USART_IT_RXNE);   //清除中断标志位
 }
 
 

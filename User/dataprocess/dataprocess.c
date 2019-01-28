@@ -74,13 +74,24 @@ void  write_coil(uint8_t coilvalue)
 extern uint8_t thermalbuff[38];
 
 //¶ÁÊäÈë¼Ä´æÆ÷
+union float2char
+{
+	char c[4];
+	float f;
+	int i
+};
 void read_input_register(void)
 {
-	uint8_t i = 0;
-	//¼´Ê±ÎÂ¶È
-	usRegInputBuf[0] = datatohex(showtextvalue.current_temp_vlaue);
-	usRegInputBuf[1] =  datatohex(showtextvalue.current_temp_vlaue)>>16;
-	printf("temp is %x,%x\r\n",usRegInputBuf[0],usRegInputBuf[1]);
+	union float2char f2c;
+	f2c.f=showtextvalue.current_temp_vlaue;
+	f2c.i=showtextvalue.test_time;//same for int value
+	memcpy(usRegInputBuf,f2c.c,4);
+	
+//	uint8_t i = 0;
+//	//¼´Ê±ÎÂ¶È
+//	usRegInputBuf[0] = datatohex(showtextvalue.current_temp_vlaue);
+//	usRegInputBuf[1] =  datatohex(showtextvalue.current_temp_vlaue)>>16;
+//	printf("temp is %x,%x\r\n",usRegInputBuf[0],usRegInputBuf[1]);
 	
 //	for(i = 0;i < TIMERECORDNUM;i++)
 //	{

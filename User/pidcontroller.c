@@ -24,8 +24,8 @@ arm_fir_instance_f32 S;
 static	float32_t firStateF32[BLOCK_SIZE + NUM_TAPS - 1];
 struct AutoTuningParamStruct pidSP[3];
 int  AutoTuneOutput=500;
-//const float32_t firCoeffs32[NUM_TAPS] = {
-//0.001152,0.001879,0.003375,0.006014,0.010080,0.015708,0.022854,0.031277,0.040550,0.050093,0.059231,0.067262,0.073539,0.077533,0.078904,0.077533,0.073539,0.067262,0.059231,0.050093,0.040550,0.031277,0.022854,0.015708,0.010080,0.006014,0.003375,0.001879,0.001152};
+
+//64 params
 //const float32_t firCoeffs32[NUM_TAPS] = {
 //	-0.000197,-0.000358,-0.000552,-0.000796,
 //	-0.001100,-0.001467,-0.001888,-0.002340,
@@ -44,9 +44,12 @@ int  AutoTuneOutput=500;
 //	-0.002788,-0.002340,-0.001888,-0.001467,
 //	-0.001100,-0.000796,-0.000552,-0.000358,-0.000197
 //};
+
+//128 params
 const float32_t firCoeffs32[NUM_TAPS] = {
 	-0.000192,-0.000260,-0.000326,-0.000390,-0.000449,-0.000503,-0.000548,-0.000580,-0.000593,-0.000583,-0.000543,-0.000469,-0.000356,-0.000200,0.000000,0.000243,0.000525,0.000841,0.001178,0.001526,0.001866,0.002181,0.002450,0.002651,0.002761,0.002761,0.002630,0.002354,0.001923,0.001331,0.000582,-0.000314,-0.001339,-0.002466,-0.003658,-0.004873,-0.006059,-0.007162,-0.008120,-0.008870,-0.009351,-0.009502,-0.009268,-0.008601,-0.007461,-0.005821,-0.003667,-0.001001,0.002163,0.005790,0.009834,0.014229,0.018900,0.023756,0.028699,0.033621,0.038413,0.042965,0.047167,0.050918,0.054125,0.056708,0.058602,0.059758,0.060146,0.059758,0.058602,0.056708,0.054125,0.050918,0.047167,0.042965,0.038413,0.033621,0.028699,0.023756,0.018900,0.014229,0.009834,0.005790,0.002163,-0.001001,-0.003667,-0.005821,-0.007461,-0.008601,-0.009268,-0.009502,-0.009351,-0.008870,-0.008120,-0.007162,-0.006059,-0.004873,-0.003658,-0.002466,-0.001339,-0.000314,0.000582,0.001331,0.001923,0.002354,0.002630,0.002761,0.002761,0.002651,0.002450,0.002181,0.001866,0.001526,0.001178,0.000841,0.000525,0.000243,0.000000,-0.000200,-0.000356,-0.000469,-0.000543,-0.000583,-0.000593,-0.000580,-0.000548,-0.000503,-0.000449,-0.000390,-0.000326,-0.000260,-0.000192};
-void pidSPinit()
+
+	void pidSPinit()
 {
 	pidSP[0].Kp_auto=25;
 	pidSP[0].Ki_auto=0.005;
@@ -103,6 +106,7 @@ void pidSPinit()
 uint16_t pidCalc(float e)
 {
 	float errorNow=e-0.5;
+	
 	float  duty=0;
 	float outKp,outKi,outKd;
 	float derror=0;
@@ -185,55 +189,34 @@ if(outtemp2<-2000)
 //	printf("firout: %f,outtemp:%f\n",outputF32[T_BUFFLEN-1],outtemp2);
 	return outtemp2;
 }
-/*
-int ctlState=0;
 
-float adj_display(float in_temp,float sp,struct AutoTuningParamStruct* PIDadj)
+float xhat=-2,xhat_last=0;
+float P=0.00031,P_last=0;
+float	K=0;
+float R=0.1;
+float Q=0.00001;
+
+float adj_display(float in_temp)
 {
-	float offset,avg_temp,offset_o;
-	float rst=0;
-	float kcadj,kiadj=0;
-	int temp;
+	//time update
+	if(xhat<-1)
+	{
+		xhat=in_temp;
+		xhat_last=xhat;
+		return xhat;
+	}
+	P_last=P_last+Q;
+	//measurement update
+	K=P_last/(P_last+R);
+	xhat=xhat_last+K*(in_temp-xhat_last);
+	P=(1-K)*P_last;
+	//params update;
+	xhat_last=xhat;
+	P_last=P;
 	
-	if(in_temp<sp-10)
-	{
-		ctlState=1;
-		
-	}
-	else if(in_temp<sp-5&&ctrlState==1)
-	{
-		ctrlState=2;
-		
-	}
-	else if(in_temp<sp-1&&ctrlState==2)
-	{
-		ctrlState=3;
-		
-	}
-	
-	if(ctrlState==3)
-	{
-		offset=arm_mean_f32(offsetbuff,T_BUFFLEN,&avg_temp)-sp;
-		frac=offset-(int)(offset);
-		if(abs(frac)>0.5)
-		{
-			offset_o=(int)(offset)+signof(offset)*0.5
-		}
-		else
-		{
-			offset_o=(int)(offset);
-		}
-		PIDadj
-		kcadj=kcadj-0.1;
-		kiadj=kiadj-0.01;
-		PIDadj->Kp=kcadj*Kc;
-		PIDadj->Ki=PID->Kp*kiadj*Ts/Ti;
-		
-		rst=in_temp-offset_o;
-	}
-	return rst;
+	return xhat;
 }
-*/
+
 uint16_t autoTuning(float errornow,int * pwm_out,struct AutoTuningParamStruct* ats)
 {
 	uint16_t out=0;
