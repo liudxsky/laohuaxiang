@@ -473,7 +473,8 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 		}
 		coilvalue.change_max_time = max_change_air(dev_info.change_air_time);
 		SetTextValueInt32(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_CHANGE_AIR_MAX_SET,coilvalue.change_max_time);
-		FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));				//дflash
+		dev_info.dev_status_changed_flag = 1;
+		//FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));				//дflash
 	}
 	
 	//menu password
@@ -519,7 +520,8 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 			default:
 				break;
 		}
-		FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));		
+		dev_info.dev_status_changed_flag = 1;
+		//FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));		
 	}
 	//menu setting screen
 	if(screen_id == biglanguage_screen.BIG_PARAM_SET_SCREEN)
@@ -626,9 +628,10 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 			case BIG_NEW_PASSWORD:
 				memset(textvalue.coilsavevalue.menu_password,0,sizeof(char)*PASSWORDLENGTH);
 				memcpy(textvalue.coilsavevalue.menu_password,str,sizeof(char)*PASSWORDLENGTH);
-				SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_NEW_PASSWORD,textvalue.coilsavevalue.menu_password);
+				SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_NEW_PASSWORD,str);
 				break;
 			case BIG_SECOND_INPUT_PASSWORD:
+				
 				memset(textvalue.coilsavevalue.secondtime_password,0,sizeof(char)*PASSWORDLENGTH);
 				memcpy(textvalue.coilsavevalue.secondtime_password,str,sizeof(char)*PASSWORDLENGTH);
 				
@@ -696,7 +699,10 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 			default:
 				break;
 		}
-		FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));			
+		dev_info.dev_status_changed_flag = 1;
+		//FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
+		//NOWRITE:
+		//;
 	}
 	//adjust screen setting
 	if(screen_id == biglanguage_screen.BIG_ADJUST_SCREEN)
@@ -759,7 +765,8 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 			default:
 				break;
 		}
-		FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
+		dev_info.dev_status_changed_flag = 1;
+		//FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
 	}
 	//auto no power will show screen
 	if(screen_id == biglanguage_screen.BIG_AUTO_NOPOWER_RECOVER)
@@ -912,7 +919,8 @@ void NotifyIcon(uint16_t screen_id, uint16_t control_id,uint8_t status,uint8_t i
 				dev_info.biglanguagestatus = 1;
 		}
 	}
-	FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
+	dev_info.dev_status_changed_flag = 1;
+	//FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
 }
 
 
@@ -1037,11 +1045,11 @@ void ProcessMessage( PCTRL_MSG msg, uint16_t size )
 					{
 						case kCtrlButton: 
 							NotifyButton(screen_id,control_id,msg->param[1]);
-							dev_info.dev_status_changed_flag = 1;
+							//dev_info.dev_status_changed_flag = 1;
 							break;
 						case kCtrlText:
 							NotifyText(screen_id,control_id,msg->param);
-							dev_info.dev_status_changed_flag = 1;
+							//dev_info.dev_status_changed_flag = 1;
 							break;
 						case kCtrlProgress:
 							NotifyProgress(screen_id,control_id,value);
@@ -1222,7 +1230,8 @@ void addup_testtime(void)
 			dev_info.addup_testtime += 1;
 			lasttimediff_addup = nowtimediff_addup/60;
 			SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_ADDUP_TIME_ID,dev_info.addup_testtime);
-			FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));				//update addup time
+			dev_info.dev_status_changed_flag = 1;
+			//FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));	//update addup time
 		}
 	}
 	else//runstatus=0
@@ -1279,7 +1288,8 @@ void start_endtime_set(void)
 		
 		SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_START_TIME_ID,textvalue.textvaluebuff.start_time);
 		endtimecalcu(showtextvalue.start_time,showtextvalue.test_time);
-		FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));		
+		dev_info.dev_status_changed_flag = 1;
+		//FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));		
 	}
 	if(lefttimeflag == 1)
 	{

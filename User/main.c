@@ -95,7 +95,7 @@ int main( void )
 	//SetPoint=showtextvalue.setting_temp;
 	SetPoint=dev_info.testtemp;
 	PIDInit(dev_info.pidvalue.PID_P,dev_info.pidvalue.PID_I,dev_info.pidvalue.PID_D,SetPoint);//need to be reset after chage setpoint
-	dev_info.dev_status_changed_flag=1;
+	//dev_info.dev_status_changed_flag=1;
 	//dev_info.pidvalue.PID_P=PIDKP;
 	//dev_info.pidvalue.PID_I=PIDKI;
 	//dev_info.pidvalue.PID_D=PIDKD;
@@ -163,7 +163,7 @@ int main( void )
 						dev_info.pidvalue.PID_D=autoTuneParam.Kd_auto;
 						dev_info.dev_status_changed_flag=1;
 						printf("Kp:%f,Ki:%f,Kd%f\n",PID.Kp,PID.Ki,PID.Kd);
-						FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));	
+						
 					}
 					else
 					{
@@ -199,7 +199,7 @@ int main( void )
 			kalman_temp=adj_display(temperFilter);
 			temp_detection(kalman_temp);						//temp detection						
 			Check_All_Status();	
-			modbus_register_handle();
+		//	modbus_register_handle();
 			printf("%f,%f\n",temperFilter,showtextvalue.current_temp_vlaue);
 		}
 		if(getMsCounter() - t_thread3s > 3000)
@@ -212,6 +212,7 @@ int main( void )
 				dev_info.dev_status_changed_flag=0;
 				SetPoint=dev_info.testtemp;
 				update_dev_status();
+				//FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));	
 			}
 			else
 			{
