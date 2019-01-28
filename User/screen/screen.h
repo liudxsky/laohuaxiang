@@ -113,6 +113,7 @@ typedef struct
 
 
 #define	 BIG_SET_RETURN_BUTTON					2		//设置界面返回按钮
+#define  BIG_ADJUST_BUTTON						21		//调试按钮
 /*--------------------------------------------------------------------------*/
 
 
@@ -161,6 +162,8 @@ typedef struct
 #define  BIG_YEAR_SET							6		//自动断电年份设定
 #define  BIG_MONTH_SET							7		//自动断电月份设定
 #define  BIG_DAY_SET							8		//自动断电日设定
+
+
 #define  BIG_NO_POWER_RETURN_BUTTON				9		//返回按键
 #define  BIG_EDIT_BUTTON						10		//换气次数编辑界面按键
 #define  BIG_PID_BUTTON							11		//PID按键
@@ -170,6 +173,7 @@ typedef struct
 //界面    control_id 热滞后时间记录界面
 /*--------------------------------------------------------------------------*/
 #define  BIG_DATA_RECORD						2
+#define  BIG_RECORD_RETURN						3
 /*--------------------------------------------------------------------------*/
 
 //界面    control_id 控制器时间设置
@@ -559,7 +563,14 @@ uint8_t judge_changeair_time(uint16_t change_time);
 
 void update_dev_status(void);
 
+void check_heat_switch(void);
+
+
+
 #endif
+
+
+
 
 
 

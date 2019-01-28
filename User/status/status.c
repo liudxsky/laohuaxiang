@@ -17,9 +17,6 @@ extern uint16_t current_screen_id;
 extern RtcTime rtctime;							//系统当前时间
 extern TextValueTab  textvalue;					//文本控件保存值
 extern MainShowTextValue	showtextvalue;		//主页面文本控件缓存值
-extern CoilValue  coilvalue;				//设置界面值
-extern uint8_t slidervalue;					//滑动进度条值
-extern uint16_t autonopowerpassword;
 extern AutoNoPowerTime  nopowertime;		//自动断电时间	
 extern uint8_t cmd_buffer[CMD_MAX_SIZE];
 extern uint8_t thermocouple_flag;
@@ -471,6 +468,7 @@ void control_mode_select(void)
 	}
 	
 }
+
 
 
 
