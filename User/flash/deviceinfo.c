@@ -1,5 +1,6 @@
 #include "stm32f4xx.h"
 #include "stdio.h"
+#include "string.h"
 #include "./delaytime/delaytime.h"
 #include "./flash/deviceinfo.h"
 #include "./flash/flash.h"
@@ -42,6 +43,7 @@ void DeviceInfo_Init(void)
 		printf("\r\n device curren pwm scope is %d \r\n",dev_info.pwmscope);
 		printf("\r\n device current pwm value is %d \r\n",dev_info.pwmvalue);
 		printf("\r\n device current air valve angle value is %d \r\n",dev_info.flash_setvalue.air_door_angle);
+		printf("\r\n device current set modbus address is :%d\r\n",dev_info.Modbus_address);
 		
 	}
 	else
@@ -58,29 +60,14 @@ void DeviceInfo_Init(void)
 		{
 			printf("%d : %d \r\n",100 - 5*i,dev_info.change_air_time[i]);
 		}
+		printf("\r\n device current set testtime is :%f\r\n",dev_info.testtime);
 		printf("\r\n device current set testtime is :%f\r\n",dev_info.testtime);		
-		printf("\r\n device current set tempvalue is :%f\r\n",dev_info.testtemp);
+		printf("\r\n device current set modbus address is :%d\r\n",dev_info.Modbus_address);
 	}
 
 }
 
 
-uint32_t password1 = 0;
-uint32_t password2 = 0;
-u32 Fml_Constant = 5000000; // 输入到公式的常数 
-
-
-void  encryp_password(void)
-{
-	FLASH_Write_Nbytes((uint8_t *)p,(uint8_t *)&Fml_Constant,32);
-	delay_ms(2);
-	FLASH_Read_Nbytes((uint8_t *)p,(uint8_t *)&Fml_Constant,32);
-	password1 = Fml_Constant%912031;
-	
-	password2 = Fml_Constant%998527;
-	printf("password1 is %ld:\n",password1);
-	printf("password2 is %ld:\n",password2);
-}
 
 
 void STM32_Read_ID(void)					//小端模式
@@ -107,68 +94,6 @@ void STM32_Read_ID(void)					//小端模式
 		ChipUniqueID[8],ChipUniqueID[9],
 		ChipUniqueID[10],ChipUniqueID[11]);
 }
-
-
-#if 0
-
-uint16_t encry_password1(void)
-{
-	uint16_t password1 = 0;
-	*p = *ChipUniqueID;
-	password1 = *p>>8 &0xfff0;
-	return password1;
-}
-
-
-uint16_t encry_password2(void)
-{
-	uint16_t password2 = 0;
-	*p = *ChipUniqueID;
-	password2 = *p>>16 &0x0fff;
-	return password2;
-}
-
-//CRC16运算
-uint32_t Fml_Constant; // 输入到公式的常数 
-uint8_t *C= (uint8_t*)&Fml_Constant;//把常量转换为数组 
-uint16_t Fml_CRC16; 
-uint16_t Formula_CRC16(uint8_t *p,uint8_t len)
-{ 
-  uint8_t i; 
-  while(len--) 
-  { 
-    for(i=0x80; i!=0; i>>=1) 
-    { 
-      if((Fml_CRC16 & 0x8000) != 0) 
-      { 
-        Fml_CRC16 <<= 1; 
-        Fml_CRC16 ^= 0x1021; 
-      } 
-      else 
-      { 
-        Fml_CRC16 <<= 1; 
-      } 
-      if((*p&i)!=0) 
-      { 
-        Fml_CRC16 ^= 0x1021; 
-      } 
-    } 
-    p++; 
-  } 
-  return Fml_CRC16; 
-}
-
-
-//公式     D为公式的输入数组，Result为公式计算结果输出
-void Formula_74(uint8_t *D,uint8_t *Result)
-{
-	Result[0] = C[0] | D[0] | D[1] ; 
-  	Result[1] = C[1] + D[0] + D[6] + D[7] - D[8] + D[9] - D[10] + D[11] ; 
-  	Result[2] = C[2] | D[0] | D[1] ^ D[2] & D[3] ^ D[4]; 
-  	Result[3] = C[3] | D[0] | D[1] ^ D[2] ^ D[3] ^ D[4] ^ D[5] | D[6] ^ D[7] ^ D[8] ^ D[9] ^ D[10] ^ D[11] ; 
-}
-
-#endif
 
 
 
@@ -345,18 +270,11 @@ char *decode(const char *base64Char, const long base64CharSize, char *originChar
     return originChar;
 }
 
-void testpassword(void)
+void autogeneratepassword(void)
 {
 	int32_t status = HASH_SUCCESS;
 	uint8_t i;
-	char * basedata = (char *)malloc(sizeof(unsigned char)*KeyLength+1); 
-//	memcpy(HMAC_Key,ChipUniqueID,sizeof(ChipUniqueID));
-	
-	printf("\r\n*************************************************************** :\r\n");
-	for (i = 0; i < KeyLength; ++i)
-		{
-		printf("%.2X ",HMAC_Key[i]);
-		}
+	memcpy(HMAC_Key,ChipUniqueID,sizeof(ChipUniqueID));
 	printf("\r\n*************************************************************** :\r\n");
 	status = STM32_SHA1_HMAC_Compute((uint8_t*)InputMessage,
                              InputLength,
@@ -370,13 +288,12 @@ void testpassword(void)
 		printf("\r\n*************************************************************** :\r\n");
 		for(i = 0;i<MACLength;i++)
 		{
-			printf("%.2x  ",MAC[i]);
+			printf("%d  ",MAC[i]);
 		}
-		
+		sprintf(dev_info.flash_setvalue.menu_password,"%06d",666666);
+		sprintf(dev_info.flash_setvalue.no_power_protect_password,"%06d",888888);
 		printf("\r\n*************************************************************** :\r\n");
-		encode(MAC,MACLength,basedata);
-		printf("base data is \n%s\r\n",basedata);
 	}
-	free(basedata);
+
 }
 

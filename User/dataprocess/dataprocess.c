@@ -5,6 +5,7 @@
 #include "./status/status.h"
 #include "hmi_driver.h"
 #include "./screen/screen.h"
+#include "./flash/deviceinfo.h"
 
 
 
@@ -14,21 +15,21 @@
 
 
 
-extern uint16_t     usRegInputBuf[REG_INPUT_NREGS];				//ÊäÈë¼Ä´æÆ÷      ²Ù×÷Âë£º04
-extern uint16_t		usRegHoldingBuf[REG_HOLDING_NREGS];			//±£³Ö¼Ä´æÆ÷	²Ù×÷Âë£º03,06,16
-extern uint16_t		ucRegCoilsBuf[REG_COILS_SIZE];					//ÏßÈ¦¼Ä´æÆ÷	²Ù×÷Âë£º01,05,15
-extern uint16_t		ucRegDiscreteBuf[REG_DISCRETE_SIZE];		//¿ª¹ØÊäÈë¼Ä´æÆ÷	²Ù×÷Âë£º02
+extern uint16_t     usRegInputBuf[REG_INPUT_NREGS];				//ï¿½ï¿½ï¿½ï¿½Ä´ï¿½ï¿½ï¿½      ï¿½ï¿½ï¿½ï¿½ï¿½ë£º04
+extern uint16_t		usRegHoldingBuf[REG_HOLDING_NREGS];			//ï¿½ï¿½ï¿½Ö¼Ä´ï¿½ï¿½ï¿½	ï¿½ï¿½ï¿½ï¿½ï¿½ë£º03,06,16
+extern uint16_t		ucRegCoilsBuf[REG_COILS_SIZE];					//ï¿½ï¿½È¦ï¿½Ä´ï¿½ï¿½ï¿½	ï¿½ï¿½ï¿½ï¿½ï¿½ë£º01,05,15
+extern uint16_t		ucRegDiscreteBuf[REG_DISCRETE_SIZE];		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä´ï¿½ï¿½ï¿½	ï¿½ï¿½ï¿½ï¿½ï¿½ë£º02
+
+extern dev_info_t dev_info;
+extern MainShowTextValue showtextvalue;									//ï¿½ï¿½Ò³ï¿½ï¿½ï¿½Ä±ï¿½ï¿½Ø¼ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
+extern uint8_t cmd_buffer[CMD_MAX_SIZE];								//Ö¸ï¿½î»ºï¿½ï¿½
+extern BIG_SCREEN_ID_TAB biglanguage_screen;;							//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½
+CoilSaveValue  coilsavevalue;											//ï¿½ï¿½ï¿½Ö¼Ä´ï¿½ï¿½ï¿½ï¿½æ´¢Öµ
 
 
-extern MainShowTextValue showtextvalue;									//Ö÷Ò³ÃæÎÄ±¾¿Ø¼þ»º´æÖµ
-extern uint8_t cmd_buffer[CMD_MAX_SIZE];								//Ö¸Áî»º´æ
-extern BIG_SCREEN_ID_TAB biglanguage_screen;;							//½çÃæÓïÑÔÑ¡Ôñ
-CoilSaveValue  coilsavevalue;											//±£³Ö¼Ä´æÆ÷´æ´¢Öµ
 
-
-
-extern ThermalLag heattime_log;										//ÈÈÖÍºóÊ±¼ä¼ÇÂ¼½á¹¹Ìå
-extern RtcTime changetime;												//×´Ì¬¸Ä±äÊ±¼äµã
+extern ThermalLag heattime_log;										//ï¿½ï¿½ï¿½Íºï¿½Ê±ï¿½ï¿½ï¿½Â¼ï¿½á¹¹ï¿½ï¿½
+extern RtcTime changetime;												//×´Ì¬ï¿½Ä±ï¿½Ê±ï¿½ï¿½ï¿½
 
 PCTRL_MSG tempmessage;
 
@@ -44,25 +45,24 @@ uint8_t temp[COILNUM] = {0};
 
 
 
-//¶ÁÏßÈ¦×´Ì¬,0ÎªON,1ÎªOFF
+//ï¿½ï¿½ï¿½ï¿½È¦×´Ì¬,0ÎªON,1ÎªOFF
 void  read_coil(void)
 {
 	
-	READ_GPIO_VALUE_TABLE(0,DRIVER_GPIO_PORT,HEAT_CONTROL_PIN);					//¼ÓÈÈ
-	READ_GPIO_VALUE_TABLE(1,DRIVER_GPIO_PORT,SPINNER_RACK_CONTROL_PIN);			//Ðý×ª¼Ü
-	READ_GPIO_VALUE_TABLE(2,DRIVER_GPIO_PORT,CIRCULATING_FUN_CONTROL_PIN);		//·ç»ú
-	READ_GPIO_VALUE_TABLE(3,DRIVER_GPIO_PORT,ALARM_CONTROL1_PIN);				//ÎÂ¶È±¨¾¯1
-	READ_GPIO_VALUE_TABLE(4,DRIVER_GPIO_PORT,ALARM_CONTROL2_PIN);				//ÎÂ¶È±¨¾¯2
-	READ_GPIO_VALUE_TABLE(5,BOX_DOOR_GPIO_PORT,BOX_DOOR_PIN);					//ÏäÃÅ
+	READ_GPIO_VALUE_TABLE(0,DRIVER_GPIO_PORT,HEAT_CONTROL_PIN);					//ï¿½ï¿½ï¿½ï¿½
+	READ_GPIO_VALUE_TABLE(1,DRIVER_GPIO_PORT,SPINNER_RACK_CONTROL_PIN);			//ï¿½ï¿½×ªï¿½ï¿½
+	READ_GPIO_VALUE_TABLE(2,DRIVER_GPIO_PORT,CIRCULATING_FUN_CONTROL_PIN);		//ï¿½ï¿½ï¿½
+	READ_GPIO_VALUE_TABLE(3,DRIVER_GPIO_PORT,ALARM_CONTROL1_PIN);				//ï¿½Â¶È±ï¿½ï¿½ï¿½1
+	READ_GPIO_VALUE_TABLE(4,DRIVER_GPIO_PORT,ALARM_CONTROL2_PIN);				//ï¿½Â¶È±ï¿½ï¿½ï¿½2
+	READ_GPIO_VALUE_TABLE(5,BOX_DOOR_GPIO_PORT,BOX_DOOR_PIN);					//ï¿½ï¿½ï¿½ï¿½
 	
 	ucRegCoilsBuf[0] = temp[0]|temp[1]<<1|temp[2]<<2|temp[3]<<3|temp[4]<<4|temp[5]<<5;
 }
 
 
-//Ð´ÏßÈ¦×´Ì¬
-void  write_coil(uint8_t coilvalue)
+//Ð´ï¿½ï¿½È¦×´Ì¬
+void  write_coil(void)
 {
-	ucRegCoilsBuf[0] |= coilvalue;
 	GPIO_WriteBit(DRIVER_GPIO_PORT,HEAT_CONTROL_PIN,ucRegCoilsBuf[0] & 0x01);
 	GPIO_WriteBit(DRIVER_GPIO_PORT,SPINNER_RACK_CONTROL_PIN,ucRegCoilsBuf[0] & 0x02);
 	GPIO_WriteBit(DRIVER_GPIO_PORT,CIRCULATING_FUN_CONTROL_PIN,ucRegCoilsBuf[0] & 0x04);
@@ -73,7 +73,7 @@ void  write_coil(uint8_t coilvalue)
 
 extern uint8_t thermalbuff[38];
 
-//¶ÁÊäÈë¼Ä´æÆ÷
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä´ï¿½ï¿½ï¿½
 union float2char
 {
 	char c[4];
@@ -82,13 +82,15 @@ union float2char
 };
 void read_input_register(void)
 {
-	union float2char f2c;
-	f2c.f=showtextvalue.current_temp_vlaue;
-	f2c.i=showtextvalue.test_time;//same for int value
-	memcpy(usRegInputBuf,f2c.c,4);
+	uint8_t i = 0;
+	uint32_t testtemp = showtextvalue.current_temp_vlaue*100;
+	//ï¿½ï¿½Ê±ï¿½Â¶ï¿½
+	usRegInputBuf[0] = testtemp;
+	usRegInputBuf[1] = testtemp>>16;
+//	printf("temp is %d,%d\r\n",usRegInputBuf[0],usRegInputBuf[1]);
 	
 //	uint8_t i = 0;
-//	//¼´Ê±ÎÂ¶È
+//	//ï¿½ï¿½Ê±ï¿½Â¶ï¿½
 //	usRegInputBuf[0] = datatohex(showtextvalue.current_temp_vlaue);
 //	usRegInputBuf[1] =  datatohex(showtextvalue.current_temp_vlaue)>>16;
 //	printf("temp is %x,%x\r\n",usRegInputBuf[0],usRegInputBuf[1]);
@@ -106,11 +108,11 @@ void read_input_register(void)
 
 
 
-//¶Á±£³Ö¼Ä´æÆ÷Öµ
+//ï¿½ï¿½ï¿½ï¿½ï¿½Ö¼Ä´ï¿½ï¿½ï¿½Öµ
 void read_coilregister(void)
 {
-	usRegHoldingBuf[0] = 56;
-//	usRegHoldingBuf[1] = coilsavevalue.test_duration;
+	usRegHoldingBuf[0] = dev_info.testtime*100;
+	usRegHoldingBuf[1] = dev_info.testtemp*100;
 //	usRegHoldingBuf[2] = coilsavevalue.test_temp;
 //	usRegHoldingBuf[3] = coilsavevalue.warning1_up;
 //	usRegHoldingBuf[4] = coilsavevalue.warning1_down;
@@ -128,92 +130,18 @@ void read_coilregister(void)
 
 
 
-//Ð´Èë±£³Ö¼Ä´æÆ÷Öµ£¬×Ô¼º¶¨ÒåÊäÈëÀàÐÍ
+//Ð´ï¿½ë±£ï¿½Ö¼Ä´ï¿½ï¿½ï¿½Öµ
 void  writer_register(void)
 {
-
-	usRegHoldingBuf[0]  = 34;
-
-//	uint16_t cmdvalue16;
-//	uint32_t cmdvalue32;
-
-//	cmdvalue16 = PTR2U16(tempmessage->param);				//´Ó»º³åÇøÖÐÈ¡16Î»Êý¾Ý
-//	cmdvalue32 = PTR2U32(tempmessage->param);				//´Ó»º³åÇøÖÐÈ¡32Î»Êý¾Ý
-	
-//	//ÊÔÑéÊ±¼ä
-//	if((tempmessage.screen_id == language_screen.SCREAT_PROTECT_SCREEN) && tempmessage.control_id == TEST_TIME_VALUE && tempmessage.ctrl_msg == 0x11 )
-//	{
-//		usRegHoldingBuf[0] = cmdvalue16;
-//	}
-
-//	//ÊÔÑéÎÂ¶È
-//	if((tempmessage.screen_id == language_screen.SCREAT_PROTECT_SCREEN) && tempmessage.control_id == TEST_TEMP_VALUE && tempmessage.ctrl_msg == 0x11 )
-//	{
-//		usRegHoldingBuf[1] = cmdvalue16;
-//	}
-
-//	//±¨¾¯1ÉÏÏÞ
-//	if((tempmessage.screen_id == language_screen.SCREAT_PROTECT_SCREEN) && tempmessage.control_id == WARNING1_UP_VALUE && tempmessage.ctrl_msg == 0x11 )
-//	{
-//		usRegHoldingBuf[2] = cmdvalue16;
-//	}
-
-//	//±¨¾¯1ÏÂÏÞ
-//	if((tempmessage.screen_id == language_screen.SCREAT_PROTECT_SCREEN) && tempmessage.control_id == WARNING1_DOWN_VALUE && tempmessage.ctrl_msg == 0x11 )
-//	{
-//		usRegHoldingBuf[3] = cmdvalue16;
-//	}
-
-//	//±¨¾¯2ÉÏÏÞ
-//	if((tempmessage.screen_id == language_screen.SCREAT_PROTECT_SCREEN) && tempmessage.control_id == WARNING2_UP_VALUE && tempmessage.ctrl_msg == 0x11 )
-//	{
-//		usRegHoldingBuf[4] = cmdvalue16;
-//	}
-
-//	//±¨¾¯2ÏÂÏÞ
-//	if((tempmessage.screen_id == language_screen.SCREAT_PROTECT_SCREEN) && tempmessage.control_id == WARNING2_DOWN_VALUE && tempmessage.ctrl_msg == 0x11 )
-//	{
-//		usRegHoldingBuf[5] = cmdvalue16;
-//	}
-
-//	//Ä£ÄâÐÅºÅÊä³ö
-//	if((tempmessage.screen_id == language_screen.SCREAT_PROTECT_SCREEN) && tempmessage.control_id == ANALOG_OUTPUT && tempmessage.ctrl_msg == 0x11 )
-//	{
-//		usRegHoldingBuf[6] = cmdvalue16;
-//	}
-
-//	//²Ëµ¥ÐÂÃÜÂë
-//	if((tempmessage.screen_id == language_screen.SCREAT_PROTECT_SCREEN) && tempmessage.control_id == NEW_PASSWORD && tempmessage.ctrl_msg == 0x11 )
-//	{
-//		usRegHoldingBuf[7] = cmdvalue32&0x00ff;
-//		usRegHoldingBuf[8] = (cmdvalue32&0xff00)>>16;
-//	}
-
-//	//²Ëµ¥ÐÂÃÜÂë¶þ´ÎÊäÈë
-//	if((tempmessage.screen_id == language_screen.SCREAT_PROTECT_SCREEN) && tempmessage.control_id == SECOND_INPUT_PASSWORD && tempmessage.ctrl_msg == 0x11 )
-//	{
-//		usRegHoldingBuf[9] = cmdvalue32&0x00ff;
-//		usRegHoldingBuf[10] = (cmdvalue32&0xff00)>>16;
-//	}
-
-//	//»»Æø´ÎÊýÉè¶¨
-//	if((tempmessage.screen_id == language_screen.SCREAT_PROTECT_SCREEN) && tempmessage.control_id == CHANGE_AIR_TIME_SET && tempmessage.ctrl_msg == 0x11 )
-//	{
-//		usRegHoldingBuf[11] = cmdvalue16;
-//	}
-
-//	//²Ëµ¥ÓïÑÔÉè¶¨
-//	if((tempmessage.screen_id == language_screen.SCREAT_PROTECT_SCREEN) && tempmessage.control_id == MENU_LENGUAGE && tempmessage.ctrl_msg == 0x11 )
-//	{
-//		usRegHoldingBuf[12] = cmdvalue16;
-//	}
-			
+	dev_info.testtime = (float)usRegHoldingBuf[0]/100;
+	dev_info.testtemp = (float)usRegHoldingBuf[1]/100;
+	update_dev_status();			
 }
 
 
 
 
-//¶ÁÈ¡GPIO×´Ì¬Öµ
+//ï¿½ï¿½È¡GPIO×´Ì¬Öµ
 void readgpiostatus(void)
 {
 	
@@ -269,12 +197,12 @@ void readgpiostatus(void)
 //	if(temp[5] == Bit_SET)
 //	{
 //		AnimationPlayFrame(language_screen.MAIN_SHOW_SCREEN,DOOR_OPEN_ID,SHOW);
-//		//¼ÇÂ¼¿ªÃÅÊ±¼ä£¬ÎÂ¶È
+//		//ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ä£¬ï¿½Â¶ï¿½
 //	}
 //	else
 //	{
 //		AnimationPlayFrame(language_screen.MAIN_SHOW_SCREEN,DOOR_OPEN_ID,HIDE);
-//		//¼ÇÂ¼¹ØÃÅÊ±¼ä£¬ÎÂ¶È£¬²¢´æ´¢ÐÅÏ¢
+//		//ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ä£¬ï¿½Â¶È£ï¿½ï¿½ï¿½ï¿½æ´¢ï¿½ï¿½Ï¢
 //	}
 }
 
@@ -284,45 +212,22 @@ void readgpiostatus(void)
 
 void modbus_register_handle(void)
 {
-//	read_coil();		//¶ÁÏßÈ¦
-//	write_coil();		//Ð´ÏßÈ¦
-
-	read_input_register();	//¶ÁÊäÈë¼Ä´æÆ÷
-//	read_coilregister();	//¶Á±£³Ö¼Ä´æÆ÷Öµ
-//	read_coilregister();	//Ð´Èë±£³Ö¼Ä´æÆ÷Öµ£¬×Ô¼º¶¨ÒåÊäÈëÀàÐÍ
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-uint32_t datatohex(float data)  
-{
-	uint32_t temp;  
-	uint8_t i=0;  
-  	printf("data is : %.2f\r\n",data);
-	temp = data;				//×ª´æÐèÒª¼ÆËãµÄÊýÖµ  
-	while(temp)  
-	{         
-		temp >>= 1;  
-		i++;					//¼ÆËãµ±Ç°ÖµµÄÎ²ÊýÕ¼ÓÐµÄÎ»Êý  
-	}  
-	i--;						//¼ÆËãÏÂÀ´£¬i»á¶à¼ÓÒ»´Î£¬Õâ¶ù¼õµô  
-	temp = data;  				//ÔÙ´Î¸³Öµ£¬×¼±¸ºÏ²¢
-	temp = temp<<(23-i);		//²¹×ã23Î»Î²Êý  
-	temp = (i+127)<<23 | temp;	//¼ÆËãÖ¸Êý£¬²¢ÓëÎ²ÊýºÏ²¢ÆðÀ´   
-	temp = temp & ~(1<<23);		//È·¶¨Õý¸º  ÎÒÕâ¶ù¶¼ÊÇÕýÊý£¬¾ÍÃ»¹Ü¸ºÊýÁË  
+	read_coil();		//ï¿½ï¿½ï¿½ï¿½È¦
+	write_coil();		//Ð´ï¿½ï¿½È¦
 	
-	return temp;				//ÕâÀï¾ÍÒÑ¾­ÊÇÒÔ¸¡µãÊýµÄ´æ´¢·½Ê½±íÊ¾µÄ´«½øÀ´µÄ²ÎÊýÁË
+	writer_register();
+
+	read_input_register();	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä´ï¿½ï¿½ï¿½
+	read_coilregister();	//ï¿½ï¿½ï¿½ï¿½ï¿½Ö¼Ä´ï¿½ï¿½ï¿½Öµ
 }
+
+
+
+
+
+
+
+
 
 
 

@@ -100,11 +100,10 @@ void check_nopowertime(void)
 		MySetScreen(biglanguage_screen.BIG_AUTO_NOPOWER_RECOVER);
 		RCC_AHB1PeriphClockCmd(DRIVER_GPIO_CLK|BACK_GPIO_CLK|BOX_DOOR_GPIO_CLK,DISABLE);
 
-		if(autonopowerpassword == coilvalue.menu_password)
-		{
-			RCC_AHB1PeriphClockCmd(DRIVER_GPIO_CLK|BACK_GPIO_CLK|BOX_DOOR_GPIO_CLK,ENABLE);
-			MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);
-		}			
+//		{
+//			RCC_AHB1PeriphClockCmd(DRIVER_GPIO_CLK|BACK_GPIO_CLK|BOX_DOOR_GPIO_CLK,ENABLE);
+//			MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);
+//		}			
 		
 	}
 

@@ -37,7 +37,6 @@ typedef struct
 	Pid_Value pidvalue;									//pid值
 	CoilValue flash_setvalue;							//参数设置
 	AutoNoPowerTime autonopowertime;					//自动断电时间
-	uint8_t autonopower_password[PASSWORDLENGTH];		//自动断电密码
 	uint8_t  warmstart_time[RTCBUFFSIZE];
 	uint8_t  warmend_time[RTCBUFFSIZE];
 	int compensatetemp;									//补偿温度
@@ -57,14 +56,6 @@ void DeviceInfo_Init(void);
 void STM32_Read_ID(void);
 
 
-void  encryp_password(void);
-
-
-//uint16_t encry_password1(void);
-
-
-//uint16_t encry_password2(void);
-
 
 int32_t STM32_SHA1_HMAC_Compute(uint8_t* InputMessage,
                           uint32_t InputMessageLength,
@@ -76,7 +67,7 @@ int32_t STM32_SHA1_HMAC_Compute(uint8_t* InputMessage,
 TestStatus Buffercmp(const uint8_t* pBuffer, uint8_t* pBuffer1, uint16_t BufferLength);
 
 
-void testpassword(void);
+void autogeneratepassword(void);
 
 
 

@@ -13,9 +13,6 @@
 
 
 
-
-
-
 typedef struct{
 	uint8_t test_duration[COILNUM];				//实验时长，单位：小时
 	uint8_t test_temp[COILNUM];					//实验温度，单位：摄氏度
@@ -39,7 +36,7 @@ typedef struct{
 
 void  read_coil(void);
 
-void  write_coil(uint8_t coilvalue);
+void  write_coil(void);
 
 
 void read_input_register(void);
@@ -52,7 +49,6 @@ void  writer_register(void);
 
 void modbus_register_handle(void);
 
-uint32_t datatohex(float data);  
 
 
 

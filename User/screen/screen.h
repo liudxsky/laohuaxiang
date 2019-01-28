@@ -346,13 +346,13 @@ typedef struct
 
 
 typedef struct{
-	float warning1_up;								//报警1上限
-	float warning2_up;								//报警2上限
-	float temp_backdiff;							//温度回差
-	uint32_t menu_password;							//菜单密码
-	uint32_t secondtime_password;					//再输入一次菜单密码
-	uint32_t no_power_protect_password;				//保护界面密码
-	uint32_t no_power_protect_secondtime_password;	//再输入一次保护密码
+	float warning1_up;												//报警1上限
+	float warning2_up;												//报警2上限
+	float temp_backdiff;											//温度回差
+	uint8_t menu_password[PASSWORDLENGTH];							//菜单密码
+	uint8_t secondtime_password[PASSWORDLENGTH];					//再输入一次菜单密码
+	uint8_t no_power_protect_password[PASSWORDLENGTH];				//保护界面密码
+	uint8_t no_power_protect_secondtime_password[PASSWORDLENGTH];	//再输入一次保护密码
 	uint16_t change_air_time;						//换气次数
 	uint16_t change_max_time;						//换气次数最大值
 	uint8_t air_door_angle;							//风门角度
@@ -368,9 +368,9 @@ typedef struct
 	uint8_t airdoor_value[COMMONSIZE];				//保存风门角度设置值
 	uint8_t screen_light_value[COMMONSIZE];			//保存屏幕亮度值
 	uint8_t  protect_password[PASSWORDLENGTH];		//保护界面输入密码
+	uint8_t autonopowerpassword[PASSWORDLENGTH];	//自动断电后恢复密码
 	uint8_t Pidvalue[3][PASSWORDLENGTH];			//PID值设置保存
 	uint8_t temp_adjust_value[COMMONSIZE];			//温度值校正
-	uint8_t autonopowerpassword[PASSWORDLENGTH];	//自动断电后恢复密码
 	CoilSaveValue  coilsavevalue;					//保持寄存器存储值
 	AutoNoPowerTimeSet autotime;					//自动断电时间设定
 	MainShowText   textvaluebuff;					//主页面文本控件保存缓存数组
