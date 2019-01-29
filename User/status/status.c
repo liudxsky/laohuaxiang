@@ -169,12 +169,12 @@ void check_language_select(void)
 	if(dev_info.biglanguagestatus == 1)
 	{
 		biglanguage_screen = bigchinese_screen; 		//Chinese
-		current_screen_id = 11;
+		current_screen_id = 12;
 	}
 	else
 	{
 		biglanguage_screen = bigenglish_screen; 		//English
-		current_screen_id = 24;
+		current_screen_id = 25;
 	}
 }
 

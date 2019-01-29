@@ -31,6 +31,7 @@ typedef struct
 	uint8_t	BIG_AIR_CHANGE_RATE_SCREEN; 	 			//换气次数编辑界面
 	uint8_t BIG_SELF_TEST_NOTPASS_SCREEN;				//自检未通过弹出界面
 	uint8_t BIG_SCREAT_PROTECT_SCREEN;		 			//参数设置密码保护界面
+	uint8_t BIG_ADJUST_PROTECT_SCREEN;					//调试密码保护界面
 	uint8_t BIG_PID_SET_SCREEN;			 				//pid值设置界面
 	uint8_t BIG_PARAM_SET_SCREEN;			 			//参数设置界面
 	uint8_t BIG_AUTO_NOPOWER_RECOVER;					//自动断电恢复密码界面
@@ -88,6 +89,12 @@ typedef struct
 /*--------------------------------------------------------------------------*/
 #define  BIG_PASSWORD_PROTECT_INPUT				2		//密码保护输入框
 /*--------------------------------------------------------------------------*/
+
+//密码保护界面2    control_id  设置
+/*--------------------------------------------------------------------------*/
+#define  BIG_PASSWORD2_INPUT				2		//密码保护输入框
+/*--------------------------------------------------------------------------*/
+
 
 //参数设置界面    control_id 输入     设置
 /*--------------------------------------------------------------------------*/
@@ -355,8 +362,8 @@ typedef struct{
 	float temp_backdiff;											//温度回差
 	uint8_t menu_password[PASSWORDLENGTH];							//菜单密码
 	uint8_t secondtime_password[PASSWORDLENGTH];					//再输入一次菜单密码
-	uint8_t no_power_protect_password[PASSWORDLENGTH];				//保护界面密码
-	uint8_t no_power_protect_secondtime_password[PASSWORDLENGTH];	//再输入一次保护密码
+	uint8_t protect_password[PASSWORDLENGTH];				//保护界面密码
+	uint8_t protect_secondtime_password[PASSWORDLENGTH];	//再输入一次保护密码
 	uint16_t change_air_time;						//换气次数
 	uint16_t change_max_time;						//换气次数最大值
 	uint8_t air_door_angle;							//风门角度
@@ -371,6 +378,7 @@ typedef struct
 	uint8_t change_air_times[CHANGE_AIR_SIZE][COMMONSIZE];		//保存风门角度查表值
 	uint8_t airdoor_value[COMMONSIZE];				//保存风门角度设置值
 	uint8_t screen_light_value[COMMONSIZE];			//保存屏幕亮度值
+	uint8_t menu_password[COMMONSIZE];				//菜单密码
 	uint8_t  protect_password[PASSWORDLENGTH];		//保护界面输入密码
 	uint8_t autonopowerpassword[PASSWORDLENGTH];	//自动断电后恢复密码
 	uint8_t Pidvalue[3][PASSWORDLENGTH];			//PID值设置保存

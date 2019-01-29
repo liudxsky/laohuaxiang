@@ -292,7 +292,7 @@ void autogeneratepassword(void)
 			printf("%d  ",MAC[i]);
 		}
 		sprintf(dev_info.flash_setvalue.menu_password,"%06d",666666);
-		sprintf(dev_info.flash_setvalue.no_power_protect_password,"%06d",888888);
+		sprintf(dev_info.flash_setvalue.protect_password,"%06d",888888);
 		printf("\r\n*************************************************************** :\r\n");
 	}
 

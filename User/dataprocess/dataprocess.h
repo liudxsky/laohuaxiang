@@ -21,8 +21,8 @@ typedef struct{
 	uint8_t temp_backdiff[COILNUM];				//温度回差
 	uint8_t menu_password[COILNUM];				//菜单密码
 	uint8_t secondtime_password[COILNUM];		//再输入一次菜单密码
-	uint8_t autonopowerpassword[COILNUM];		//断电恢复密码
-	uint8_t autonopower_secondpassword[COILNUM];//第二次输入断电恢复密码
+	uint8_t adjustprotectpassword[COILNUM];		//保护界面密码
+	uint8_t adjustprotect_secondpassword[COILNUM];//第二次输入保护界面密码
 	uint8_t change_air_time[COILNUM];			//换气次数
 	uint8_t change_max_time[COILNUM];			//换气次数最大值
 	uint8_t modbus_address[COILNUM];			//modbus节点地址
