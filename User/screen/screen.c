@@ -1310,8 +1310,7 @@ void addup_testtime(void)
 
 void lefttimecalculate(void)
 {
-	if((runstatus)&&(dev_info.testtime != 0))
-	uint32_t nowtesttime;	
+		uint32_t nowtesttime;	
 	if(dev_info.testtime != 0)
 	{
 		nowtesttime = diff_time(showtextvalue.start_time, rtctime)/60;
@@ -1330,13 +1329,6 @@ void lefttimecalculate(void)
 			runstatus = 0;
 			lefttimeflag = 0;
 		}
-	}
-	if(temptime == 0)
-	{
-		dev_info.testtemp = 0;
-		dev_info.testtime = 0;
-		runstatus = 0;
-		lefttimeflag = 0;
 	}
 }
 
