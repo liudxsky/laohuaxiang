@@ -44,8 +44,9 @@ void read_input_register(void);
 
 void read_coilregister(void);
 
-void  writer_register(void);
+void  writer_coilregister(void);
 
+void modbus_register_init(void);
 
 void modbus_register_handle(void);
 

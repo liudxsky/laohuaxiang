@@ -367,6 +367,7 @@ void NotifyButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 					SetPwmValue(0);
 					runstatus = 0;			//ֹͣ
 					temptime = 0;
+					lefttimeflag = 0;
 					AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_HEAT_SWITCH_ID,HIDE);
 				}
 				else
@@ -535,13 +536,14 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 		if(!strncmp(textvalue.protect_password,dev_info.flash_setvalue.menu_password,PASSWORDLENGTH))
 		{
 			AnimationPlayFrame(biglanguage_screen.BIG_PASSWORD_ERROR_SCREEN,BIG_PASS_UPDATE_FAIL,HIDE);
-			MySetScreen(biglanguage_screen.BIG_PARAM_SET_SCREEN);	
+			MySetScreen(biglanguage_screen.BIG_PARAM_SET_SCREEN);
+			passwordwrongflag = 0;
 		}
 		else
 		{
 			AnimationPlayFrame(biglanguage_screen.BIG_PASSWORD_ERROR_SCREEN,BIG_PASS_UPDATE_FAIL,SHOW);
 			MySetScreen(biglanguage_screen.BIG_PASSWORD_ERROR_SCREEN);
-			
+			passwordwrongflag = 1;	
 		}
 	}
 	//auto no power will show screen
@@ -553,13 +555,15 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 		{
 			//have power , control device work normal
 			AnimationPlayFrame(biglanguage_screen.BIG_PASSWORD_ERROR_SCREEN,BIG_PASS_UPDATE_FAIL,HIDE);
-			MySetScreen(biglanguage_screen.BIG_ADJUST_SCREEN);	
+			MySetScreen(biglanguage_screen.BIG_ADJUST_SCREEN);
+			passwordwrongflag = 0;
 		}
 		else
 		{
 			//control device no work
 			AnimationPlayFrame(biglanguage_screen.BIG_PASSWORD_ERROR_SCREEN,BIG_PASS_UPDATE_FAIL,SHOW);
 			MySetScreen(biglanguage_screen.BIG_PASSWORD_ERROR_SCREEN);
+			passwordwrongflag = 2;
 		}
 	}
 

@@ -199,8 +199,8 @@ int main( void )
 			kalman_temp=adj_display(temperFilter);
 			temp_detection(kalman_temp);						//temp detection						
 			Check_All_Status();	
-		//	modbus_register_handle();
-			printf("%f,%f\n",temperFilter,showtextvalue.current_temp_vlaue);
+			modbus_register_handle();
+//			printf("%f,%f\n",temperFilter,showtextvalue.current_temp_vlaue);
 		}
 		if(getMsCounter() - t_thread3s > 3000)
 		{
@@ -248,7 +248,7 @@ void System_Init(void)
 	Max6675_Gpio_Init();	//thermocouple gpio init						
 	control_mode_select();	//control mode select						
 	screen_init();			//screen data init						
-	autogeneratepassword();	//generatepassword
+	modbus_register_init();
 	ReadRtcTime();
 }
 
