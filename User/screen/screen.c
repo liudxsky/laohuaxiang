@@ -1393,7 +1393,7 @@ void start_endtime_set(void)
 	{
 		steadytempcount = 0;
 	}
-	if((runstatus)&&(dev_info.testtemp != 0)&&(lefttimeflag == 0)&&(steadytempcount>=120))
+	if((runstatus)&&(dev_info.testtemp != 0)&&(lefttimeflag == 0)&&(steadytempcount>=1))
 	{	
 		lefttimeflag = 1;
 		showtextvalue.start_time = rtctime;
