@@ -78,7 +78,7 @@ int main( void )
 	volatile uint32_t t_thread3s=0;
 	
 	uint16_t Ktemperature = 0;
-  	eMBErrorCode    eStatus;
+  eMBErrorCode    eStatus;
 	qsize  size = 0;
 	System_Init();												//init
 
@@ -212,7 +212,7 @@ int main( void )
 				dev_info.dev_status_changed_flag=0;
 				SetPoint=dev_info.testtemp;
 				update_dev_status();
-				//FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));	
+				FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));	
 			}
 			else
 			{

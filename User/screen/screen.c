@@ -110,7 +110,7 @@ void screen_init(void)
 	AnimationPlayFrame(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN,BIG_MODBUS_ADDRESS_SET_FAIL,HIDE);
 	
 	sprintf(textvalue.coilsavevalue.menu_password,"%06d",dev_info.flash_setvalue.menu_password);
-		
+	update_dev_status();
 }
 
 //DEC TO BCD
@@ -164,10 +164,10 @@ void NotifyScreen(uint16_t screen_id)
 	//PID
 	if(screen_id == biglanguage_screen.BIG_PID_SET_SCREEN)
 	{
+		if(runstatus>0)
+			return;
 		SetTextValueFloat(screen_id,BIG_P_VALUE_SET,dev_info.pidvalue.PID_P);
-
 		SetTextValueFloat(screen_id,BIG_I_VALUE_SET,dev_info.pidvalue.PID_I*10000);
-
 		SetTextValueFloat(screen_id,BIG_D_VALUE_SET,dev_info.pidvalue.PID_D);	
 	}
 	//param setting screen 
@@ -365,9 +365,9 @@ void NotifyButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 				if(runstatus>0)
 				{
 					SetPwmValue(0);
-					runstatus = 0;			//ֹͣ
-					temptime = 0;
-					lefttimeflag = 0;
+					runstatus = 0;
+					lefttimeflag=0;
+					temptime=0;	
 					AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_HEAT_SWITCH_ID,HIDE);
 				}
 				else
@@ -1310,8 +1310,9 @@ void addup_testtime(void)
 
 void lefttimecalculate(void)
 {
-	uint32_t nowtesttime;	
 	if((runstatus)&&(dev_info.testtime != 0))
+	uint32_t nowtesttime;	
+	if(dev_info.testtime != 0)
 	{
 		nowtesttime = diff_time(showtextvalue.start_time, rtctime)/60;
 		temptime = showtextvalue.test_time*60 - nowtesttime;
@@ -1319,6 +1320,16 @@ void lefttimecalculate(void)
 		showtextvalue.left_time_min = temptime%60;
 		SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TIME_LEFT_HOUR_ID,showtextvalue.left_time_hou);
 		SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TIME_LEFT_MIN_ID,showtextvalue.left_time_min);
+		
+		if(temptime == 0)
+		{
+			SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TIME_LEFT_HOUR_ID,0);
+			SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TIME_LEFT_MIN_ID,0);
+			dev_info.testtemp = 0;
+			dev_info.testtime = 0;
+			runstatus = 0;
+			lefttimeflag = 0;
+		}
 	}
 	if(temptime == 0)
 	{
