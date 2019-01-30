@@ -235,6 +235,7 @@ void NotifyScreen(uint16_t screen_id)
 		SetTextValueInt32(screen_id,BIG_YEAR_SET,dev_info.autonopowertime.year);
 		SetTextValueInt32(screen_id,BIG_MONTH_SET,dev_info.autonopowertime.month);
 		SetTextValueInt32(screen_id,BIG_DAY_SET,dev_info.autonopowertime.day);
+		
 	}
 	else if(screen_id == biglanguage_screen.BIG_CONTROL_TIME_SET)
 	{
@@ -855,7 +856,7 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 			case BIG_TEMP_VALUE_REVUSE_SET:
 				memset(textvalue.temp_adjust_value,0,sizeof(char)*COMMONSIZE);
 				memcpy(textvalue.temp_adjust_value,str,sizeof(char)*COMMONSIZE);
-				dev_info.flash_adjusttemp +=  atof(textvalue.temp_adjust_value);
+				dev_info.flash_adjusttemp =  atof(textvalue.temp_adjust_value);
 				dev_info.dev_status_changed_flag = 1;
 				break;
 			case BIG_YEAR_SET:
@@ -1460,6 +1461,7 @@ void update_dev_status(void)
 	SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_SET_TEMP_DECIMAL_ID,(int32_t)(dev_info.testtemp*10)%10);
 	SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_CHANGE_AIR_TIME,dev_info.flash_setvalue.change_air_time);
 	SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_AIR_DOOR_ANGLE_INPUT_ID,open_angle[dev_info.airdooropenangle]);
+	Dac1_Set_Vol(33*dev_info.airdooropenangle);
 }
 
 

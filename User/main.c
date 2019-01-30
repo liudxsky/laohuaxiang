@@ -90,16 +90,9 @@ int main( void )
 	
 //	SetBackLight(30);
 
-
-	//start screen
-	//SetPoint=showtextvalue.setting_temp;
 	SetPoint=dev_info.testtemp;
 	PIDInit(dev_info.pidvalue.PID_P,dev_info.pidvalue.PID_I,dev_info.pidvalue.PID_D,SetPoint);//need to be reset after chage setpoint
-	//dev_info.dev_status_changed_flag=1;
-	//dev_info.pidvalue.PID_P=PIDKP;
-	//dev_info.pidvalue.PID_I=PIDKI;
-	//dev_info.pidvalue.PID_D=PIDKD;
-	//dev_info.pwmscope=1000;
+
 	while(1)
     {
       eMBPoll(  );											//analyze Modbus data 
@@ -125,7 +118,7 @@ int main( void )
 			}
 			runstatus_last=runstatus;
 		//	printf("global T:%d", t_thread500);
-			Ktemperature=Max6675_Read_Tem()+ dev_info.compensatetemp;
+			Ktemperature=Max6675_Read_Tem()+ dev_info.compensatetemp-6;
 			temperRaw=Ktemperature*0.25;
 			//SetPoint=100;
 			temperFilter=getFilterTemper(temperRaw);
@@ -149,7 +142,7 @@ int main( void )
 				pwmOut=autoTuning(error,NULL,&autoTuneParam);
 				if(autoTuneParam.f_autoTuningDone)
 				{//auto tune finished
-					runstatus=0;
+					
 					//new parameters,should stop and re-run process
 					printf("auto tune status:%d",autoTuneParam.AutoTuneStatus);
 					if(autoTuneParam.AutoTuneStatus>0)
@@ -163,7 +156,7 @@ int main( void )
 						dev_info.pidvalue.PID_D=autoTuneParam.Kd_auto;
 						dev_info.dev_status_changed_flag=1;
 						printf("Kp:%f,Ki:%f,Kd%f\n",PID.Kp,PID.Ki,PID.Kd);
-						
+						runstatus=1;
 					}
 					else
 					{
@@ -200,18 +193,18 @@ int main( void )
 			temp_detection(kalman_temp);						//temp detection						
 			Check_All_Status();	
 			modbus_register_handle();
+			update_dev_status();
 //			printf("%f,%f\n",temperFilter,showtextvalue.current_temp_vlaue);
 		}
 		if(getMsCounter() - t_thread3s > 60000)
 		{
 			t_thread3s = getMsCounter();
 			//3s thread
-			//add status and relay control here.
+
 			if(dev_info.dev_status_changed_flag == 1)
 			{
 				dev_info.dev_status_changed_flag=0;
 				SetPoint=dev_info.testtemp;
-				update_dev_status();
 				FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));	
 				
 			}
