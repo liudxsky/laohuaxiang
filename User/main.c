@@ -76,7 +76,7 @@ int main( void )
 	volatile uint32_t t_thread100=0;
 	volatile uint32_t t_thread500=0;
 	volatile uint32_t t_thread3s=0;
-	
+	uint32_t t_thread1min=0;
 	uint16_t Ktemperature = 0;
   eMBErrorCode    eStatus;
 	qsize  size = 0;
@@ -104,10 +104,10 @@ int main( void )
     {
       eMBPoll(  );											//analyze Modbus data 
       size = queue_find_cmd(cmd_buffer,CMD_MAX_SIZE); 		//get one screen   command     
-		if(size>0)												//received valid instructions
-		{
-			ProcessMessage((PCTRL_MSG)cmd_buffer, size);//ָinstruction deal
-		}
+			if(size>0)												//received valid instructions
+			{
+				ProcessMessage((PCTRL_MSG)cmd_buffer, size);//ָinstruction deal
+			}
 		#if 1
 		if(getMsCounter()-t_thread100>200)
 		{
@@ -213,6 +213,7 @@ int main( void )
 				SetPoint=dev_info.testtemp;
 				update_dev_status();
 				FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));	
+				
 			}
 			else
 			{

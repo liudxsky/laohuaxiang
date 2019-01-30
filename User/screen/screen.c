@@ -537,7 +537,6 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 		dev_info.flash_setvalue.change_max_time = max_change_air(dev_info.change_air_time);
 		SetTextValueInt32(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_CHANGE_AIR_MAX_SET,dev_info.flash_setvalue.change_max_time);
 		dev_info.dev_status_changed_flag = 1;
-		//FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));				//дflash
 	}
 	
 	//menu password
