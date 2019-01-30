@@ -31,6 +31,7 @@ typedef struct
 	float testtemp;										//实验温度
 	float temp_backdiff;								//温度回差
 	float flash_adjusttemp;								//调整温度值
+	uint8_t airdooropenangle;						//风门开启角度
 	uint32_t  addup_testtime;							//累计试验时间
 	uint8_t  Modbus_address;							//Modbus地址
 	uint8_t  modbus_tran_rate_flag;						//Modbus传输速率

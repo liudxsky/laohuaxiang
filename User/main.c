@@ -85,10 +85,10 @@ int main( void )
 	eStatus = eMBInit( MB_RTU, dev_info.Modbus_address, 0x01, Modbus_rate, MB_PAR_NONE ); //Modbus Init
 	eStatus = eMBEnable();									//Free MODBUS enable
 	delay_s(1);
-	SetBackLight(20);											//set screen Backlight brightness
 	STM32_Read_ID();
 	startscreen();	
 	
+//	SetBackLight(30);
 
 
 	//start screen

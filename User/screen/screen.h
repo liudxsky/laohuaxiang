@@ -366,6 +366,7 @@ typedef struct{
 	uint8_t protect_secondtime_password[PASSWORDLENGTH];	//再输入一次保护密码
 	uint16_t change_air_time;						//换气次数
 	uint16_t change_max_time;						//换气次数最大值
+	uint8_t screen_light_value;						//屏幕亮度调节
 	uint8_t air_door_angle;							//风门角度
 	uint8_t modbus_address;							//modbus节点地址
 	uint8_t modbus_tran_rate;						//modbus通信速率
@@ -551,7 +552,7 @@ void start_endtime_set(void);
 
 void addup_testtime(void);
 
-void change_air_times(void);
+uint8_t change_air_times(void);
 
 void check_pidstatus(void);
 

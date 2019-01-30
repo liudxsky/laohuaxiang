@@ -198,7 +198,7 @@
           <Type>0</Type>
           <LineNumber>488</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134230028</Address>
+          <Address>134228240</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -208,54 +208,6 @@
           <Filename>..\User\screen\screen.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression>\\test\../User/screen/screen.c\488</Expression>
-        </Bp>
-        <Bp>
-          <Number>1</Number>
-          <Type>0</Type>
-          <LineNumber>538</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134230412</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\User\screen\screen.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\test\../User/screen/screen.c\538</Expression>
-        </Bp>
-        <Bp>
-          <Number>2</Number>
-          <Type>0</Type>
-          <LineNumber>535</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134230206</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\User\screen\screen.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\test\../User/screen/screen.c\535</Expression>
-        </Bp>
-        <Bp>
-          <Number>3</Number>
-          <Type>0</Type>
-          <LineNumber>535</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134230226</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\User\screen\screen.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\test\../User/screen/screen.c\535</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
