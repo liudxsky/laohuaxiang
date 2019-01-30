@@ -139,7 +139,7 @@ void NotifyScreen(uint16_t screen_id)
 		//edit air door
 		for (i= 0; i < CHANGE_AIR_SIZE; ++i)
 		{
-			SetTextValueInt32(screen_id,BIG_CHANGE_AIR_TIME_SET_90+i,dev_info.change_air_time[i]);
+			SetTextValueInt32(screen_id,BIG_CHANGE_AIR_TIME_SET_0+i,dev_info.change_air_time[i]);
 		}
 	}
 	else if(screen_id == biglanguage_screen.BIG_SCREAT_PROTECT_SCREEN)
@@ -423,111 +423,114 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 	{
 		switch (control_id)
 		{
-			case BIG_CHANGE_AIR_TIME_SET_100:
-				memset(textvalue.change_air_times[20],0,sizeof(char)*4);
-				memcpy(textvalue.change_air_times[20],str,sizeof(char)*4);
-				dev_info.change_air_time[20] = atoi(textvalue.change_air_times[20]);
-				break;
-			case BIG_CHANGE_AIR_TIME_SET_95:
-				memset(textvalue.change_air_times[19],0,sizeof(char)*4);
-				memcpy(textvalue.change_air_times[19],str,sizeof(char)*4);
-				dev_info.change_air_time[19] = atoi(textvalue.change_air_times[19]);
-				break;
-			case BIG_CHANGE_AIR_TIME_SET_90:
-				memset(textvalue.change_air_times[18],0,sizeof(char)*4);
-				memcpy(textvalue.change_air_times[18],str,sizeof(char)*4);
-				dev_info.change_air_time[18] = atoi(textvalue.change_air_times[18]);
-				break;
-			case BIG_CHANGE_AIR_TIME_SET_85:
-				memset(textvalue.change_air_times[17],0,sizeof(char)*4);
-				memcpy(textvalue.change_air_times[17],str,sizeof(char)*4);
-				dev_info.change_air_time[17] = atoi(textvalue.change_air_times[17]);
-				break;
-			case BIG_CHANGE_AIR_TIME_SET_80:
-				memset(textvalue.change_air_times[16],0,sizeof(char)*4);
-				memcpy(textvalue.change_air_times[16],str,sizeof(char)*4);
-				dev_info.change_air_time[16] = atoi(textvalue.change_air_times[16]);
-				break;
-			case BIG_CHANGE_AIR_TIME_SET_75:
-				memset(textvalue.change_air_times[15],0,sizeof(char)*4);
-				memcpy(textvalue.change_air_times[15],str,sizeof(char)*4);
-				dev_info.change_air_time[15] = atoi(textvalue.change_air_times[15]);
-				break;
-			case BIG_CHANGE_AIR_TIME_SET_70:
-				memset(textvalue.change_air_times[14],0,sizeof(char)*4);
-				memcpy(textvalue.change_air_times[14],str,sizeof(char)*4);
-				dev_info.change_air_time[14] = atoi(textvalue.change_air_times[14]);
-				break;
-			case BIG_CHANGE_AIR_TIME_SET_65:
-				memset(textvalue.change_air_times[13],0,sizeof(char)*4);
-				memcpy(textvalue.change_air_times[13],str,sizeof(char)*4);
-				dev_info.change_air_time[13] = atoi(textvalue.change_air_times[13]);
-				break;
-			case BIG_CHANGE_AIR_TIME_SET_60:
-				memset(textvalue.change_air_times[12],0,sizeof(char)*4);
-				memcpy(textvalue.change_air_times[12],str,sizeof(char)*4);
-				dev_info.change_air_time[12] = atoi(textvalue.change_air_times[12]);
-				break;
-			case BIG_CHANGE_AIR_TIME_SET_55:
-				memset(textvalue.change_air_times[11],0,sizeof(char)*4);
-				memcpy(textvalue.change_air_times[11],str,sizeof(char)*4);
-				dev_info.change_air_time[11] = atoi(textvalue.change_air_times[11]);
-				break;
-			case BIG_CHANGE_AIR_TIME_SET_50:
-				memset(textvalue.change_air_times[10],0,sizeof(char)*4);
-				memcpy(textvalue.change_air_times[10],str,sizeof(char)*4);
-				dev_info.change_air_time[10] = atoi(textvalue.change_air_times[10]);
-				break;
-			case BIG_CHANGE_AIR_TIME_SET_45:
-				memset(textvalue.change_air_times[9],0,sizeof(char)*4);
-				memcpy(textvalue.change_air_times[9],str,sizeof(char)*4);
-				dev_info.change_air_time[9] = atoi(textvalue.change_air_times[9]);
-				break;
-			case BIG_CHANGE_AIR_TIME_SET_40:
-				memset(textvalue.change_air_times[8],0,sizeof(char)*4);
-				memcpy(textvalue.change_air_times[8],str,sizeof(char)*4);
-				dev_info.change_air_time[8] = atoi(textvalue.change_air_times[8]);
-				break;
-			case BIG_CHANGE_AIR_TIME_SET_35:
-				memset(textvalue.change_air_times[7],0,sizeof(char)*4);
-				memcpy(textvalue.change_air_times[7],str,sizeof(char)*4);
-				dev_info.change_air_time[7] = atoi(textvalue.change_air_times[7]);
-				break;
-			case BIG_CHANGE_AIR_TIME_SET_30:
-				memset(textvalue.change_air_times[6],0,sizeof(char)*4);
-				memcpy(textvalue.change_air_times[6],str,sizeof(char)*4);
-				dev_info.change_air_time[6] = atoi(textvalue.change_air_times[6]);
-				break;
-			case BIG_CHANGE_AIR_TIME_SET_25:
-				memset(textvalue.change_air_times[5],0,sizeof(char)*4);
-				memcpy(textvalue.change_air_times[5],str,sizeof(char)*4);
-				dev_info.change_air_time[5] = atoi(textvalue.change_air_times[5]);
-				break;
-			case BIG_CHANGE_AIR_TIME_SET_20:
-				memset(textvalue.change_air_times[4],0,sizeof(char)*4);
-				memcpy(textvalue.change_air_times[4],str,sizeof(char)*4);
-				dev_info.change_air_time[4] = atoi(textvalue.change_air_times[4]);
-				break;
-			case BIG_CHANGE_AIR_TIME_SET_15:
-				memset(textvalue.change_air_times[3],0,sizeof(char)*4);
-				memcpy(textvalue.change_air_times[3],str,sizeof(char)*4);
-				dev_info.change_air_time[3] = atoi(textvalue.change_air_times[3]);
-				break;
-			case BIG_CHANGE_AIR_TIME_SET_10:
-				memset(textvalue.change_air_times[2],0,sizeof(char)*4);
-				memcpy(textvalue.change_air_times[2],str,sizeof(char)*4);
-				dev_info.change_air_time[2] = atoi(textvalue.change_air_times[2]);
+			case BIG_CHANGE_AIR_TIME_SET_0:
+				memset(textvalue.change_air_times[0],0,sizeof(char)*4);
+				memcpy(textvalue.change_air_times[0],str,sizeof(char)*4);
+				dev_info.change_air_time[0] = atoi(textvalue.change_air_times[0]);
 				break;
 			case BIG_CHANGE_AIR_TIME_SET_5:
 				memset(textvalue.change_air_times[1],0,sizeof(char)*4);
 				memcpy(textvalue.change_air_times[1],str,sizeof(char)*4);
 				dev_info.change_air_time[1] = atoi(textvalue.change_air_times[1]);
 				break;
-			case BIG_CHANGE_AIR_TIME_SET_0:
-				memset(textvalue.change_air_times[0],0,sizeof(char)*4);
-				memcpy(textvalue.change_air_times[0],str,sizeof(char)*4);
-				dev_info.change_air_time[0] = atoi(textvalue.change_air_times[0]);
+			case BIG_CHANGE_AIR_TIME_SET_10:
+				memset(textvalue.change_air_times[2],0,sizeof(char)*4);
+				memcpy(textvalue.change_air_times[2],str,sizeof(char)*4);
+				dev_info.change_air_time[2] = atoi(textvalue.change_air_times[2]);
 				break;
+			case BIG_CHANGE_AIR_TIME_SET_15:
+				memset(textvalue.change_air_times[3],0,sizeof(char)*4);
+				memcpy(textvalue.change_air_times[3],str,sizeof(char)*4);
+				dev_info.change_air_time[3] = atoi(textvalue.change_air_times[3]);
+				break;
+			case BIG_CHANGE_AIR_TIME_SET_20:
+				memset(textvalue.change_air_times[4],0,sizeof(char)*4);
+				memcpy(textvalue.change_air_times[4],str,sizeof(char)*4);
+				dev_info.change_air_time[4] = atoi(textvalue.change_air_times[4]);
+				break;
+			case BIG_CHANGE_AIR_TIME_SET_25:
+				memset(textvalue.change_air_times[5],0,sizeof(char)*4);
+				memcpy(textvalue.change_air_times[5],str,sizeof(char)*4);
+				dev_info.change_air_time[5] = atoi(textvalue.change_air_times[5]);
+				break;
+		    case BIG_CHANGE_AIR_TIME_SET_30:
+				memset(textvalue.change_air_times[6],0,sizeof(char)*4);
+				memcpy(textvalue.change_air_times[6],str,sizeof(char)*4);
+				dev_info.change_air_time[6] = atoi(textvalue.change_air_times[6]);
+				break;
+		    case BIG_CHANGE_AIR_TIME_SET_35:
+				memset(textvalue.change_air_times[7],0,sizeof(char)*4);
+				memcpy(textvalue.change_air_times[7],str,sizeof(char)*4);
+				dev_info.change_air_time[7] = atoi(textvalue.change_air_times[7]);
+				break;
+		    case BIG_CHANGE_AIR_TIME_SET_40:
+				memset(textvalue.change_air_times[8],0,sizeof(char)*4);
+				memcpy(textvalue.change_air_times[8],str,sizeof(char)*4);
+				dev_info.change_air_time[8] = atoi(textvalue.change_air_times[8]);
+				break;
+		  	case BIG_CHANGE_AIR_TIME_SET_45:
+				memset(textvalue.change_air_times[9],0,sizeof(char)*4);
+				memcpy(textvalue.change_air_times[9],str,sizeof(char)*4);
+				dev_info.change_air_time[9] = atoi(textvalue.change_air_times[9]);
+				break;
+
+		  	case BIG_CHANGE_AIR_TIME_SET_50:
+				memset(textvalue.change_air_times[10],0,sizeof(char)*4);
+				memcpy(textvalue.change_air_times[10],str,sizeof(char)*4);
+				dev_info.change_air_time[10] = atoi(textvalue.change_air_times[10]);
+				break;
+
+		  	case BIG_CHANGE_AIR_TIME_SET_55:
+				memset(textvalue.change_air_times[11],0,sizeof(char)*4);
+				memcpy(textvalue.change_air_times[11],str,sizeof(char)*4);
+				dev_info.change_air_time[11] = atoi(textvalue.change_air_times[11]);
+				break;
+		 	case BIG_CHANGE_AIR_TIME_SET_60:
+				memset(textvalue.change_air_times[12],0,sizeof(char)*4);
+				memcpy(textvalue.change_air_times[12],str,sizeof(char)*4);
+				dev_info.change_air_time[12] = atoi(textvalue.change_air_times[12]);
+				break;
+			case BIG_CHANGE_AIR_TIME_SET_65:
+				memset(textvalue.change_air_times[13],0,sizeof(char)*4);
+				memcpy(textvalue.change_air_times[13],str,sizeof(char)*4);
+				dev_info.change_air_time[13] = atoi(textvalue.change_air_times[13]);
+				break;	
+			case BIG_CHANGE_AIR_TIME_SET_70:
+				memset(textvalue.change_air_times[14],0,sizeof(char)*4);
+				memcpy(textvalue.change_air_times[14],str,sizeof(char)*4);
+				dev_info.change_air_time[14] = atoi(textvalue.change_air_times[14]);
+				break;
+			case BIG_CHANGE_AIR_TIME_SET_75:
+				memset(textvalue.change_air_times[15],0,sizeof(char)*4);
+				memcpy(textvalue.change_air_times[15],str,sizeof(char)*4);
+				dev_info.change_air_time[15] = atoi(textvalue.change_air_times[15]);
+				break;
+			case BIG_CHANGE_AIR_TIME_SET_80:
+				memset(textvalue.change_air_times[16],0,sizeof(char)*4);
+				memcpy(textvalue.change_air_times[16],str,sizeof(char)*4);
+				dev_info.change_air_time[16] = atoi(textvalue.change_air_times[16]);
+				break;
+			case BIG_CHANGE_AIR_TIME_SET_85:
+				memset(textvalue.change_air_times[17],0,sizeof(char)*4);
+				memcpy(textvalue.change_air_times[17],str,sizeof(char)*4);
+				dev_info.change_air_time[17] = atoi(textvalue.change_air_times[17]);
+				break;
+			case BIG_CHANGE_AIR_TIME_SET_90:
+				memset(textvalue.change_air_times[18],0,sizeof(char)*4);
+				memcpy(textvalue.change_air_times[18],str,sizeof(char)*4);
+				dev_info.change_air_time[18] = atoi(textvalue.change_air_times[18]);
+				break;
+			case BIG_CHANGE_AIR_TIME_SET_95:
+				memset(textvalue.change_air_times[19],0,sizeof(char)*4);
+				memcpy(textvalue.change_air_times[19],str,sizeof(char)*4);
+				dev_info.change_air_time[19] = atoi(textvalue.change_air_times[19]);
+				break;
+			case BIG_CHANGE_AIR_TIME_SET_100:
+				memset(textvalue.change_air_times[20],0,sizeof(char)*4);
+				memcpy(textvalue.change_air_times[20],str,sizeof(char)*4);
+				dev_info.change_air_time[20] = atoi(textvalue.change_air_times[20]);
+				break;			
+			
 			default:
 				break;
 		}

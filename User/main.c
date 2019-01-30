@@ -202,7 +202,7 @@ int main( void )
 			modbus_register_handle();
 //			printf("%f,%f\n",temperFilter,showtextvalue.current_temp_vlaue);
 		}
-		if(getMsCounter() - t_thread3s > 3000)
+		if(getMsCounter() - t_thread3s > 60000)
 		{
 			t_thread3s = getMsCounter();
 			//3s thread
