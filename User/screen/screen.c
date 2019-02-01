@@ -87,6 +87,7 @@ void screen_init(void)
 	
 
 	SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TIME_LEFT_HOUR_ID," 00 ");	
+	SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TIME_LEFT_MIN_ID," 00 ");	
 	sprintf(textvalue.coilsavevalue.modbus_address,"%d",dev_info.Modbus_address);
 	textvalue.coilsavevalue.modbus_tran_rate = 3;
 	textvalue.coilsavevalue.menu_language = 1;
@@ -1373,7 +1374,7 @@ void lefttimecalculate(void)
 		{
 			SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TIME_LEFT_HOUR_ID,0);
 			SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TIME_LEFT_MIN_ID,0);
-			dev_info.testtemp = 0;
+			//dev_info.testtemp = 0;
 			dev_info.testtime = 0;
 			runstatus = 0;
 			lefttimeflag = 0;
@@ -1461,6 +1462,7 @@ void update_dev_status(void)
 	SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_SET_TEMP_DECIMAL_ID,(int32_t)(dev_info.testtemp*10)%10);
 	SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_CHANGE_AIR_TIME,dev_info.flash_setvalue.change_air_time);
 	SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_AIR_DOOR_ANGLE_INPUT_ID,open_angle[dev_info.airdooropenangle]);
+	SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_ADDUP_TIME_ID,dev_info.addup_testtime/60);
 	Dac1_Set_Vol(33*dev_info.airdooropenangle);
 }
 

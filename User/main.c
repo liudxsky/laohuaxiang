@@ -118,8 +118,8 @@ int main( void )
 			}
 			runstatus_last=runstatus;
 		//	printf("global T:%d", t_thread500);
-			Ktemperature=Max6675_Read_Tem()+ dev_info.compensatetemp-6;
-			temperRaw=Ktemperature*0.25;
+			Ktemperature=Max6675_Read_Tem()+ dev_info.compensatetemp;
+			temperRaw=Ktemperature*0.25-7;
 			//SetPoint=100;
 			temperFilter=getFilterTemper(temperRaw);
 //			printf("%f\n",temperFilter);
@@ -135,6 +135,7 @@ int main( void )
 			if(runstatus==2) //button event to set tuning flag
 			{
 				autoTuneParam.f_autoTuning=1;
+				autoTuneParam.SetPoint=SetPoint;
 				runstatus=3;
 			}
 			if(autoTuneParam.f_autoTuning)

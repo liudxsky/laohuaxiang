@@ -226,7 +226,6 @@ uint16_t autoTuning(float errornow,int * pwm_out,struct AutoTuningParamStruct* a
 	int f_autoTuning=ats->f_autoTuning;
 	int sp=ats->SetPoint;
 	int switchPoint=10;
-	
 	if(!f_autoTuning)
 		return 0;
 	autoTuningParam.elapse_time++;
@@ -354,18 +353,18 @@ uint16_t autoTuning(float errornow,int * pwm_out,struct AutoTuningParamStruct* a
 	{
 		out=1000;
 		
-		if(AutoTuneStatus==1&&errornow>switchPoint+1)
+		if(AutoTuneStatus==1&&errornow>switchPoint+2)
 		{
 			if(tbuffidx<4)
 			{
-				autoTuningParam.AutoTuneStatus=-2;
+				AutoTuneStatus=-2;
 				AutoTuneOutput=AutoTuneOutput+100;
 				if(AutoTuneOutput>900)
 					AutoTuneOutput=900;
 			}
 			else
 			{
-				autoTuningParam.AutoTuneStatus=-3;
+				AutoTuneStatus=-3;
 				AutoTuneOutput=AutoTuneOutput-100;
 				if(AutoTuneOutput<300)
 					AutoTuneOutput=300;
