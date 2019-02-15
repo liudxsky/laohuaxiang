@@ -33,7 +33,7 @@ extern RtcTime changetime;
 
 PCTRL_MSG tempmessage;
 
-
+uint8_t writecoilflag = 0,readcoilflag = 0,readholdingflag = 0,writeholdingflag = 0,readinputflag = 0;
 
 uint8_t temp[COILNUM] = {0};
 
@@ -45,8 +45,8 @@ uint8_t temp[COILNUM] = {0};
 
 
 
-//0ΪON,1ΪOFF
-void  read_coil(void)
+//0ΪON,1ΪOFF,read coil register
+void  read_Coilregister(void)
 {
 	
 	READ_GPIO_VALUE_TABLE(0,DRIVER_GPIO_PORT,HEAT_CONTROL_PIN);					
@@ -57,160 +57,183 @@ void  read_coil(void)
 	READ_GPIO_VALUE_TABLE(5,BOX_DOOR_GPIO_PORT,BOX_DOOR_PIN);					
 	
 	ucRegCoilsBuf[0] = temp[0]|temp[1]<<1|temp[2]<<2|temp[3]<<3|temp[4]<<4|temp[5]<<5;
+	readcoilflag = 0;
 }
 
-
-void  write_coil(void)
+//write coil register
+void  write_Coilregister(void)
 {
-	GPIO_WriteBit(DRIVER_GPIO_PORT,HEAT_CONTROL_PIN,ucRegCoilsBuf[0] & 0x01);
-	GPIO_WriteBit(DRIVER_GPIO_PORT,SPINNER_RACK_CONTROL_PIN,ucRegCoilsBuf[0] & 0x02);
-	GPIO_WriteBit(DRIVER_GPIO_PORT,CIRCULATING_FUN_CONTROL_PIN,ucRegCoilsBuf[0] & 0x04);
-	GPIO_WriteBit(DRIVER_GPIO_PORT,ALARM_CONTROL1_PIN,ucRegCoilsBuf[0] & 0x08);
-	GPIO_WriteBit(DRIVER_GPIO_PORT,ALARM_CONTROL2_PIN,ucRegCoilsBuf[0] & 0x10);
-	GPIO_WriteBit(DRIVER_GPIO_PORT,BOX_DOOR_PIN,ucRegCoilsBuf[0] & 0x20);
+	if(ucRegCoilsBuf[0] & 0x01)
+	{
+		GPIO_WriteBit(DRIVER_GPIO_PORT,HEAT_CONTROL_PIN,Bit_SET);
+		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_HEAT_SWITCH_ID,SHOW);
+	}
+	else
+	{
+		GPIO_WriteBit(DRIVER_GPIO_PORT,HEAT_CONTROL_PIN,Bit_RESET);
+		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_HEAT_SWITCH_ID,HIDE);
+	}
+	if(ucRegCoilsBuf[0] & 0x02)
+	{	
+		GPIO_WriteBit(DRIVER_GPIO_PORT,SPINNER_RACK_CONTROL_PIN,Bit_SET);
+		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_SAMPLE_FRAME_MOTOR_ID,SHOW);
+		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_RR_WORK_STATUS_ID,HIDE);
+	}
+	else
+	{
+		GPIO_WriteBit(DRIVER_GPIO_PORT,SPINNER_RACK_CONTROL_PIN,Bit_RESET);
+		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_SAMPLE_FRAME_MOTOR_ID,HIDE);
+		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_RR_WORK_STATUS_ID,SHOW);
+	}
+	
+	if(ucRegCoilsBuf[0] & 0x04)
+	{	
+		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_FAN_OPERATION_ID,SHOW);
+		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_FR_WORK_STATUS_ID,HIDE);
+		GPIO_WriteBit(DRIVER_GPIO_PORT,CIRCULATING_FUN_CONTROL_PIN,Bit_SET);
+	}
+	else
+	{
+		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_FAN_OPERATION_ID,HIDE);
+		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_FR_WORK_STATUS_ID,SHOW);
+		GPIO_WriteBit(DRIVER_GPIO_PORT,CIRCULATING_FUN_CONTROL_PIN,Bit_RESET);
+	}
+	
+	if(ucRegCoilsBuf[0] & 0x08)
+	{	
+		GPIO_WriteBit(DRIVER_GPIO_PORT,ALARM_CONTROL1_PIN,Bit_SET);
+		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TEMP_WARNING1_ID,SHOW);
+		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_AR1_WORK_STATUS_ID,HIDE);
+	}
+	else
+	{
+		GPIO_WriteBit(DRIVER_GPIO_PORT,ALARM_CONTROL1_PIN,Bit_RESET);
+		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TEMP_WARNING1_ID,HIDE);
+		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_AR1_WORK_STATUS_ID,SHOW);
+	}
+	if(ucRegCoilsBuf[0] & 0x10)
+	{	
+		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TEMP_WARNING2_ID,SHOW);
+		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_AR2_WORK_STATUS_ID,HIDE);
+		GPIO_WriteBit(DRIVER_GPIO_PORT,ALARM_CONTROL2_PIN,Bit_SET);
+	}
+	else
+	{
+		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TEMP_WARNING2_ID,HIDE);
+		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_AR2_WORK_STATUS_ID,SHOW);
+		GPIO_WriteBit(DRIVER_GPIO_PORT,ALARM_CONTROL2_PIN,Bit_RESET);
+	}
+	if(ucRegCoilsBuf[0] & 0x20)
+	{	
+		GPIO_WriteBit(DRIVER_GPIO_PORT,BOX_DOOR_PIN,Bit_SET);
+		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_DOOR_OPEN_ID,SHOW);
+	}
+	else
+	{
+		GPIO_WriteBit(DRIVER_GPIO_PORT,BOX_DOOR_PIN,Bit_RESET);
+		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_DOOR_OPEN_ID,HIDE);
+	}
+	writecoilflag = 0;
 }
 
 extern uint8_t thermalbuff[38];
-
-void read_input_register(void)
+extern uint8_t savethermalbuff[TIMERECORDNUM][38];
+//read input register
+void read_Inputregister(void)
 {
 	uint8_t i = 0;
-	uint32_t testtemp = showtextvalue.current_temp_vlaue*100;
+	uint16_t testtemp = showtextvalue.current_temp_vlaue*10;
 	usRegInputBuf[0] = testtemp;
-	usRegInputBuf[1] = testtemp>>16;
-//	printf("temp is %d,%d\r\n",usRegInputBuf[0],usRegInputBuf[1]);
-	
-//	uint8_t i = 0;
-//	usRegInputBuf[0] = datatohex(showtextvalue.current_temp_vlaue);
-//	usRegInputBuf[1] =  datatohex(showtextvalue.current_temp_vlaue)>>16;
-//	printf("temp is %x,%x\r\n",usRegInputBuf[0],usRegInputBuf[1]);
-	
-//	for(i = 0;i < TIMERECORDNUM;i++)
-//	{
-//		usRegInputBuf[38*i] = thermalbuff[i];
-//	}
-	
-//	usRegInputBuf[381] = heattime_log.heattime.Year<<8|heattime_log.heattime.Mon;
-//	usRegInputBuf[382] = heattime_log.heattime.Day<<8|heattime_log.heattime.Hour;
-//	usRegInputBuf[383] = heattime_log.heattime.Min<<8|heattime_log.heattime.Sec;
+	usRegInputBuf[1] = dev_info.testtemp*10;
+	usRegInputBuf[2] = dev_info.testtime*10;
+	for(i = 0;i < TIMERECORDNUM;i++)
+	{
+		memcpy(usRegInputBuf[2*i+3],savethermalbuff[i],sizeof(char)*19);
+		memcpy(usRegInputBuf[2*i+4],savethermalbuff[i+19],sizeof(char)*19);
+	}
+	usRegInputBuf[384] = heattime_log.heattime.Year<<8|heattime_log.heattime.Mon;
+	usRegInputBuf[385] = heattime_log.heattime.Day<<8|heattime_log.heattime.Hour;
+	usRegInputBuf[386] = heattime_log.heattime.Min<<8|heattime_log.heattime.Sec;
+	readinputflag = 0;
 }
 
 
 
-
-void read_coilregister(void)
+//read Holding register
+void read_Holdingregister(void)
 {
-	usRegHoldingBuf[0] = dev_info.testtime*100;
-	usRegHoldingBuf[1] = dev_info.testtemp*100;
-//	usRegHoldingBuf[2] = coilsavevalue.test_temp;
-//	usRegHoldingBuf[3] = coilsavevalue.warning1_up;
-//	usRegHoldingBuf[4] = coilsavevalue.warning1_down;
-//	usRegHoldingBuf[5] = coilsavevalue.warning2_up;
-//	usRegHoldingBuf[6] = coilsavevalue.warning2_down;
-//	usRegHoldingBuf[8] = coilsavevalue.menu_password&0x0000ffff;
-//	usRegHoldingBuf[9] = coilsavevalue.menu_password>>16;
-//	usRegHoldingBuf[10] = coilsavevalue.secondtime_password&0x0000ffff;
-//	usRegHoldingBuf[11] = coilsavevalue.secondtime_password>>16;
-//	usRegHoldingBuf[12] = coilsavevalue.change_air_time;
-//	usRegHoldingBuf[13] = coilsavevalue.menu_language;
-}
-
-
-
-
-
-void  writer_coilregister(void)
-{
-	dev_info.testtime = (float)usRegHoldingBuf[0]/100;
-	dev_info.testtemp = (float)usRegHoldingBuf[1]/100;			
-}
-
-
-
-
-
-void readgpiostatus(void)
-{
+	uint16_t testtemp = showtextvalue.current_temp_vlaue*10;
+	usRegHoldingBuf[0] = testtemp;
+	usRegHoldingBuf[1] = dev_info.testtemp*10;
+	usRegHoldingBuf[2] = dev_info.testtime*10;
+	usRegHoldingBuf[3] = dev_info.flash_setvalue.warning1_up*10;
+	usRegHoldingBuf[4] = dev_info.flash_setvalue.warning2_up*10;
+	usRegHoldingBuf[5] = dev_info.flash_setvalue.temp_backdiff*10;
+	usRegHoldingBuf[6] = atoi(dev_info.flash_setvalue.menu_password);
+	usRegHoldingBuf[7] = atoi(dev_info.flash_setvalue.secondtime_password);
+	usRegHoldingBuf[8] = atoi(dev_info.flash_setvalue.protect_password);
+	usRegHoldingBuf[9] = atoi(dev_info.flash_setvalue.protect_secondtime_password);
 	
-	READ_GPIO_VALUE_TABLE(0,DRIVER_GPIO_PORT,HEAT_CONTROL_PIN);
-	READ_GPIO_VALUE_TABLE(1,DRIVER_GPIO_PORT,SPINNER_RACK_CONTROL_PIN);
-	READ_GPIO_VALUE_TABLE(2,DRIVER_GPIO_PORT,CIRCULATING_FUN_CONTROL_PIN);
-	READ_GPIO_VALUE_TABLE(3,DRIVER_GPIO_PORT,ALARM_CONTROL1_PIN);
-	READ_GPIO_VALUE_TABLE(4,DRIVER_GPIO_PORT,ALARM_CONTROL2_PIN);
-	READ_GPIO_VALUE_TABLE(5,BOX_DOOR_GPIO_PORT,BOX_DOOR_PIN);
-
-//	if(temp[1] == Bit_SET)
-//	{
-//		AnimationPlayFrame(language_screen.MAIN_SHOW_SCREEN,SAMPLE_FRAME_MOTOR_ID,SHOW);
-//		AnimationPlayFrame(language_screen.MAIN_SHOW_SCREEN,RR_WORK_STATUS_ID,HIDE);
-//	}
-//	else
-//	{
-//		AnimationPlayFrame(language_screen.MAIN_SHOW_SCREEN,SAMPLE_FRAME_MOTOR_ID,HIDE); 
-//		AnimationPlayFrame(language_screen.MAIN_SHOW_SCREEN,RR_WORK_STATUS_ID,SHOW);	
-//	}
-
-//	if(temp[2] == Bit_SET)
-//	{
-//		AnimationPlayFrame(language_screen.MAIN_SHOW_SCREEN,FAN_OPERATION_ID,SHOW);
-//		AnimationPlayFrame(language_screen.MAIN_SHOW_SCREEN,FR_WORK_STATUS_ID,HIDE);
-//	}
-//	else
-//	{
-//		AnimationPlayFrame(language_screen.MAIN_SHOW_SCREEN,FAN_OPERATION_ID,HIDE);	
-//		AnimationPlayFrame(language_screen.MAIN_SHOW_SCREEN,FR_WORK_STATUS_ID,SHOW);	
-//	}
-//	
-//	if(temp[3] == Bit_SET)
-//	{
-//		AnimationPlayFrame(language_screen.MAIN_SHOW_SCREEN,TEMP_WARNING1_ID,SHOW);
-//		AnimationPlayFrame(language_screen.MAIN_SHOW_SCREEN,AR1_WORK_STATUS_ID,HIDE);
-//	}
-//	else
-//	{
-//		AnimationPlayFrame(language_screen.MAIN_SHOW_SCREEN,AR1_WORK_STATUS_ID,SHOW);
-//		AnimationPlayFrame(language_screen.MAIN_SHOW_SCREEN,TEMP_WARNING1_ID,HIDE);	
-//	}
-//	if(temp[4] == Bit_SET)
-//	{
-//		AnimationPlayFrame(language_screen.MAIN_SHOW_SCREEN,TEMP_WARNING2_ID,SHOW);
-//		AnimationPlayFrame(language_screen.MAIN_SHOW_SCREEN,AR2_WORK_STATUS_ID,HIDE);
-//	}
-//	else
-//	{
-//		AnimationPlayFrame(language_screen.MAIN_SHOW_SCREEN,TEMP_WARNING2_ID,HIDE);
-//		AnimationPlayFrame(language_screen.MAIN_SHOW_SCREEN,AR2_WORK_STATUS_ID,SHOW);	
-//	}
-//	if(temp[5] == Bit_SET)
-//	{
-//		AnimationPlayFrame(language_screen.MAIN_SHOW_SCREEN,DOOR_OPEN_ID,SHOW);
-//	}
-//	else
-//	{
-//		AnimationPlayFrame(language_screen.MAIN_SHOW_SCREEN,DOOR_OPEN_ID,HIDE);
-//	}
+	readholdingflag = 0;
 }
+
+
+//write Holding register
+void  write_Holdingregister(void)
+{
+	dev_info.testtemp = usRegHoldingBuf[512];
+	dev_info.testtemp=dev_info.testtemp/10;
+//	dev_info.testtime = (float)usRegHoldingBuf[2]/10;		
+//	dev_info.flash_setvalue.warning1_up = (float)usRegHoldingBuf[3]/10;
+//	dev_info.flash_setvalue.warning2_up = (float)usRegHoldingBuf[4]/10;
+//	dev_info.flash_setvalue.temp_backdiff = (float)usRegHoldingBuf[5]/10;	
+
+	writeholdingflag = 0;
+}
+
+void read_Discreteregister(void)
+{
+
+
+}
+
+
+
+
 
 void modbus_register_init(void)
 {
-	usRegHoldingBuf[0] = dev_info.testtime * 100;
-	usRegHoldingBuf[1] = dev_info.testtemp * 100;
-
+	usRegHoldingBuf[0] = dev_info.testtemp * 10;
+	usRegHoldingBuf[1] = dev_info.testtime * 100;
+	usRegHoldingBuf[2] = dev_info.flash_setvalue.warning1_up*10;
+	usRegHoldingBuf[3] = dev_info.flash_setvalue.warning2_up*10;
+	usRegHoldingBuf[4] = dev_info.flash_setvalue.temp_backdiff*10;
 }
 
 
 
 void modbus_register_handle(void)
 {
-//	read_coil();		
-//	write_coil();	
-	read_coilregister();
-
-	if(dev_info.dev_status_changed_flag)
+//	if(readcoilflag)
+//	{
+//		read_Coilregister();
+//	}
+//	if(writecoilflag)
+//	{
+//		write_Coilregister();
+//	}
+	if(1)//readholdingflag)
 	{
-		writer_coilregister();
+		read_Holdingregister();
 	}
-	read_input_register();		
+	if(writeholdingflag)
+	{
+		write_Holdingregister();
+	}
+	if(readinputflag)
+	{
+		read_Inputregister();
+	}
 }
 
 

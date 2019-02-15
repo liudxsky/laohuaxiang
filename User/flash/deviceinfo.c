@@ -29,8 +29,8 @@ void DeviceInfo_Init(void)
 		{
 			dev_info.change_air_time[i] = 0;
 		}
-		dev_info.flash_setvalue.warning1_up = 1000;
-		dev_info.flash_setvalue.warning2_up = 1000;
+		dev_info.flash_setvalue.warning1_up = 999;
+		dev_info.flash_setvalue.warning2_up = 999;
 		dev_info.flash_setvalue.screen_light_value = 100;
 		dev_info.Modbus_address = 1;					
 		dev_info.biglanguagestatus = 1;

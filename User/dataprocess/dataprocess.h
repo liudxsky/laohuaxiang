@@ -34,17 +34,18 @@ typedef struct{
 
 
 
-void  read_coil(void);
-
-void  write_coil(void);
-
-
-void read_input_register(void);
+void  read_Coilregister(void);
+void  write_Coilregister(void);
 
 
-void read_coilregister(void);
+void read_Inputregister(void);
 
-void  writer_coilregister(void);
+void read_Holdingregister(void);
+void  write_Holdingregister(void);
+
+
+void read_Discreteregister(void);
+
 
 void modbus_register_init(void);
 

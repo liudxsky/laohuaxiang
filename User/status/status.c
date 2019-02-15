@@ -414,7 +414,7 @@ void changestruct(void)
 	
 }
 
-
+uint8_t savethermalbuff[TIMERECORDNUM][38] = {0},savenum = 0;
 //箱门状态监测,热滞后数据记录
 void door_open_status(void)
 {
@@ -448,6 +448,15 @@ void door_open_status(void)
 				heattime_log.regain_set_temp_time = diff_time(heattime_log.closedoor_time,rtctime);
 				changestruct();
 				AddDataRecord(biglanguage_screen.BIG_TIME_RECORD_SCREEN,BIG_DATA_RECORD,thermalbuff);
+				if(savenum < TIMERECORDNUM)
+				{
+					memcpy(savethermalbuff[savenum],thermalbuff,sizeof(char)*38);
+					savenum++;
+				}
+				else
+				{
+					savenum = 0;
+				}
 			}
 		}
 	}

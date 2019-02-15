@@ -25,6 +25,7 @@ uint16_t current_screen_id = 0;
 volatile uint32_t  timer_tick_count = 0; // tick timer
 
 extern uint16_t ADC_ConvertedValue[ADC_NOFCHANEL];
+extern uint8_t writecoilflag,readcoilflag,readholdingflag,writeholdingflag,readinputflag;
 
 extern dev_info_t dev_info;
 extern RtcTime rtctime;
@@ -36,6 +37,8 @@ int runstatus_last=0;
 int debuginfo=0;
 extern arm_pid_instance_f32 PID;
 float kalman_temp=0;
+
+
 /* ----------------------- Defines ------------------------------------------*/
 
 //input register
@@ -47,7 +50,7 @@ uint16_t	usRegHoldingBuf[REG_HOLDING_NREGS] = {0};
 
 
 //coil  register
-uint16_t	ucRegCoilsBuf[REG_COILS_SIZE] = {0};
+uint16_t	ucRegCoilsBuf[REG_COILS_SIZE] = {12,5};
 
 
 //switch input register
@@ -97,10 +100,10 @@ int main( void )
     {
       eMBPoll(  );											//analyze Modbus data 
       size = queue_find_cmd(cmd_buffer,CMD_MAX_SIZE); 		//get one screen   command     
-			if(size>0)												//received valid instructions
-			{
-				ProcessMessage((PCTRL_MSG)cmd_buffer, size);//ָinstruction deal
-			}
+		if(size>0)												//received valid instructions
+		{
+			ProcessMessage((PCTRL_MSG)cmd_buffer, size);//ָinstruction deal
+		}
 		#if 1
 		if(getMsCounter()-t_thread100>200)
 		{
@@ -184,7 +187,7 @@ int main( void )
 				HEAT_OFF;
 			}
 		}
-		#endif
+		
 		if(getMsCounter() - timer_tick_count > 1000)
 		{
 			timer_tick_count = getMsCounter();
@@ -216,7 +219,9 @@ int main( void )
 			addup_testtime();			
 		}
 			device_timing_selfcheck();
+		#endif
     }
+	
 }
 
 
@@ -269,7 +274,7 @@ eMBRegInputCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs )
 	{
 
 		iRegIndex = ( int16_t )( usAddress - REG_INPUT_START );
-		
+		readinputflag = 1;
 		while( usNRegs > 0 )			
 		{
 			
@@ -307,7 +312,8 @@ eMBRegHoldingCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs,
 
 		switch ( eMode )
 		{	
-			case MB_REG_READ:			
+			case MB_REG_READ:
+				readholdingflag = 1;
 				while( usNRegs > 0 )
 				{
 					*pucRegBuffer++ = ( uint8_t )( usRegHoldingBuf[iRegIndex] >> 8 );
@@ -316,9 +322,12 @@ eMBRegHoldingCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs,
 					usNRegs--;
 				}
 			break;
-			case MB_REG_WRITE:			
+			case MB_REG_WRITE:
+				writeholdingflag = 1;
 				while( usNRegs > 0 )
 				{
+					//usRegHoldingBuf[iRegIndex-2]=*pucRegBuffer;
+					//usRegHoldingBuf[iRegIndex-1]=*pucRegBuffer++;
 					usRegHoldingBuf[iRegIndex] = *pucRegBuffer++ << 8;
 					usRegHoldingBuf[iRegIndex] |= *pucRegBuffer++;
 					iRegIndex++;
@@ -353,7 +362,8 @@ eMBRegCoilsCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNCoils,
 		usBitOffset = ( int16_t )( usAddress - REG_COILS_START );
 		switch ( eMode )
 		{
-			case MB_REG_READ:								
+			case MB_REG_READ:	
+				readcoilflag = 1;
 				while( iNCoils > 0 )
 				{
 					*pucRegBuffer++ = xMBUtilGetBits( ucRegCoilsBuf, usBitOffset,
@@ -364,7 +374,8 @@ eMBRegCoilsCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNCoils,
 			break;
 
 	
-			case MB_REG_WRITE:								
+			case MB_REG_WRITE:	
+				writecoilflag = 1;
 				while( iNCoils > 0 )
 				{
 					xMBUtilSetBits( ucRegCoilsBuf, usBitOffset,
