@@ -6,7 +6,7 @@
 #include "./flash/flash.h"
 #include "./usart/usart.h"
 #include "crypto.h"
-
+#include "math.h"
 
 uint8_t ChipUniqueID[12] = {0};
 uint32_t * const  p = (uint32_t *)(0x08070000); 
@@ -38,7 +38,7 @@ void DeviceInfo_Init(void)
 		dev_info.flash_adjusttemp = 0;
 		dev_info.compensatetemp = 0;
 		dev_info.addup_testtime = 0;
-		autogeneratepassword();
+//		autogeneratepassword();
 		/*赋初值*/
 		FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
 		/*串口打印信息*/
@@ -275,7 +275,9 @@ char *decode(const char *base64Char, const long base64CharSize, char *originChar
 void autogeneratepassword(void)
 {
 	int32_t status = HASH_SUCCESS;
-	uint8_t i;
+	uint8_t i,j;
+	uint8_t demobuff[10] = {0};
+	uint32_t hexdata = 0;
 	memcpy(HMAC_Key,ChipUniqueID,sizeof(ChipUniqueID));
 	printf("\r\n*************************************************************** :\r\n");
 	status = STM32_SHA1_HMAC_Compute((uint8_t*)InputMessage,
@@ -290,8 +292,18 @@ void autogeneratepassword(void)
 		printf("\r\n*************************************************************** :\r\n");
 		for(i = 0;i<MACLength;i++)
 		{
-			printf("%d  ",MAC[i]);
+			printf("%x  ",MAC[i]);
 		}
+		printf("\n");
+		for(i = MACLength-1;i>MACLength-4;i--)
+		{
+			hexdata += MAC[i]*(pow(256,(MACLength -i-1)));
+			printf("hexdata is %6x\n",hexdata);
+		} 
+		sprintf(demobuff,"%d",hexdata); 
+		strncpy(dev_info.autonopowerpassword,demobuff,PASSWORDLENGTH);
+		printf("destbuff is %6s \n",dev_info.autonopowerpassword);
+		
 		sprintf(dev_info.flash_setvalue.menu_password,"%06d",666666);
 		sprintf(dev_info.flash_setvalue.protect_password,"%06d",888888);
 		printf("\r\n*************************************************************** :\r\n");
