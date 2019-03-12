@@ -56,16 +56,9 @@ void check_warning(void);
 
 void temp_detection(float dispTemper);
 
-void device_selfcheck(void);
-
-void devicefunc_selfcheck(void);
-
-void device_timing_selfcheck(void);
-
 void control_mode_select(void);
 
 void Check_All_Status(void);
 
-void check_heat_switch(void);
 
 #endif

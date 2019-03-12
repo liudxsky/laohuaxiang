@@ -29,7 +29,6 @@ typedef struct
 {
 	uint8_t BIG_KEYBOARD;								//小键盘
 	uint8_t	BIG_AIR_CHANGE_RATE_SCREEN; 	 			//换气次数编辑界面
-	uint8_t BIG_SELF_TEST_NOTPASS_SCREEN;				//自检未通过弹出界面
 	uint8_t BIG_SCREAT_PROTECT_SCREEN;		 			//参数设置密码保护界面
 	uint8_t BIG_ADJUST_PROTECT_SCREEN;					//调试密码保护界面
 	uint8_t BIG_PID_SET_SCREEN;			 				//pid值设置界面
@@ -38,7 +37,8 @@ typedef struct
 	uint8_t BIG_TIME_RECORD_SCREEN; 					//热滞后时间记录界面
 	uint8_t BIG_CONTROL_TIME_SET;						//控制器时间设置界面
 	uint8_t BIG_PASSWORD_ERROR_SCREEN;					//密码输入错误界面
-	uint8_t BIG_ARGUEMENT_SET_ERROR_SCREEN;				//参数设置无效界面
+	uint8_t BIG_ARGUEMENT_SET_ERROR_SCREEN1;			//参数设置无效界面1
+	uint8_t BIG_ARGUEMENT_SET_ERROR_SCREEN2;			//参数设置无效界面2
 	uint8_t BIG_MAIN_SHOW_SCREEN;		 	 			//主显示界面
 	uint8_t BIG_ADJUST_SCREEN;							//隐藏调整界面
 }BIG_SCREEN_ID_TAB;
@@ -315,9 +315,9 @@ typedef struct
 //自动断电时间设置
 typedef struct 
 {
-	uint8_t year[COMMONSIZE];
-	uint8_t month[COMMONSIZE];
-	uint8_t day[COMMONSIZE];
+	uint8_t Year[COMMONSIZE];
+	uint8_t Mon[COMMONSIZE];
+	uint8_t Day[COMMONSIZE];
 }AutoNoPowerTimeSet;
 
 
@@ -334,6 +334,7 @@ typedef struct
 	uint8_t add_all_time;
 	uint8_t change_air_time;
 	uint8_t air_door_angle;
+	int8_t  temp_correction;
 }MainShowTextValue;
 
 
@@ -571,8 +572,6 @@ uint8_t max_change_air(uint8_t *buff);
 uint8_t judge_changeair_time(uint16_t change_time);
 
 void update_dev_status(void);
-
-void check_heat_switch(void);
 
 
 

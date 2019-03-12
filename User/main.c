@@ -50,7 +50,7 @@ uint16_t	usRegHoldingBuf[REG_HOLDING_NREGS] = {0};
 
 
 //coil  register
-uint16_t	ucRegCoilsBuf[REG_COILS_SIZE] = {12,5};
+uint16_t	ucRegCoilsBuf[REG_COILS_SIZE] = {0};
 
 
 //switch input register
@@ -218,7 +218,6 @@ int main( void )
 			}
 			addup_testtime();			
 		}
-			device_timing_selfcheck();
 		#endif
     }
 	
@@ -327,8 +326,6 @@ eMBRegHoldingCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs,
 				writeholdingflag = 1;
 				while( usNRegs > 0 )
 				{
-					//usRegHoldingBuf[iRegIndex-2]=*pucRegBuffer;
-					//usRegHoldingBuf[iRegIndex-1]=*pucRegBuffer++;
 					usRegHoldingBuf[iRegIndex] = *pucRegBuffer++ << 8;
 					usRegHoldingBuf[iRegIndex] |= *pucRegBuffer++;
 					iRegIndex++;
