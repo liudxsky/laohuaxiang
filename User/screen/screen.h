@@ -199,26 +199,33 @@ typedef struct
 #define  BIG_AUTO_NO_POWER_PASSWOORD_INPUT		2		//自动断电恢复密码
 /*--------------------------------------------------------------------------*/
 
-//界面    control_id自检未通过弹出界面
+
+
+//界面    control_id参数设置无效界面1
 /*--------------------------------------------------------------------------*/
-#define  BIG_ERROR1_TEXT						2		//热电偶输入故障
-#define  BIG_ERROR2_TEXT						3		//控制器内部故障1
-#define  BIG_ERROR3_TEXT						4		//控制器内部故障2
-#define  BIG_ERROR4_TEXT						5		//电动执行机构连接中断
+#define  BIG_PASS_UPDATE_FAIL1					2		//密码更新失败
+#define  BIG_TESTTEMP_SET_FAIL1					3		//实验温度设定无效
+#define  BIG_TESTTIME_SET_FAIL1					4		//实验时间设定无效
+#define  BIG_TEMP_UP_SET_FAIL1					5		//温度上限设定无效
+#define  BIG_RETURN_DIFF_SET_FAIL1				6		//温度回差设定无效
+#define  BIG_CHANGE_AIR_SET_FAIL1				7		//换气次数设定无效
+#define  BIG_MODBUS_ADDRESS_SET_FAIL1			8		//MOdbus地址设定无效
+#define  BIG_SCREEN_LIGHT_SET_FAIL1				9		//屏幕亮度调节设定无效
+
+#define	 BIG_FAIL_RETURN_BUTTON1				10		//返回按键
 /*--------------------------------------------------------------------------*/
 
-//界面    control_id参数设置无效界面
+//界面    control_id参数设置无效界面2
 /*--------------------------------------------------------------------------*/
-#define  BIG_PASS_UPDATE_FAIL					2		//密码更新失败
-#define  BIG_TESTTEMP_SET_FAIL					3		//实验温度设定无效
-#define  BIG_TESTTIME_SET_FAIL					4		//实验时间设定无效
-#define  BIG_TEMP_UP_SET_FAIL					5		//温度上限设定无效
-#define  BIG_RETURN_DIFF_SET_FAIL				6		//温度回差设定无效
-#define  BIG_CHANGE_AIR_SET_FAIL				7		//换气次数设定无效
-#define  BIG_MODBUS_ADDRESS_SET_FAIL			8		//MOdbus地址设定无效
+#define  BIG_PASS_UPDATE_FAIL2					2		//密码更新失败
+#define  BIG_AIRDOOR_ANGLE_SET_FAIL2			3		//风门开度设定无效
+#define  BIG_TEMP_ADJUST_SET_FAIL2				4		//温度校正设定无效
+#define  BIG_AUTO_NO_POWER_SET_FAIL2			5		//自动断电设定无效
 
-#define	 BIG_FAIL_RETURN_BUTTON					9		//返回按键
+
+#define	 BIG_FAIL_RETURN_BUTTON2				6		//返回按键
 /*--------------------------------------------------------------------------*/
+
 
 
 //界面    control_id 密码错误显示界面

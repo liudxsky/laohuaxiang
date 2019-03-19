@@ -31,7 +31,7 @@ extern dev_info_t dev_info;
 extern RtcTime rtctime;
 extern uint8_t cmd_buffer[CMD_MAX_SIZE];		//ָInstruction cache
 extern uint8_t press_flag;
-extern MainShowTextValue	showtextvalue;	//��ҳ���ı��ؼ�����ֵ
+extern MainShowTextValue	showtextvalue;	
 int runstatus=0;
 int runstatus_last=0;
 int debuginfo=0;
