@@ -455,7 +455,7 @@ void adjustScreenSetting(uint16_t control_id,uint8_t *str)
 {
 	uint8_t str_temp[COMMONSIZE];
 	int i_temp;
-	float32_t  data_temp = 0;
+	float  data_temp = 0;
 	AutoNoPowerTime  nopowertime = {1985,12,12};			
 	switch (control_id)
 		{
@@ -501,7 +501,7 @@ void adjustScreenSetting(uint16_t control_id,uint8_t *str)
 			case BIG_TEMP_VALUE_REVUSE_SET:
 				memset(textvalue.temp_adjust_value,0,sizeof(char)*COMMONSIZE);
 				memcpy(textvalue.temp_adjust_value,str,sizeof(char)*COMMONSIZE);
-				data_temp = =  atof(textvalue.temp_adjust_value);
+				data_temp =  atof(textvalue.temp_adjust_value);
 				if(data_temp >= -20 && data_temp <= 20)
 				{
 					dev_info.flash_adjusttemp =  data_temp;

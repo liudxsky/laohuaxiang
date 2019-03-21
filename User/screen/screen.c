@@ -259,7 +259,7 @@ void NotifyButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 		{
 			setCurrentScreen(biglanguage_screen.BIG_ADJUST_PROTECT_SCREEN);
 		}
-		else if(passwordwrongflag == 3)
+		else if(dev_info.passwordwrongflag == 3)
 		{
 			MySetScreen(biglanguage_screen.BIG_AUTO_NOPOWER_RECOVER);
 		}

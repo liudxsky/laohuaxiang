@@ -28,6 +28,8 @@ extern TextValueTab  textvalue;					//�ı��ؼ�����ֵ
 extern uint8_t cmd_buffer[CMD_MAX_SIZE];
 extern dev_info_t dev_info;
 extern uint8_t  soft_ver[10];
+extern RtcTime rtctime;
+
 
 extern struct mainIconStruct mainIcon;
 extern struct mainTextStruct mainPageText;
@@ -42,7 +44,7 @@ uint16_t Modbus_rate = 9600;
 
 
 
-ThermalLag heattime_log;						//���ͺ�ʱ���¼�ṹ��
+ThermalLag heattime_log;						//���ͺ�ʱ���¼�ṹ��?
 uint8_t  control_mode[2][8] = {"4-20mA","2-10V"};
 uint8_t  Rs485TX = 0,Rs485RX = 0;				//0��ʾͨ��������1��ʾͨ���쳣��2��ʾ485ͨ��δ����
 
@@ -86,7 +88,7 @@ uint16_t Get_GPIO_Status(void)
 
 //�ϵ��Լ���ʾ���������ͨ���������˸LED��
 extern uint8_t screen_flag;
-//�����Ļ����
+//�����Ļ����?
 void check_screen_connect(void)
 {
 	if(screen_flag)
@@ -105,12 +107,12 @@ void check_screen_connect(void)
 }
 
 
-//����Ƿ񵽶�ʱ�ϵ�ʱ��
+//����Ƿ񵽶�ʱ�ϵ�ʱ��?
 void check_nopowertime(void)
 {
 	//????
 	//after this day, it will work
-	if((dev_info.timenow.Year == dev_info.autonopowertime.year)&&(dev_info.timenow.Mon == dev_info.autonopowertime.month)&&(dev_info.timenow.Day == dev_info.autonopowertime.day))
+	if((dev_info.timenow.Year >= dev_info.autonopowertime.Year)&&(dev_info.timenow.Mon >= dev_info.autonopowertime.Mon)&&(dev_info.timenow.Day >= dev_info.autonopowertime.Day))
 	{
 		MySetScreen(biglanguage_screen.BIG_AUTO_NOPOWER_RECOVER);
 		RCC_AHB1PeriphClockCmd(DRIVER_GPIO_CLK|BACK_GPIO_CLK|BOX_DOOR_GPIO_CLK, DISABLE);
@@ -131,7 +133,7 @@ void check_pwmicon(void)
 }
 
 
-//���485ͨ��״̬
+//���?85ͨ��״̬
 void Check_Rs485(void)
 {
 	if(Rs485TX&Rs485RX)
@@ -166,7 +168,7 @@ void Check_Rs485(void)
 }
 
 
-//��������Ƿ��е�ͨ���ж��ϴζϵ�ʱ���Ƿ�С��2001���ж�
+//��������Ƿ��е�ͨ���ж��ϴζϵ�ʱ���Ƿ�С��?001���ж�
 void check_powertime(void)
 {
 	if(dev_info.timenow.Year == 0)
@@ -213,38 +215,34 @@ void check_modbuss_rate(void)
 }
 
 
-//���PWM���
+//���PWM���?
 void check_pwm(void)
 {
 	pwmgpiostatus = GPIO_ReadInputDataBit(PWM_GPIO_PORT,BACK_PWM_PIN);
 }
 
-//��ⱨ��
+
 void check_warning(void)
 {
-	if(showtextvalue.current_temp_vlaue - dev_info.testtemp > dev_info.flash_setvalue.warning1_up)
+	if(dev_info.currentTemp - dev_info.setTemp > dev_info.flash_setvalue.warning1_up)
 	{
 		dev_info.temp_warnning1=1;
 	}
-	else if(showtextvalue.current_temp_vlaue < (dev_info.testtemp + dev_info.flash_setvalue.warning1_up - dev_info.temp_backdiff))
+	else if(dev_info.currentTemp < (dev_info.setTemp + dev_info.flash_setvalue.warning1_up - dev_info.temp_backdiff))
 	{
-		dev_info.temp_warnning1=0;
-		
+		dev_info.temp_warnning1=0;	
 	}
-	if( showtextvalue.current_temp_vlaue - dev_info.testtemp >= dev_info.flash_setvalue.warning2_up)
+	if( dev_info.currentTemp - dev_info.setTemp >= dev_info.flash_setvalue.warning2_up)
 	{
 			dev_info.temp_warnning2=1;
 	}
-	else if(showtextvalue.current_temp_vlaue < (dev_info.testtemp + dev_info.flash_setvalue.warning2_up - dev_info.temp_backdiff))
+	else if(dev_info.currentTemp < (dev_info.setTemp + dev_info.flash_setvalue.warning2_up - dev_info.temp_backdiff))
 	{
 		dev_info.temp_warnning2=0;
-
-		
 	}
 }
 
  
-//�¶Ȳ���
 void temp_detection(float dispTemper)
 {
 	dev_info.currentTemp = dev_info.flash_adjusttemp + dispTemper+0.4;
@@ -255,8 +253,8 @@ void temp_detection(float dispTemper)
 	}
 	else
 	{	
-		SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_CURRENT_TEMP_ID,(uint16_t)showtextvalue.current_temp_vlaue/1);
-		SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_CURRENT_TEMP_DECIMAL_ID,(uint16_t)(showtextvalue.current_temp_vlaue*10)%10);
+		SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_CURRENT_TEMP_ID,mainPageText.currentTempHi);
+		SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_CURRENT_TEMP_DECIMAL_ID,mainPageText.currentTempLo);
 	}
 }
 
@@ -315,7 +313,7 @@ void changestruct(void)
 }
 
 uint8_t savethermalbuff[TIMERECORDNUM][38] = {0},savenum = 0;
-//����״̬���,���ͺ����ݼ�¼
+//����״̬���?���ͺ����ݼ�¼
 void door_open_status(void)
 {
 	uint8_t doorflag = 0;
