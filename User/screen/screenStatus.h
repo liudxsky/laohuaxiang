@@ -110,6 +110,11 @@ struct argSetErrorStruct
 	uint8_t return_diff_set_fail;
 	uint8_t temp_up_set_fail;
 	uint8_t temp_up2_set_fail;
+	uint8_t light_set_fail;
+	uint8_t pass1_set_fail;
+	uint8_t pass2_set_fail;
+	uint8_t air_angle_set_fail;
+	uint8_t temp_adjust_fail;
 };
 
 struct IOStatusStruct

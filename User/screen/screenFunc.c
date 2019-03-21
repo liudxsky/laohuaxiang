@@ -4,7 +4,7 @@
 #include "stdlib.h"
 #include "time.h"
 extern dev_info_t dev_info;
-extern TextValueTab  textvalue;			//text control_id buff ????
+extern TextValueTab  textvalue;			//text control_id buff 
 extern BIG_SCREEN_ID_TAB biglanguage_screen;
 uint8_t passwordwrongflag = 0;
 uint8_t global_str_temp[COMMONSIZE];
@@ -230,13 +230,13 @@ void menuSettingScreen(uint16_t control_id, uint8_t *str)
 				d_temp = atof(str_temp);
 				
 				SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_TEST_TIME_VALUE,str_temp);
-				if(mainPageText.test_time < 0 || mainPageText.test_time >= 4000)
+				if(mainPageText.test_time < 0.1 || mainPageText.test_time >= 9999.9)
 				{
 					dev_info.testTime = 0;
 					argSetErrorIcon.test_temp_set_fail=SHOW;
 					//£¿£¿£¿£¿
 					//AnimationPlayFrame(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN,BIG_TESTTIME_SET_FAIL,SHOW);
-					setCurrentScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN);
+					setCurrentScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN1);
 				}
 				else 
 				{
@@ -252,11 +252,11 @@ void menuSettingScreen(uint16_t control_id, uint8_t *str)
 				memcpy(str_temp,str,sizeof(char)*COMMONSIZE);	
 				SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_TEST_TEMP_VALUE,str);			
 				d_temp = atof(str_temp);			
-				if(d_temp < 0 || d_temp >= 1000)
+				if(d_temp < 50 || d_temp >= 400)
 				{
 					dev_info.setTemp = 0;
 					argSetErrorIcon.test_temp_set_fail=SHOW;
-					setCurrentScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN);
+					setCurrentScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN1);
 				}
 				else
 				{
@@ -270,11 +270,11 @@ void menuSettingScreen(uint16_t control_id, uint8_t *str)
 				memcpy(str_temp,str,sizeof(char)*COMMONSIZE);
 				SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_TEMP_RETURN_DIFF,str);			
 				d_temp = atof(str_temp);
-				if(d_temp < 0)
+				if(d_temp < 0.1 || d_temp > 20)
 				{
 					dev_info.temp_backdiff = 0;
 					argSetErrorIcon.return_diff_set_fail=SHOW;
-					setCurrentScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN);
+					setCurrentScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN1);
 				}
 				else
 				{
@@ -291,12 +291,12 @@ void menuSettingScreen(uint16_t control_id, uint8_t *str)
 				SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_WARNING1_UP_VALUE,str);
 				d_temp = atof(str_temp);
 				
-				if(d_temp < 0)
+				if(d_temp < 0.1 || d_temp > 50)
 				{
 					dev_info.flash_setvalue.warning1_up = 0;
 					argSetErrorIcon.temp_up_set_fail=SHOW;
 					
-					setCurrentScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN);
+					setCurrentScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN1);
 				}
 				else
 				{
@@ -311,11 +311,11 @@ void menuSettingScreen(uint16_t control_id, uint8_t *str)
 				SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_WARNING2_UP_VALUE,str);
 				d_temp = atof(str_temp);
 				
-				if(d_temp < 0)
+				if(d_temp < 0.1 || d_temp > 50)
 				{
 					dev_info.flash_setvalue.warning2_up = 0;
 					argSetErrorIcon.temp_up2_set_fail=SHOW;
-					setCurrentScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN);
+					setCurrentScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN1);
 				}
 				else
 				{
@@ -338,7 +338,7 @@ void menuSettingScreen(uint16_t control_id, uint8_t *str)
 				{
 //					printf("second password is OK!\r\n");
 					argSetErrorIcon.pass_update_fail=SHOW;
-					setCurrentScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN);	
+					setCurrentScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN1);	
 				}
 				else
 				{
@@ -362,7 +362,7 @@ void menuSettingScreen(uint16_t control_id, uint8_t *str)
 				else
 				{
 					argSetErrorIcon.change_air_set_fail=SHOW;
-					setCurrentScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN);	
+					setCurrentScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN1);	
 				}
 				
 				break;
@@ -370,13 +370,18 @@ void menuSettingScreen(uint16_t control_id, uint8_t *str)
 				memcpy(str_temp ,str,sizeof(char)*4);
 				SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_SCREEN_BRIGHT_ADJUST,str);
 				i_temp = atoi(str_temp);
-				dev_info.flash_setvalue.screen_light_value = i_temp;
-				if(i_temp > 100)
+				
+				if(i_temp > 0 && i_temp <= 100)
 				{
-					i_temp = 100;
+					if (i_temp > 100) i_temp = 100;
+					dev_info.flash_setvalue.screen_light_value = i_temp;
+					SetBackLight(200 - i_temp*2);
+					argSetErrorIcon.light_set_fail=HIDE;
 				}
-			
-				SetBackLight(200 - i_temp*2);
+				else
+				{
+					argSetErrorIcon.light_set_fail=SHOW;
+				}
 				dev_info.dev_status_changed_flag = 1;
 				break;
 			
@@ -384,10 +389,10 @@ void menuSettingScreen(uint16_t control_id, uint8_t *str)
 				memcpy(str_temp,str,sizeof(char)*COMMONSIZE);
 				SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_MODBUS_NODE_ADDRESS,str);
 				i_temp = atoi(str_temp);
-				if(i_temp < 0 || i_temp > 250)
+				if(i_temp < 1 || i_temp > 32)
 				{
 					
-					setCurrentScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN);	
+					setCurrentScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN1);	
 					argSetErrorIcon.modebus_addr_set_fail=SHOW;
 					
 				}
@@ -450,30 +455,29 @@ void adjustScreenSetting(uint16_t control_id,uint8_t *str)
 {
 	uint8_t str_temp[COMMONSIZE];
 	int i_temp;
+	float32_t  data_temp = 0;
 	AutoNoPowerTime  nopowertime = {1985,12,12};			
 	switch (control_id)
 		{
-			case BIG_NOPOWER_PASSWORD1:
-				/*
-				memcpy(str_temp,str,sizeof(char)*PASSWORDLENGTH);
-				SetTextValue(biglanguage_screen.BIG_ADJUST_SCREEN,BIG_NOPOWER_PASSWORD1,str);
+			case BIG_ADJUST_PASSWORD1:
+				memcpy(global_str_temp,str,sizeof(char)*PASSWORDLENGTH);
+				SetTextValue(biglanguage_screen.BIG_ADJUST_SCREEN,BIG_ADJUST_PASSWORD1,str);
 				break;
-			case BIG_NOPOWER_PASSWORD2:
+			case BIG_ADJUST_PASSWORD2:
 				memset(str_temp,0,sizeof(char)*PASSWORDLENGTH);
 				memcpy(str_temp,str,sizeof(char)*PASSWORDLENGTH);
-				SetTextValue(biglanguage_screen.BIG_ADJUST_SCREEN,BIG_NOPOWER_PASSWORD2,str);
-				if(strncmp(coilvalue.adjustprotectpassword,coilvalue.adjustprotect_secondpassword,PASSWORDLENGTH))
+				SetTextValue(biglanguage_screen.BIG_ADJUST_SCREEN,BIG_ADJUST_PASSWORD2,str);
+				if(strncmp(global_str_temp,str_temp,PASSWORDLENGTH))
 				{
-					AnimationPlayFrame(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN,BIG_PASS_UPDATE_FAIL,SHOW);
-					MySetScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN);	
+					argSetErrorIcon.pass2_set_fail=SHOW;
+					MySetScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN2);	
 				}
 				else
 				{
-					memcpy(dev_info.flash_setvalue.protect_password,coilvalue.adjustprotectpassword,sizeof(char)*PASSWORDLENGTH);
-					AnimationPlayFrame(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN,BIG_PASS_UPDATE_FAIL,HIDE);
+					memcpy(dev_info.flash_setvalue.protect_password,str_temp,sizeof(char)*PASSWORDLENGTH);
+					argSetErrorIcon.pass2_set_fail=HIDE;
 					dev_info.dev_status_changed_flag = 1;
 				}
-				*/
 				break;
 			case BIG_AIR_DOOR_ANGLE_SET:
 				memset(textvalue.airdoor_value,0,sizeof(char)*4);
@@ -481,41 +485,57 @@ void adjustScreenSetting(uint16_t control_id,uint8_t *str)
 				SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_AIR_DOOR_ANGLE_INPUT_ID,str);
 				SetTextValue(biglanguage_screen.BIG_ADJUST_SCREEN,BIG_AIR_DOOR_ANGLE_SET,str);
 				i_temp = atoi(textvalue.airdoor_value);
-				Dac1_Set_Vol(33*i_temp);
-				dev_info.flash_setvalue.air_door_angle = i_temp;
-				dev_info.dev_status_changed_flag = 1;
+				if (i_temp >= 0 && i_temp <= 100)
+				{
+					Dac1_Set_Vol(33*i_temp);
+					dev_info.flash_setvalue.air_door_angle = i_temp;
+					argSetErrorIcon.air_angle_set_fail=HIDE;
+					dev_info.dev_status_changed_flag = 1;
+				}
+				else
+				{
+					argSetErrorIcon.air_angle_set_fail=SHOW;
+					setCurrentScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN2);
+				}
 				break;
 			case BIG_TEMP_VALUE_REVUSE_SET:
 				memset(textvalue.temp_adjust_value,0,sizeof(char)*COMMONSIZE);
 				memcpy(textvalue.temp_adjust_value,str,sizeof(char)*COMMONSIZE);
-				dev_info.flash_adjusttemp =  atof(textvalue.temp_adjust_value);
-				dev_info.dev_status_changed_flag = 1;
+				data_temp = =  atof(textvalue.temp_adjust_value);
+				if(data_temp >= -20 && data_temp <= 20)
+				{
+					dev_info.flash_adjusttemp =  data_temp;
+					argSetErrorIcon.temp_adjust_fail=HIDE;
+					dev_info.dev_status_changed_flag = 1;
+				}
+				else
+				{
+					argSetErrorIcon.temp_adjust_fail=SHOW;
+					setCurrentScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN2);
+				}
 				break;
 			case BIG_YEAR_SET:
 				memset(textvalue.autotime.year,0,sizeof(char)*COMMONSIZE);
 				memcpy(textvalue.autotime.year,str,sizeof(char)*COMMONSIZE);
 				nopowertime.year = atoi(textvalue.autotime.year);
 				nopowertime.year = DectoBCD(nopowertime.year);
-				dev_info.autonopowertime.year = nopowertime.year; 
-				
+				dev_info.autonopowertime.Year = nopowertime.year; 
 				break;
 			case BIG_MONTH_SET:
 				memset(textvalue.autotime.month,0,sizeof(char)*COMMONSIZE);
 				memcpy(textvalue.autotime.month,str,sizeof(char)*COMMONSIZE);
 				nopowertime.month = atoi(textvalue.autotime.month);
 				nopowertime.month = DectoBCD(nopowertime.month);
-				dev_info.autonopowertime.month = nopowertime.month;
+				dev_info.autonopowertime.Mon = nopowertime.month;
 				break;	
 			case BIG_DAY_SET:
 				memset(textvalue.autotime.day,0,sizeof(char)*COMMONSIZE);
 				memcpy(textvalue.autotime.day,str,sizeof(char)*COMMONSIZE);
 				nopowertime.day = atoi(textvalue.autotime.day);
 				nopowertime.day = DectoBCD(nopowertime.day);
-				dev_info.autonopowertime.day = nopowertime.day;
+				dev_info.autonopowertime.Day = nopowertime.day;
 				dev_info.dev_status_changed_flag = 1;
 				break;	
-//			default:
-//				break;
 		}
 }
 void readRTCFromScreen(RtcTime t)

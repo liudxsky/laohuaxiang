@@ -15,7 +15,7 @@
 #define  SMALL_SIZE  0
 
 
-//5����ʾ������궨��
+//5����ʾ������궨��?
 typedef struct
 {
 	uint8_t BIG_KEYBOARD;								//С����
@@ -25,7 +25,7 @@ typedef struct
 	uint8_t BIG_PID_SET_SCREEN;			 				//pidֵ���ý���
 	uint8_t BIG_PARAM_SET_SCREEN;			 			//�������ý���
 	uint8_t BIG_AUTO_NOPOWER_RECOVER;					//�Զ��ϵ�ָ��������
-	uint8_t BIG_TIME_RECORD_SCREEN; 					//���ͺ�ʱ���¼����
+	uint8_t BIG_TIME_RECORD_SCREEN; 					//���ͺ�ʱ���¼����?
 	uint8_t BIG_CONTROL_TIME_SET;						//������ʱ�����ý���
 	uint8_t BIG_PASSWORD_ERROR_SCREEN;					//��������������
 	uint8_t BIG_ARGUEMENT_SET_ERROR_SCREEN1;			//����������Ч����1
@@ -44,46 +44,46 @@ typedef struct
 #define  BIG_SET_TEMP_ID						23		//�趨�¶ȿ���ID
 #define  BIG_SET_TEMP_DECIMAL_ID				24		//�趨�¶�С������
 #define  BIG_START_TIME_ID						25		//���ȵ�Ŀ���¶ȵ���ʼʱ��
-#define  BIG_END_TIME_ID						26		//ʵ�����ʱ��
+#define  BIG_END_TIME_ID						26		//ʵ�����ʱ��?
 #define	 BIG_TEST_TIME_ID						27		//�趨��ʵ��ʱ��
 #define  BIG_ADDUP_TIME_ID						28		//�ۼ�ʵ��ʱ��
 #define	 BIG_TIME_LEFT_HOUR_ID					29		//ʣ��ʱ��_Сʱ
 #define  BIG_TIME_LEFT_MIN_ID					30		//ʣ��ʱ��_����
 #define  BIG_CHANGE_AIR_TIME					31		//��������
-#define  BIG_SOFT_VER_ID				        34		//����汾��
-#define	 BIG_AIR_DOOR_ANGLE_INPUT_ID			32		//���ſ���Ƕ�����
+#define  BIG_SOFT_VER_ID				        34		//����汾��?
+#define	 BIG_AIR_DOOR_ANGLE_INPUT_ID			32		//���ſ���Ƕ�����?
 //ͼ����ʾID
 #define  BIG_HEAT_SWITCH_ID						2		//������ͨ��ָʾ
 #define  BIG_PID_RUN_ID							4		//PID����������ָʾ
-#define  BIG_FAN_OPERATION_ID					5		//�������ָʾ
+#define  BIG_FAN_OPERATION_ID					5		//�������ָ�?
 #define	 BIG_AIR_DOOR_OPEN_ANGLE_ID				8		//���ſ����Ƕ�ָʾ
 #define	 BIG_RS485_COMMU_ID						33		//RS485ͨ��״̬
 #define  BIG_DOOR_OPEN_ID						10		//�Ŵ�ָʾ
-#define	 BIG_HEAT_OUTPUT_ID						3		//�������ָʾ
+#define	 BIG_HEAT_OUTPUT_ID						3		//�������ָ�?
 #define  BIG_TEMP_WARNING1_ID					6		//�¶ȱ���1
 #define  BIG_TEMP_WARNING2_ID					7		//�¶ȱ���2
-#define	 BIG_SAMPLE_FRAME_MOTOR_ID				9		//���ܵ������ָʾ
+#define	 BIG_SAMPLE_FRAME_MOTOR_ID				9		//���ܵ������ָ�?
 #define  BIG_TROUBLE_INDICATE_ID				11		//����ָʾ
 #define  BIG_AR1_WORK_STATUS_ID					12		//�����̵���1����״ָ̬ʾ
 #define  BIG_AR2_WORK_STATUS_ID					13		//�����̵���2����״ָ̬ʾ
-#define  BIG_FR_WORK_STATUS_ID					14		//����̵�������״ָ̬ʾ
+#define  BIG_FR_WORK_STATUS_ID					14		//����̵�������״ָ̬�?
 #define  BIG_RR_WORK_STATUS_ID					15		//���̵ܼ�������״ָ̬ʾ
 //��ť����ID
 #define  BIG_MENU_ID							16		//�˵�����
 #define  BIG_TIME_RECORD_ID						17		//�¼���¼
 #define	 BIG_SAMPLE_FRAME_MENU_ID				18		//����
-#define  BIG_BLOWER_MENU_ID						19		//���
+#define  BIG_BLOWER_MENU_ID						19		//���?
 #define  BIG_START_OR_PAUSE_ID					20		//��ֹͣ��ť
 /*--------------------------------------------------------------------------*/
 
 //���뱣������    control_id  ����
 /*--------------------------------------------------------------------------*/
-#define  BIG_PASSWORD_PROTECT_INPUT				2		//���뱣�������
+#define  BIG_PASSWORD_PROTECT_INPUT				2		//���뱣�������?
 /*--------------------------------------------------------------------------*/
 
 //���뱣������2    control_id  ����
 /*--------------------------------------------------------------------------*/
-#define  BIG_PASSWORD2_INPUT				2		//���뱣�������
+#define  BIG_PASSWORD2_INPUT				2		//���뱣�������?
 /*--------------------------------------------------------------------------*/
 
 
@@ -94,12 +94,12 @@ typedef struct
 #define	 BIG_WARNING1_UP_VALUE					5		//����1����
 #define	 BIG_WARNING2_UP_VALUE					6		//����2����
 #define  BIG_TEMP_RETURN_DIFF					7		//�¶Ȼز�
-#define  BIG_ANALOG_OUTPUT						8		//ģ���ź����
+#define  BIG_ANALOG_OUTPUT						8		//ģ���ź����?
 #define  BIG_NEW_PASSWORD						9		//������
 #define  BIG_SECOND_INPUT_PASSWORD				10		//�ڶ�����������
 #define	 BIG_CHANGE_AIR_TIME_SET				11		//������������
-#define	 BIG_CHANGE_AIR_MAX_SET					12		//���������������ֵ
-#define  BIG_MODBUS_NODE_ADDRESS				13		//modbus�ڵ��ַ
+#define	 BIG_CHANGE_AIR_MAX_SET					12		//����������������?
+#define  BIG_MODBUS_NODE_ADDRESS				13		//modbus�ڵ���?
 #define  BIG_SCREEN_BRIGHT_ADJUST				18		//��Ļ���ȵ���
 //ͼ����ʾid
 #define  BIG_BPS_1200							14		//ͨ������1200bps
@@ -153,11 +153,11 @@ typedef struct
 
 //����    ADJUST MENU  ����
 /*--------------------------------------------------------------------------*/
-#define  BIG_NOPOWER_PASSWORD1					2		//�ϵ�ָ�����1
-#define  BIG_NOPOWER_PASSWORD2					3		//�ϵ�ָ�����2
+#define  BIG_ADJUST_PASSWORD1					2		//�ϵ�ָ�����?
+#define  BIG_ADJUST_PASSWORD2					3		//�ϵ�ָ�����?
 #define  BIG_AIR_DOOR_ANGLE_SET					4		//���ŽǶȿ��Ƶ���
 #define  BIG_TEMP_VALUE_REVUSE_SET				5		//�¶�ֵУ�����Ƶ���
-#define  BIG_YEAR_SET							6		//�Զ��ϵ�����趨
+#define  BIG_YEAR_SET							6		//�Զ��ϵ������?
 #define  BIG_MONTH_SET							7		//�Զ��ϵ��·��趨
 #define  BIG_DAY_SET							8		//�Զ��ϵ����趨
 
@@ -168,7 +168,7 @@ typedef struct
 /*--------------------------------------------------------------------------*/
 
 
-//����    control_id ���ͺ�ʱ���¼����
+//����    control_id ���ͺ�ʱ���¼����?
 /*--------------------------------------------------------------------------*/
 #define  BIG_DATA_RECORD						2
 #define  BIG_RECORD_RETURN						3
@@ -185,16 +185,16 @@ typedef struct
 #define  BIG_TIME_SET_RETURN_BUTTON				8		//���ذ���
 /*--------------------------------------------------------------------------*/
 
-//����    control_id�Զ��ϵ����������
+//����    control_id�Զ��ϵ����������?
 /*--------------------------------------------------------------------------*/
-#define  BIG_AUTO_NO_POWER_PASSWOORD_INPUT		2		//�Զ��ϵ�ָ�����
+#define  BIG_AUTO_NO_POWER_PASSWOORD_INPUT		2		//�Զ��ϵ�ָ�����?
 /*--------------------------------------------------------------------------*/
 
 
 
 //����    control_id����������Ч����1
 /*--------------------------------------------------------------------------*/
-#define  BIG_PASS_UPDATE_FAIL1					2		//�������ʧ��
+#define  BIG_PASS_UPDATE_FAIL1					2		//�������ʧ��?
 #define  BIG_TESTTEMP_SET_FAIL1					3		//ʵ���¶��趨��Ч
 #define  BIG_TESTTIME_SET_FAIL1					4		//ʵ��ʱ���趨��Ч
 #define  BIG_TEMP_UP_SET_FAIL1					5		//�¶������趨��Ч
@@ -208,7 +208,7 @@ typedef struct
 
 //����    control_id����������Ч����2
 /*--------------------------------------------------------------------------*/
-#define  BIG_PASS_UPDATE_FAIL2					2		//�������ʧ��
+#define  BIG_PASS_UPDATE_FAIL2					2		//�������ʧ��?
 #define  BIG_AIRDOOR_ANGLE_SET_FAIL2			3		//���ſ����趨��Ч
 #define  BIG_TEMP_ADJUST_SET_FAIL2				4		//�¶�У���趨��Ч
 #define  BIG_AUTO_NO_POWER_SET_FAIL2			5		//�Զ��ϵ��趨��Ч
@@ -219,9 +219,9 @@ typedef struct
 
 
 
-//����    control_id ���������ʾ����
+//����    control_id ���������ʾ����?
 /*--------------------------------------------------------------------------*/
-#define  BIG_PASS_ERROR_RETURN_BUTTON			2		//������󷵻�
+#define  BIG_PASS_ERROR_RETURN_BUTTON			2		//������󷵻�?
 /*--------------------------------------------------------------------------*/
 /************************************************************************************/
 
@@ -259,7 +259,7 @@ enum CtrlType
 	kCtrlGraph, 					//����ͼ�ؼ�
 	kCtrlTable, 					//���ؼ�
 	kCtrlMenu,						//�˵��ؼ�
-	kCtrlSelector,					//ѡ��ؼ�
+	kCtrlSelector,					//ѡ��ؼ�?
 	kCtrlQRCode,					//��ά��
 	kCtrlIcon,						//ͼ��
 };
@@ -275,7 +275,7 @@ typedef struct
 	uint16_t   screen_id;  			//������Ϣ�Ļ���ID
 	uint16_t   control_id;  		//������Ϣ�Ŀؼ�ID
 	uint8_t    control_type; 		//�ؼ�����
-	uint8_t    param[256];			//�ɱ䳤�Ȳ��������256���ֽ�
+	uint8_t    param[256];			//�ɱ䳤�Ȳ��������?56���ֽ�
 	uint8_t    cmd_tail[4];   		//֡β
 }CTRL_MSG,*PCTRL_MSG;
 
@@ -308,7 +308,7 @@ void SetTextValueFloat(uint16_t screen_id, uint16_t control_id,float value);
 
 /*! 
  *  \brief  �����л�֪ͨ
- *  \details  ��ǰ����ı�ʱ(�����GetScreen)��ִ�д˺���
+ *  \details  ��ǰ����ı��?�����GetScreen)��ִ�д˺���
  *  \param screen_id ��ǰ����ID
  */
 void NotifyScreen(uint16_t screen_id);
@@ -368,7 +368,7 @@ void  NotifyAnimation(uint16_t screen_id, uint16_t control_id,uint8_t status,uin
 void NotifySlider(uint16_t screen_id, uint16_t control_id, uint32_t value);
 
 /*! 
- *  \brief  �Ǳ�ؼ�֪ͨ
+ *  \brief  �Ǳ�ؼ�ͨ�?
  *  \details  ����GetControlValueʱ��ִ�д˺���
  *  \param screen_id ����ID
  *  \param control_id �ؼ�ID
@@ -387,8 +387,8 @@ void NotifyMeter(uint16_t screen_id, uint16_t control_id, uint32_t value);
 void NotifyMenu(uint16_t screen_id, uint16_t control_id, uint8_t  item, uint8_t  state);
 
 /*! 
- *  \brief  ѡ��ؼ�֪ͨ
- *  \details  ��ѡ��ؼ��仯ʱ��ִ�д˺���
+ *  \brief  ѡ��ؼ�ͨ�?
+ *  \details  ��ѡ��ؼ��仯ʱ��ִ�д˺���?
  *  \param screen_id ����ID
  *  \param control_id �ؼ�ID
  *  \param item ��ǰѡ��
