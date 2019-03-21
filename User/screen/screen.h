@@ -15,260 +15,267 @@
 #define  SMALL_SIZE  0
 
 
-//5´çÏÔÊ¾ÆÁ½çÃæºê¶¨Òå
+//5ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê¶¨ï¿½ï¿½
 typedef struct
 {
-	uint8_t BIG_KEYBOARD;								//Ð¡¼üÅÌ
-	uint8_t	BIG_AIR_CHANGE_RATE_SCREEN; 	 			//»»Æø´ÎÊý±à¼­½çÃæ
-	uint8_t BIG_SELF_TEST_NOTPASS_SCREEN;				//×Ô¼ìÎ´Í¨¹ýµ¯³ö½çÃæ
-	uint8_t BIG_SCREAT_PROTECT_SCREEN;		 			//²ÎÊýÉèÖÃÃÜÂë±£»¤½çÃæ
-	uint8_t BIG_ADJUST_PROTECT_SCREEN;					//µ÷ÊÔÃÜÂë±£»¤½çÃæ
-	uint8_t BIG_PID_SET_SCREEN;			 				//pidÖµÉèÖÃ½çÃæ
-	uint8_t BIG_PARAM_SET_SCREEN;			 			//²ÎÊýÉèÖÃ½çÃæ
-	uint8_t BIG_AUTO_NOPOWER_RECOVER;					//×Ô¶¯¶Ïµç»Ö¸´ÃÜÂë½çÃæ
-	uint8_t BIG_TIME_RECORD_SCREEN; 					//ÈÈÖÍºóÊ±¼ä¼ÇÂ¼½çÃæ
-	uint8_t BIG_CONTROL_TIME_SET;						//¿ØÖÆÆ÷Ê±¼äÉèÖÃ½çÃæ
-	uint8_t BIG_PASSWORD_ERROR_SCREEN;					//ÃÜÂëÊäÈë´íÎó½çÃæ
-	uint8_t BIG_ARGUEMENT_SET_ERROR_SCREEN;				//²ÎÊýÉèÖÃÎÞÐ§½çÃæ
-	uint8_t BIG_MAIN_SHOW_SCREEN;		 	 			//Ö÷ÏÔÊ¾½çÃæ
-	uint8_t BIG_ADJUST_SCREEN;							//Òþ²Øµ÷Õû½çÃæ
+	uint8_t BIG_KEYBOARD;								//Ð¡ï¿½ï¿½ï¿½ï¿½
+	uint8_t	BIG_AIR_CHANGE_RATE_SCREEN; 	 			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½à¼­ï¿½ï¿½ï¿½ï¿½
+	uint8_t BIG_SCREAT_PROTECT_SCREEN;		 			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ë±£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	uint8_t BIG_ADJUST_PROTECT_SCREEN;					//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ë±£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	uint8_t BIG_PID_SET_SCREEN;			 				//pidÖµï¿½ï¿½ï¿½Ã½ï¿½ï¿½ï¿½
+	uint8_t BIG_PARAM_SET_SCREEN;			 			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã½ï¿½ï¿½ï¿½
+	uint8_t BIG_AUTO_NOPOWER_RECOVER;					//ï¿½Ô¶ï¿½ï¿½Ïµï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	uint8_t BIG_TIME_RECORD_SCREEN; 					//ï¿½ï¿½ï¿½Íºï¿½Ê±ï¿½ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½
+	uint8_t BIG_CONTROL_TIME_SET;						//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½Ã½ï¿½ï¿½ï¿½
+	uint8_t BIG_PASSWORD_ERROR_SCREEN;					//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	uint8_t BIG_ARGUEMENT_SET_ERROR_SCREEN1;			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½ï¿½ï¿½1
+	uint8_t BIG_ARGUEMENT_SET_ERROR_SCREEN2;			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½ï¿½ï¿½2
+	uint8_t BIG_MAIN_SHOW_SCREEN;		 	 			//ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
+	uint8_t BIG_ADJUST_SCREEN;							//ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 }BIG_SCREEN_ID_TAB;
 
 
 /*************************************BIG***********************************************/
 
-//ÏÔÊ¾½çÃæ    control_id  ÉèÖÃ
+//ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½    control_id  ï¿½ï¿½ï¿½ï¿½
 /*--------------------------------------------------------------------------*/
-#define  BIG_CURRENT_TEMP_ID				    21		//ÊµÊ±²âÁ¿ÎÂ¶È¿ØÖÆID
-#define  BIG_CURRENT_TEMP_DECIMAL_ID			22		//ÊµÊ±ÎÂ¶ÈÐ¡Êý²¿·Ö
-#define  BIG_SET_TEMP_ID						23		//Éè¶¨ÎÂ¶È¿ØÖÆID
-#define  BIG_SET_TEMP_DECIMAL_ID				24		//Éè¶¨ÎÂ¶ÈÐ¡Êý²¿·Ö
-#define  BIG_START_TIME_ID						25		//¼ÓÈÈµ½Ä¿±êÎÂ¶ÈµÄÆðÊ¼Ê±¼ä
-#define  BIG_END_TIME_ID						26		//ÊµÑé½áÊøÊ±¼ä
-#define	 BIG_TEST_TIME_ID						27		//Éè¶¨µÄÊµÑéÊ±¼ä
-#define  BIG_ADDUP_TIME_ID						28		//ÀÛ¼ÆÊµÑéÊ±¼ä
-#define	 BIG_TIME_LEFT_HOUR_ID					29		//Ê£ÓàÊ±¼ä_Ð¡Ê±
-#define  BIG_TIME_LEFT_MIN_ID					30		//Ê£ÓàÊ±¼ä_·ÖÖÓ
-#define  BIG_CHANGE_AIR_TIME					31		//»»Æø´ÎÊý
-#define  BIG_SOFT_VER_ID				        34		//Èí¼þ°æ±¾ºÅ
-#define	 BIG_AIR_DOOR_ANGLE_INPUT_ID			32		//·çÃÅ¿ªÆô½Ç¶ÈÉèÖÃ
-//Í¼±êÏÔÊ¾ID
-#define  BIG_HEAT_SWITCH_ID						2		//¼ÓÈÈÆ÷Í¨¶ÏÖ¸Ê¾
-#define  BIG_PID_RUN_ID							4		//PID×ÔÕû¶¨ÔËÐÐÖ¸Ê¾
-#define  BIG_FAN_OPERATION_ID					5		//·ç»úÔËÐÐÖ¸Ê¾
-#define	 BIG_AIR_DOOR_OPEN_ANGLE_ID				8		//·çÃÅ¿ª»ú½Ç¶ÈÖ¸Ê¾
-#define	 BIG_RS485_COMMU_ID						33		//RS485Í¨ÐÅ×´Ì¬
-#define  BIG_DOOR_OPEN_ID						10		//ÃÅ´ò¿ªÖ¸Ê¾
-#define	 BIG_HEAT_OUTPUT_ID						3		//¼ÓÈÈÊä³öÖ¸Ê¾
-#define  BIG_TEMP_WARNING1_ID					6		//ÎÂ¶È±¨¾¯1
-#define  BIG_TEMP_WARNING2_ID					7		//ÎÂ¶È±¨¾¯2
-#define	 BIG_SAMPLE_FRAME_MOTOR_ID				9		//Ñù¼Üµç»úÔËÐÐÖ¸Ê¾
-#define  BIG_TROUBLE_INDICATE_ID				11		//¹ÊÕÏÖ¸Ê¾
-#define  BIG_AR1_WORK_STATUS_ID					12		//±¨¾¯¼ÌµçÆ÷1¹¤×÷×´Ì¬Ö¸Ê¾
-#define  BIG_AR2_WORK_STATUS_ID					13		//±¨¾¯¼ÌµçÆ÷2¹¤×÷×´Ì¬Ö¸Ê¾
-#define  BIG_FR_WORK_STATUS_ID					14		//·ç»ú¼ÌµçÆ÷¹¤×÷×´Ì¬Ö¸Ê¾
-#define  BIG_RR_WORK_STATUS_ID					15		//Ñù¼Ü¼ÌµçÆ÷¹¤×÷×´Ì¬Ö¸Ê¾
-//°´Å¥¿ØÖÆID
-#define  BIG_MENU_ID							16		//²Ëµ¥¿ØÖÆ
-#define  BIG_TIME_RECORD_ID						17		//ÊÂ¼þ¼ÇÂ¼
-#define	 BIG_SAMPLE_FRAME_MENU_ID				18		//Ñù¼Ü
-#define  BIG_BLOWER_MENU_ID						19		//·ç»ú
-#define  BIG_START_OR_PAUSE_ID					20		//Æô¶¯Í£Ö¹°´Å¥
-/*--------------------------------------------------------------------------*/
-
-//ÃÜÂë±£»¤½çÃæ    control_id  ÉèÖÃ
-/*--------------------------------------------------------------------------*/
-#define  BIG_PASSWORD_PROTECT_INPUT				2		//ÃÜÂë±£»¤ÊäÈë¿ò
+#define  BIG_CURRENT_TEMP_ID				    21		//ÊµÊ±ï¿½ï¿½ï¿½ï¿½ï¿½Â¶È¿ï¿½ï¿½ï¿½ID
+#define  BIG_CURRENT_TEMP_DECIMAL_ID			22		//ÊµÊ±ï¿½Â¶ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+#define  BIG_SET_TEMP_ID						23		//ï¿½è¶¨ï¿½Â¶È¿ï¿½ï¿½ï¿½ID
+#define  BIG_SET_TEMP_DECIMAL_ID				24		//ï¿½è¶¨ï¿½Â¶ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+#define  BIG_START_TIME_ID						25		//ï¿½ï¿½ï¿½Èµï¿½Ä¿ï¿½ï¿½ï¿½Â¶Èµï¿½ï¿½ï¿½Ê¼Ê±ï¿½ï¿½
+#define  BIG_END_TIME_ID						26		//Êµï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½
+#define	 BIG_TEST_TIME_ID						27		//ï¿½è¶¨ï¿½ï¿½Êµï¿½ï¿½Ê±ï¿½ï¿½
+#define  BIG_ADDUP_TIME_ID						28		//ï¿½Û¼ï¿½Êµï¿½ï¿½Ê±ï¿½ï¿½
+#define	 BIG_TIME_LEFT_HOUR_ID					29		//Ê£ï¿½ï¿½Ê±ï¿½ï¿½_Ð¡Ê±
+#define  BIG_TIME_LEFT_MIN_ID					30		//Ê£ï¿½ï¿½Ê±ï¿½ï¿½_ï¿½ï¿½ï¿½ï¿½
+#define  BIG_CHANGE_AIR_TIME					31		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+#define  BIG_SOFT_VER_ID				        34		//ï¿½ï¿½ï¿½ï¿½æ±¾ï¿½ï¿½
+#define	 BIG_AIR_DOOR_ANGLE_INPUT_ID			32		//ï¿½ï¿½ï¿½Å¿ï¿½ï¿½ï¿½Ç¶ï¿½ï¿½ï¿½ï¿½ï¿½
+//Í¼ï¿½ï¿½ï¿½ï¿½Ê¾ID
+#define  BIG_HEAT_SWITCH_ID						2		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½Ö¸Ê¾
+#define  BIG_PID_RUN_ID							4		//PIDï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸Ê¾
+#define  BIG_FAN_OPERATION_ID					5		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸Ê¾
+#define	 BIG_AIR_DOOR_OPEN_ANGLE_ID				8		//ï¿½ï¿½ï¿½Å¿ï¿½ï¿½ï¿½ï¿½Ç¶ï¿½Ö¸Ê¾
+#define	 BIG_RS485_COMMU_ID						33		//RS485Í¨ï¿½ï¿½×´Ì¬
+#define  BIG_DOOR_OPEN_ID						10		//ï¿½Å´ï¿½Ö¸Ê¾
+#define	 BIG_HEAT_OUTPUT_ID						3		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸Ê¾
+#define  BIG_TEMP_WARNING1_ID					6		//ï¿½Â¶È±ï¿½ï¿½ï¿½1
+#define  BIG_TEMP_WARNING2_ID					7		//ï¿½Â¶È±ï¿½ï¿½ï¿½2
+#define	 BIG_SAMPLE_FRAME_MOTOR_ID				9		//ï¿½ï¿½ï¿½Üµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸Ê¾
+#define  BIG_TROUBLE_INDICATE_ID				11		//ï¿½ï¿½ï¿½ï¿½Ö¸Ê¾
+#define  BIG_AR1_WORK_STATUS_ID					12		//ï¿½ï¿½ï¿½ï¿½ï¿½Ìµï¿½ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½×´Ì¬Ö¸Ê¾
+#define  BIG_AR2_WORK_STATUS_ID					13		//ï¿½ï¿½ï¿½ï¿½ï¿½Ìµï¿½ï¿½ï¿½2ï¿½ï¿½ï¿½ï¿½×´Ì¬Ö¸Ê¾
+#define  BIG_FR_WORK_STATUS_ID					14		//ï¿½ï¿½ï¿½ï¿½Ìµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì¬Ö¸Ê¾
+#define  BIG_RR_WORK_STATUS_ID					15		//ï¿½ï¿½ï¿½Ü¼Ìµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì¬Ö¸Ê¾
+//ï¿½ï¿½Å¥ï¿½ï¿½ï¿½ï¿½ID
+#define  BIG_MENU_ID							16		//ï¿½Ëµï¿½ï¿½ï¿½ï¿½ï¿½
+#define  BIG_TIME_RECORD_ID						17		//ï¿½Â¼ï¿½ï¿½ï¿½Â¼
+#define	 BIG_SAMPLE_FRAME_MENU_ID				18		//ï¿½ï¿½ï¿½ï¿½
+#define  BIG_BLOWER_MENU_ID						19		//ï¿½ï¿½ï¿½
+#define  BIG_START_OR_PAUSE_ID					20		//ï¿½ï¿½Í£Ö¹ï¿½ï¿½Å¥
 /*--------------------------------------------------------------------------*/
 
-//ÃÜÂë±£»¤½çÃæ2    control_id  ÉèÖÃ
+//ï¿½ï¿½ï¿½ë±£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½    control_id  ï¿½ï¿½ï¿½ï¿½
 /*--------------------------------------------------------------------------*/
-#define  BIG_PASSWORD2_INPUT				2		//ÃÜÂë±£»¤ÊäÈë¿ò
+#define  BIG_PASSWORD_PROTECT_INPUT				2		//ï¿½ï¿½ï¿½ë±£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 /*--------------------------------------------------------------------------*/
 
-
-//²ÎÊýÉèÖÃ½çÃæ    control_id ÊäÈë     ÉèÖÃ
+//ï¿½ï¿½ï¿½ë±£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½2    control_id  ï¿½ï¿½ï¿½ï¿½
 /*--------------------------------------------------------------------------*/
-#define  BIG_TEST_TIME_VALUE					3		//ÊÔÑéÊ±¼äÉèÖÃ
-#define  BIG_TEST_TEMP_VALUE					4		//ÊÔÑéÎÂ¶ÈÉèÖÃ
-#define	 BIG_WARNING1_UP_VALUE					5		//±¨¾¯1ÉÏÏÞ
-#define	 BIG_WARNING2_UP_VALUE					6		//±¨¾¯2ÉÏÏÞ
-#define  BIG_TEMP_RETURN_DIFF					7		//ÎÂ¶È»Ø²î
-#define  BIG_ANALOG_OUTPUT						8		//Ä£ÄâÐÅºÅÊä³ö
-#define  BIG_NEW_PASSWORD						9		//ÐÂÃÜÂë
-#define  BIG_SECOND_INPUT_PASSWORD				10		//µÚ¶þ´ÎÊäÈëÃÜÂë
-#define	 BIG_CHANGE_AIR_TIME_SET				11		//»»Æø´ÎÊýÉèÖÃ
-#define	 BIG_CHANGE_AIR_MAX_SET					12		//»»Æø´ÎÊýÉèÖÃ×î´óÖµ
-#define  BIG_MODBUS_NODE_ADDRESS				13		//modbus½ÚµãµØÖ·
-#define  BIG_SCREEN_BRIGHT_ADJUST				18		//ÆÁÄ»ÁÁ¶Èµ÷½Ú
-//Í¼±êÏÔÊ¾id
-#define  BIG_BPS_1200							14		//Í¨ÐÅËÙÂÊ1200bps
-#define  BIG_BPS_2400							15		//Í¨ÐÅËÙÂÊ2400bps
-#define  BIG_BPS_4800							16		//Í¨ÐÅËÙÂÊ4800bps
-#define  BIG_BPS_9600							17		//Í¨ÐÅËÙÂÊ9600bps
-#define  BIG_CHINESE_LANGUAGE					19		//ÖÐÎÄ
-#define	 BIG_ENGLISH_LANGUAGE					20		//Ó¢Óï
-
-
-#define	 BIG_SET_RETURN_BUTTON					2		//ÉèÖÃ½çÃæ·µ»Ø°´Å¥
-#define  BIG_ADJUST_BUTTON						21		//µ÷ÊÔ°´Å¥
+#define  BIG_PASSWORD2_INPUT				2		//ï¿½ï¿½ï¿½ë±£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 /*--------------------------------------------------------------------------*/
 
 
-//½çÃæ7    control_id  ÉèÖÃ
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã½ï¿½ï¿½ï¿½    control_id ï¿½ï¿½ï¿½ï¿½     ï¿½ï¿½ï¿½ï¿½
 /*--------------------------------------------------------------------------*/
-#define  BIG_AIR_RETURN_BUTTON					23		//»»Æø½çÃæ·µ»Ø°´Å¥
-#define  BIG_CHANGE_AIR_TIME_SET_100			22		//»»Æø´ÎÊý±à¼­--100¡ã
-#define  BIG_CHANGE_AIR_TIME_SET_95				21		//»»Æø´ÎÊý±à¼­--95¡ã
-#define  BIG_CHANGE_AIR_TIME_SET_90				20		//»»Æø´ÎÊý±à¼­--90¡ã
-#define  BIG_CHANGE_AIR_TIME_SET_85				19		//»»Æø´ÎÊý±à¼­--85¡ã
-#define  BIG_CHANGE_AIR_TIME_SET_80				18		//»»Æø´ÎÊý±à¼­--80¡ã
-#define  BIG_CHANGE_AIR_TIME_SET_75				17		//»»Æø´ÎÊý±à¼­--75¡ã
-#define  BIG_CHANGE_AIR_TIME_SET_70				16		//»»Æø´ÎÊý±à¼­--70¡ã
-#define  BIG_CHANGE_AIR_TIME_SET_65				15		//»»Æø´ÎÊý±à¼­--65¡ã
-#define  BIG_CHANGE_AIR_TIME_SET_60				14		//»»Æø´ÎÊý±à¼­--60¡ã
-#define  BIG_CHANGE_AIR_TIME_SET_55				13		//»»Æø´ÎÊý±à¼­--55¡ã
-#define  BIG_CHANGE_AIR_TIME_SET_50				12		//»»Æø´ÎÊý±à¼­--50¡ã
-#define  BIG_CHANGE_AIR_TIME_SET_45				11		//»»Æø´ÎÊý±à¼­--45¡ã
-#define  BIG_CHANGE_AIR_TIME_SET_40				10		//»»Æø´ÎÊý±à¼­--40¡ã
-#define  BIG_CHANGE_AIR_TIME_SET_35				9		//»»Æø´ÎÊý±à¼­--35¡ã
-#define  BIG_CHANGE_AIR_TIME_SET_30				8		//»»Æø´ÎÊý±à¼­--30¡ã
-#define  BIG_CHANGE_AIR_TIME_SET_25				7		//»»Æø´ÎÊý±à¼­--25¡ã
-#define  BIG_CHANGE_AIR_TIME_SET_20				6		//»»Æø´ÎÊý±à¼­--20¡ã
-#define  BIG_CHANGE_AIR_TIME_SET_15				5		//»»Æø´ÎÊý±à¼­--15¡ã
-#define  BIG_CHANGE_AIR_TIME_SET_10				4		//»»Æø´ÎÊý±à¼­--10¡ã
-#define  BIG_CHANGE_AIR_TIME_SET_5				3		//»»Æø´ÎÊý±à¼­--5	¡ã
-#define  BIG_CHANGE_AIR_TIME_SET_0				2		//»»Æø´ÎÊý±à¼­--0	¡ã
-/*--------------------------------------------------------------------------*/
-
-//½çÃæ    control_id PID ÉèÖÃ
-/*--------------------------------------------------------------------------*/
-//Í¼±ê¿ØÖÆid
-#define  BIG_SELF_ADJUST						2		//×ÔÕû¶¨°´¼ü
-#define  BIG_PID_RETURN_BUTTON					3	    //PID·µ»Ø°´¼ü
-#define  BIG_P_VALUE_SET						4		//PÖµÉè¶¨
-#define  BIG_I_VALUE_SET						5		//IÖµÉè¶¨
-#define  BIG_D_VALUE_SET						6		//DÖµÉè¶¨
-/*--------------------------------------------------------------------------*/
-
-//½çÃæ    ADJUST MENU  ÉèÖÃ
-/*--------------------------------------------------------------------------*/
-#define  BIG_NOPOWER_PASSWORD1					2		//¶Ïµç»Ö¸´ÃÜÂë1
-#define  BIG_NOPOWER_PASSWORD2					3		//¶Ïµç»Ö¸´ÃÜÂë2
-#define  BIG_AIR_DOOR_ANGLE_SET					4		//·çÃÅ½Ç¶È¿ØÖÆµ÷½Ú
-#define  BIG_TEMP_VALUE_REVUSE_SET				5		//ÎÂ¶ÈÖµÐ£Õý¿ØÖÆµ÷½Ú
-#define  BIG_YEAR_SET							6		//×Ô¶¯¶ÏµçÄê·ÝÉè¶¨
-#define  BIG_MONTH_SET							7		//×Ô¶¯¶ÏµçÔÂ·ÝÉè¶¨
-#define  BIG_DAY_SET							8		//×Ô¶¯¶ÏµçÈÕÉè¶¨
+#define  BIG_TEST_TIME_VALUE					3		//ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+#define  BIG_TEST_TEMP_VALUE					4		//ï¿½ï¿½ï¿½ï¿½ï¿½Â¶ï¿½ï¿½ï¿½ï¿½ï¿½
+#define	 BIG_WARNING1_UP_VALUE					5		//ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½
+#define	 BIG_WARNING2_UP_VALUE					6		//ï¿½ï¿½ï¿½ï¿½2ï¿½ï¿½ï¿½ï¿½
+#define  BIG_TEMP_RETURN_DIFF					7		//ï¿½Â¶È»Ø²ï¿½
+#define  BIG_ANALOG_OUTPUT						8		//Ä£ï¿½ï¿½ï¿½Åºï¿½ï¿½ï¿½ï¿½
+#define  BIG_NEW_PASSWORD						9		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+#define  BIG_SECOND_INPUT_PASSWORD				10		//ï¿½Ú¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+#define	 BIG_CHANGE_AIR_TIME_SET				11		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+#define	 BIG_CHANGE_AIR_MAX_SET					12		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
+#define  BIG_MODBUS_NODE_ADDRESS				13		//modbusï¿½Úµï¿½ï¿½Ö·
+#define  BIG_SCREEN_BRIGHT_ADJUST				18		//ï¿½ï¿½Ä»ï¿½ï¿½ï¿½Èµï¿½ï¿½ï¿½
+//Í¼ï¿½ï¿½ï¿½ï¿½Ê¾id
+#define  BIG_BPS_1200							14		//Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1200bps
+#define  BIG_BPS_2400							15		//Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½2400bps
+#define  BIG_BPS_4800							16		//Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½4800bps
+#define  BIG_BPS_9600							17		//Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½9600bps
+#define  BIG_CHINESE_LANGUAGE					19		//ï¿½ï¿½ï¿½ï¿½
+#define	 BIG_ENGLISH_LANGUAGE					20		//Ó¢ï¿½ï¿½
 
 
-#define  BIG_NO_POWER_RETURN_BUTTON				9		//·µ»Ø°´¼ü
-#define  BIG_EDIT_BUTTON						10		//»»Æø´ÎÊý±à¼­½çÃæ°´¼ü
-#define  BIG_PID_BUTTON							11		//PID°´¼ü
+#define	 BIG_SET_RETURN_BUTTON					2		//ï¿½ï¿½ï¿½Ã½ï¿½ï¿½æ·µï¿½Ø°ï¿½Å¥
+#define  BIG_ADJUST_BUTTON						21		//ï¿½ï¿½ï¿½Ô°ï¿½Å¥
 /*--------------------------------------------------------------------------*/
 
 
-//½çÃæ    control_id ÈÈÖÍºóÊ±¼ä¼ÇÂ¼½çÃæ
+//ï¿½ï¿½ï¿½ï¿½7    control_id  ï¿½ï¿½ï¿½ï¿½
+/*--------------------------------------------------------------------------*/
+#define  BIG_AIR_RETURN_BUTTON					23		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½æ·µï¿½Ø°ï¿½Å¥
+#define  BIG_CHANGE_AIR_TIME_SET_100			22		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½à¼­--100ï¿½ï¿½
+#define  BIG_CHANGE_AIR_TIME_SET_95				21		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½à¼­--95ï¿½ï¿½
+#define  BIG_CHANGE_AIR_TIME_SET_90				20		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½à¼­--90ï¿½ï¿½
+#define  BIG_CHANGE_AIR_TIME_SET_85				19		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½à¼­--85ï¿½ï¿½
+#define  BIG_CHANGE_AIR_TIME_SET_80				18		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½à¼­--80ï¿½ï¿½
+#define  BIG_CHANGE_AIR_TIME_SET_75				17		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½à¼­--75ï¿½ï¿½
+#define  BIG_CHANGE_AIR_TIME_SET_70				16		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½à¼­--70ï¿½ï¿½
+#define  BIG_CHANGE_AIR_TIME_SET_65				15		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½à¼­--65ï¿½ï¿½
+#define  BIG_CHANGE_AIR_TIME_SET_60				14		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½à¼­--60ï¿½ï¿½
+#define  BIG_CHANGE_AIR_TIME_SET_55				13		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½à¼­--55ï¿½ï¿½
+#define  BIG_CHANGE_AIR_TIME_SET_50				12		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½à¼­--50ï¿½ï¿½
+#define  BIG_CHANGE_AIR_TIME_SET_45				11		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½à¼­--45ï¿½ï¿½
+#define  BIG_CHANGE_AIR_TIME_SET_40				10		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½à¼­--40ï¿½ï¿½
+#define  BIG_CHANGE_AIR_TIME_SET_35				9		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½à¼­--35ï¿½ï¿½
+#define  BIG_CHANGE_AIR_TIME_SET_30				8		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½à¼­--30ï¿½ï¿½
+#define  BIG_CHANGE_AIR_TIME_SET_25				7		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½à¼­--25ï¿½ï¿½
+#define  BIG_CHANGE_AIR_TIME_SET_20				6		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½à¼­--20ï¿½ï¿½
+#define  BIG_CHANGE_AIR_TIME_SET_15				5		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½à¼­--15ï¿½ï¿½
+#define  BIG_CHANGE_AIR_TIME_SET_10				4		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½à¼­--10ï¿½ï¿½
+#define  BIG_CHANGE_AIR_TIME_SET_5				3		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½à¼­--5	ï¿½ï¿½
+#define  BIG_CHANGE_AIR_TIME_SET_0				2		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½à¼­--0	ï¿½ï¿½
+/*--------------------------------------------------------------------------*/
+
+//ï¿½ï¿½ï¿½ï¿½    control_id PID ï¿½ï¿½ï¿½ï¿½
+/*--------------------------------------------------------------------------*/
+//Í¼ï¿½ï¿½ï¿½ï¿½ï¿½id
+#define  BIG_SELF_ADJUST						2		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+#define  BIG_PID_RETURN_BUTTON					3	    //PIDï¿½ï¿½ï¿½Ø°ï¿½ï¿½ï¿½
+#define  BIG_P_VALUE_SET						4		//PÖµï¿½è¶¨
+#define  BIG_I_VALUE_SET						5		//IÖµï¿½è¶¨
+#define  BIG_D_VALUE_SET						6		//DÖµï¿½è¶¨
+/*--------------------------------------------------------------------------*/
+
+//ï¿½ï¿½ï¿½ï¿½    ADJUST MENU  ï¿½ï¿½ï¿½ï¿½
+/*--------------------------------------------------------------------------*/
+#define  BIG_NOPOWER_PASSWORD1					2		//ï¿½Ïµï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½1
+#define  BIG_NOPOWER_PASSWORD2					3		//ï¿½Ïµï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½2
+#define  BIG_AIR_DOOR_ANGLE_SET					4		//ï¿½ï¿½ï¿½Å½Ç¶È¿ï¿½ï¿½Æµï¿½ï¿½ï¿½
+#define  BIG_TEMP_VALUE_REVUSE_SET				5		//ï¿½Â¶ï¿½ÖµÐ£ï¿½ï¿½ï¿½ï¿½ï¿½Æµï¿½ï¿½ï¿½
+#define  BIG_YEAR_SET							6		//ï¿½Ô¶ï¿½ï¿½Ïµï¿½ï¿½ï¿½ï¿½ï¿½è¶¨
+#define  BIG_MONTH_SET							7		//ï¿½Ô¶ï¿½ï¿½Ïµï¿½ï¿½Â·ï¿½ï¿½è¶¨
+#define  BIG_DAY_SET							8		//ï¿½Ô¶ï¿½ï¿½Ïµï¿½ï¿½ï¿½ï¿½è¶¨
+
+
+#define  BIG_NO_POWER_RETURN_BUTTON				9		//ï¿½ï¿½ï¿½Ø°ï¿½ï¿½ï¿½
+#define  BIG_EDIT_BUTTON						10		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½à¼­ï¿½ï¿½ï¿½æ°´ï¿½ï¿½
+#define  BIG_PID_BUTTON							11		//PIDï¿½ï¿½ï¿½ï¿½
+/*--------------------------------------------------------------------------*/
+
+
+//ï¿½ï¿½ï¿½ï¿½    control_id ï¿½ï¿½ï¿½Íºï¿½Ê±ï¿½ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½
 /*--------------------------------------------------------------------------*/
 #define  BIG_DATA_RECORD						2
 #define  BIG_RECORD_RETURN						3
 /*--------------------------------------------------------------------------*/
 
-//½çÃæ    control_id ¿ØÖÆÆ÷Ê±¼äÉèÖÃ
+//ï¿½ï¿½ï¿½ï¿½    control_id ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 /*--------------------------------------------------------------------------*/
-#define  BIG_CONTROL_DATE_YEAR_SET       		2		//¿ØÖÆÆ÷Ê±¼äÉèÖÃ:Äê
-#define  BIG_CONTROL_DATE_MONTH_SET       		3		//¿ØÖÆÆ÷Ê±¼äÉèÖÃ:ÔÂ
-#define  BIG_CONTROL_DATE_DAY_SET       		4		//¿ØÖÆÆ÷Ê±¼äÉèÖÃ:ÈÕ
-#define  BIG_CONTROL_TIME_HOUR_SET       		5		//¿ØÖÆÆ÷Ê±¼äÉèÖÃ:Ê±
-#define  BIG_CONTROL_TIME_MINUTE_SET       		6		//¿ØÖÆÆ÷Ê±¼äÉèÖÃ:·Ö
-#define  BIG_CONTROL_TIME_SECOND_SET       		7		//¿ØÖÆÆ÷Ê±¼äÉèÖÃ:Ãë
-#define  BIG_TIME_SET_RETURN_BUTTON				8		//·µ»Ø°´¼ü
-/*--------------------------------------------------------------------------*/
-
-//½çÃæ    control_id×Ô¶¯¶ÏµçÃÜÂëÊäÈë¿ò
-/*--------------------------------------------------------------------------*/
-#define  BIG_AUTO_NO_POWER_PASSWOORD_INPUT		2		//×Ô¶¯¶Ïµç»Ö¸´ÃÜÂë
+#define  BIG_CONTROL_DATE_YEAR_SET       		2		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:ï¿½ï¿½
+#define  BIG_CONTROL_DATE_MONTH_SET       		3		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:ï¿½ï¿½
+#define  BIG_CONTROL_DATE_DAY_SET       		4		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:ï¿½ï¿½
+#define  BIG_CONTROL_TIME_HOUR_SET       		5		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:Ê±
+#define  BIG_CONTROL_TIME_MINUTE_SET       		6		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:ï¿½ï¿½
+#define  BIG_CONTROL_TIME_SECOND_SET       		7		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:ï¿½ï¿½
+#define  BIG_TIME_SET_RETURN_BUTTON				8		//ï¿½ï¿½ï¿½Ø°ï¿½ï¿½ï¿½
 /*--------------------------------------------------------------------------*/
 
-//½çÃæ    control_id×Ô¼ìÎ´Í¨¹ýµ¯³ö½çÃæ
+//ï¿½ï¿½ï¿½ï¿½    control_idï¿½Ô¶ï¿½ï¿½Ïµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 /*--------------------------------------------------------------------------*/
-#define  BIG_ERROR1_TEXT						2		//ÈÈµçÅ¼ÊäÈë¹ÊÕÏ
-#define  BIG_ERROR2_TEXT						3		//¿ØÖÆÆ÷ÄÚ²¿¹ÊÕÏ1
-#define  BIG_ERROR3_TEXT						4		//¿ØÖÆÆ÷ÄÚ²¿¹ÊÕÏ2
-#define  BIG_ERROR4_TEXT						5		//µç¶¯Ö´ÐÐ»ú¹¹Á¬½ÓÖÐ¶Ï
-/*--------------------------------------------------------------------------*/
-
-//½çÃæ    control_id²ÎÊýÉèÖÃÎÞÐ§½çÃæ
-/*--------------------------------------------------------------------------*/
-#define  BIG_PASS_UPDATE_FAIL					2		//ÃÜÂë¸üÐÂÊ§°Ü
-#define  BIG_TESTTEMP_SET_FAIL					3		//ÊµÑéÎÂ¶ÈÉè¶¨ÎÞÐ§
-#define  BIG_TESTTIME_SET_FAIL					4		//ÊµÑéÊ±¼äÉè¶¨ÎÞÐ§
-#define  BIG_TEMP_UP_SET_FAIL					5		//ÎÂ¶ÈÉÏÏÞÉè¶¨ÎÞÐ§
-#define  BIG_RETURN_DIFF_SET_FAIL				6		//ÎÂ¶È»Ø²îÉè¶¨ÎÞÐ§
-#define  BIG_CHANGE_AIR_SET_FAIL				7		//»»Æø´ÎÊýÉè¶¨ÎÞÐ§
-#define  BIG_MODBUS_ADDRESS_SET_FAIL			8		//MOdbusµØÖ·Éè¶¨ÎÞÐ§
-
-#define	 BIG_FAIL_RETURN_BUTTON					9		//·µ»Ø°´¼ü
+#define  BIG_AUTO_NO_POWER_PASSWOORD_INPUT		2		//ï¿½Ô¶ï¿½ï¿½Ïµï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½
 /*--------------------------------------------------------------------------*/
 
 
-//½çÃæ    control_id ÃÜÂë´íÎóÏÔÊ¾½çÃæ
+
+//ï¿½ï¿½ï¿½ï¿½    control_idï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½ï¿½ï¿½1
 /*--------------------------------------------------------------------------*/
-#define  BIG_PASS_ERROR_RETURN_BUTTON			2		//ÃÜÂë´íÎó·µ»Ø
+#define  BIG_PASS_UPDATE_FAIL1					2		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½
+#define  BIG_TESTTEMP_SET_FAIL1					3		//Êµï¿½ï¿½ï¿½Â¶ï¿½ï¿½è¶¨ï¿½ï¿½Ð§
+#define  BIG_TESTTIME_SET_FAIL1					4		//Êµï¿½ï¿½Ê±ï¿½ï¿½ï¿½è¶¨ï¿½ï¿½Ð§
+#define  BIG_TEMP_UP_SET_FAIL1					5		//ï¿½Â¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½è¶¨ï¿½ï¿½Ð§
+#define  BIG_RETURN_DIFF_SET_FAIL1				6		//ï¿½Â¶È»Ø²ï¿½ï¿½è¶¨ï¿½ï¿½Ð§
+#define  BIG_CHANGE_AIR_SET_FAIL1				7		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½è¶¨ï¿½ï¿½Ð§
+#define  BIG_MODBUS_ADDRESS_SET_FAIL1			8		//MOdbusï¿½ï¿½Ö·ï¿½è¶¨ï¿½ï¿½Ð§
+#define  BIG_SCREEN_LIGHT_SET_FAIL1				9		//ï¿½ï¿½Ä»ï¿½ï¿½ï¿½Èµï¿½ï¿½ï¿½ï¿½è¶¨ï¿½ï¿½Ð§
+
+#define	 BIG_FAIL_RETURN_BUTTON1				10		//ï¿½ï¿½ï¿½Ø°ï¿½ï¿½ï¿½
+/*--------------------------------------------------------------------------*/
+
+//ï¿½ï¿½ï¿½ï¿½    control_idï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½ï¿½ï¿½2
+/*--------------------------------------------------------------------------*/
+#define  BIG_PASS_UPDATE_FAIL2					2		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½
+#define  BIG_AIRDOOR_ANGLE_SET_FAIL2			3		//ï¿½ï¿½ï¿½Å¿ï¿½ï¿½ï¿½ï¿½è¶¨ï¿½ï¿½Ð§
+#define  BIG_TEMP_ADJUST_SET_FAIL2				4		//ï¿½Â¶ï¿½Ð£ï¿½ï¿½ï¿½è¶¨ï¿½ï¿½Ð§
+#define  BIG_AUTO_NO_POWER_SET_FAIL2			5		//ï¿½Ô¶ï¿½ï¿½Ïµï¿½ï¿½è¶¨ï¿½ï¿½Ð§
+
+
+#define	 BIG_FAIL_RETURN_BUTTON2				6		//ï¿½ï¿½ï¿½Ø°ï¿½ï¿½ï¿½
+/*--------------------------------------------------------------------------*/
+
+
+
+//ï¿½ï¿½ï¿½ï¿½    control_id ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
+/*--------------------------------------------------------------------------*/
+#define  BIG_PASS_ERROR_RETURN_BUTTON			2		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ó·µ»ï¿½
 /*--------------------------------------------------------------------------*/
 /************************************************************************************/
 
 
 
-#define NOTIFY_TOUCH_PRESS     	 	0X01   	//´¥ÃþÆÁ°´ÏÂÍ¨Öª
-#define NOTIFY_TOUCH_RELEASE  		0X03  	//´¥ÃþÆÁËÉ¿ªÍ¨Öª
-#define NOTIFY_WRITE_FLASH_OK  		0X0C  	//Ð´FLASH³É¹¦
-#define NOTIFY_WRITE_FLASH_FAILD  	0X0D  	//Ð´FLASHÊ§°Ü
-#define NOTIFY_READ_FLASH_OK  		0X0B  	//¶ÁFLASH³É¹¦
-#define NOTIFY_READ_FLASH_FAILD  	0X0F  	//¶ÁFLASHÊ§°Ü
-#define NOTIFY_MENU                 0X14  	//²Ëµ¥ÊÂ¼þÍ¨Öª
-#define NOTIFY_TIMER                0X43  	//¶¨Ê±Æ÷³¬Ê±Í¨Öª
-#define NOTIFY_CONTROL              0XB1  	//¿Ø¼þ¸üÐÂÍ¨Öª
-#define NOTIFY_READ_RTC             0XF7  	//¶ÁÈ¡RTCÊ±¼ä
+#define NOTIFY_TOUCH_PRESS     	 	0X01   	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¨Öª
+#define NOTIFY_TOUCH_RELEASE  		0X03  	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É¿ï¿½Í¨Öª
+#define NOTIFY_WRITE_FLASH_OK  		0X0C  	//Ð´FLASHï¿½É¹ï¿½
+#define NOTIFY_WRITE_FLASH_FAILD  	0X0D  	//Ð´FLASHÊ§ï¿½ï¿½
+#define NOTIFY_READ_FLASH_OK  		0X0B  	//ï¿½ï¿½FLASHï¿½É¹ï¿½
+#define NOTIFY_READ_FLASH_FAILD  	0X0F  	//ï¿½ï¿½FLASHÊ§ï¿½ï¿½
+#define NOTIFY_MENU                 0X14  	//ï¿½Ëµï¿½ï¿½Â¼ï¿½Í¨Öª
+#define NOTIFY_TIMER                0X43  	//ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½Ê±Í¨Öª
+#define NOTIFY_CONTROL              0XB1  	//ï¿½Ø¼ï¿½ï¿½ï¿½ï¿½ï¿½Í¨Öª
+#define NOTIFY_READ_RTC             0XF7  	//ï¿½ï¿½È¡RTCÊ±ï¿½ï¿½
 
-#define MSG_GET_CURRENT_SCREEN 		0X01	//»­ÃæID±ä»¯Í¨Öª
-#define MSG_GET_DATA                0X11	//¿Ø¼þÊý¾ÝÍ¨Öª
-#define MSG_GET_ICON				0X26	//Í¼±ê¶¯»­¿Ø¼þ¸üÐÂÍ¨Öª
+#define MSG_GET_CURRENT_SCREEN 		0X01	//ï¿½ï¿½ï¿½ï¿½IDï¿½ä»¯Í¨Öª
+#define MSG_GET_DATA                0X11	//ï¿½Ø¼ï¿½ï¿½ï¿½ï¿½ï¿½Í¨Öª
+#define MSG_GET_ICON				0X26	//Í¼ï¿½ê¶¯ï¿½ï¿½ï¿½Ø¼ï¿½ï¿½ï¿½ï¿½ï¿½Í¨Öª
 
-#define PTR2U16(PTR) ((((uint8_t *)(PTR))[0]<<8)|((uint8_t *)(PTR))[1])  //´Ó»º³åÇøÈ¡16Î»Êý¾Ý
-#define PTR2U32(PTR) ((((uint8_t *)(PTR))[0]<<24)|(((uint8_t *)(PTR))[1]<<16)|(((uint8_t *)(PTR))[2]<<8)|((uint8_t *)(PTR))[3])  //´Ó»º³åÇøÈ¡32Î»Êý¾Ý
+#define PTR2U16(PTR) ((((uint8_t *)(PTR))[0]<<8)|((uint8_t *)(PTR))[1])  //ï¿½Ó»ï¿½ï¿½ï¿½ï¿½ï¿½È¡16Î»ï¿½ï¿½ï¿½ï¿½
+#define PTR2U32(PTR) ((((uint8_t *)(PTR))[0]<<24)|(((uint8_t *)(PTR))[1]<<16)|(((uint8_t *)(PTR))[2]<<8)|((uint8_t *)(PTR))[3])  //ï¿½Ó»ï¿½ï¿½ï¿½ï¿½ï¿½È¡32Î»ï¿½ï¿½ï¿½ï¿½
 
 enum CtrlType
 {
 	kCtrlUnknown=0x0,
-	kCtrlButton=0x10,  				//°´Å¥
-	kCtrlText,  					//ÎÄ±¾
-	kCtrlProgress,  				//½ø¶ÈÌõ
-	kCtrlSlider,    				//»¬¶¯Ìõ
-	kCtrlMeter,  					//ÒÇ±í
-	kCtrlDropList, 					//ÏÂÀ­ÁÐ±í
-	kCtrlAnimation, 				//¶¯»­
-	kCtrlRTC, 						//Ê±¼äÏÔÊ¾
-	kCtrlGraph, 					//ÇúÏßÍ¼¿Ø¼þ
-	kCtrlTable, 					//±í¸ñ¿Ø¼þ
-	kCtrlMenu,						//²Ëµ¥¿Ø¼þ
-	kCtrlSelector,					//Ñ¡Ôñ¿Ø¼þ
-	kCtrlQRCode,					//¶þÎ¬Âë
-	kCtrlIcon,						//Í¼±ê
+	kCtrlButton=0x10,  				//ï¿½ï¿½Å¥
+	kCtrlText,  					//ï¿½Ä±ï¿½
+	kCtrlProgress,  				//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	kCtrlSlider,    				//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	kCtrlMeter,  					//ï¿½Ç±ï¿½
+	kCtrlDropList, 					//ï¿½ï¿½ï¿½ï¿½ï¿½Ð±ï¿½
+	kCtrlAnimation, 				//ï¿½ï¿½ï¿½ï¿½
+	kCtrlRTC, 						//Ê±ï¿½ï¿½ï¿½ï¿½Ê¾
+	kCtrlGraph, 					//ï¿½ï¿½ï¿½ï¿½Í¼ï¿½Ø¼ï¿½
+	kCtrlTable, 					//ï¿½ï¿½ï¿½Ø¼ï¿½
+	kCtrlMenu,						//ï¿½Ëµï¿½ï¿½Ø¼ï¿½
+	kCtrlSelector,					//Ñ¡ï¿½ï¿½Ø¼ï¿½
+	kCtrlQRCode,					//ï¿½ï¿½Î¬ï¿½ï¿½
+	kCtrlIcon,						//Í¼ï¿½ï¿½
 };
 
 #pragma pack(push)
-#pragma pack(1)						//°´×Ö½Ú¶ÔÆë
+#pragma pack(1)						//ï¿½ï¿½ï¿½Ö½Ú¶ï¿½ï¿½ï¿½
 
 typedef struct
 {
 	uint8_t    cmd_head;  			//Ö¡Í·
-	uint8_t    cmd_type;  			//ÃüÁîÀàÐÍ(UPDATE_CONTROL)	
-	uint8_t    ctrl_msg;   			//CtrlMsgType-Ö¸Ê¾ÏûÏ¢µÄÀàÐÍ
-	uint16_t   screen_id;  			//²úÉúÏûÏ¢µÄ»­ÃæID
-	uint16_t   control_id;  		//²úÉúÏûÏ¢µÄ¿Ø¼þID
-	uint8_t    control_type; 		//¿Ø¼þÀàÐÍ
-	uint8_t    param[256];			//¿É±ä³¤¶È²ÎÊý£¬×î¶à256¸ö×Ö½Ú
+	uint8_t    cmd_type;  			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(UPDATE_CONTROL)	
+	uint8_t    ctrl_msg;   			//CtrlMsgType-Ö¸Ê¾ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	uint16_t   screen_id;  			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½Ä»ï¿½ï¿½ï¿½ID
+	uint16_t   control_id;  		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½Ä¿Ø¼ï¿½ID
+	uint8_t    control_type; 		//ï¿½Ø¼ï¿½ï¿½ï¿½ï¿½ï¿½
+	uint8_t    param[256];			//ï¿½É±ä³¤ï¿½È²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½256ï¿½ï¿½ï¿½Ö½ï¿½
 	uint8_t    cmd_tail[4];   		//Ö¡Î²
 }CTRL_MSG,*PCTRL_MSG;
 
@@ -276,7 +283,7 @@ typedef struct
 
 
 
-//×Ô¶¯¶ÏµçÊ±¼ä
+//ï¿½Ô¶ï¿½ï¿½Ïµï¿½Ê±ï¿½ï¿½
 typedef struct 
 {
 	uint8_t year;
@@ -300,124 +307,124 @@ void SetTextValueInt32(uint16_t screen_id, uint16_t control_id,int32_t value);
 void SetTextValueFloat(uint16_t screen_id, uint16_t control_id,float value);
 
 /*! 
- *  \brief  »­ÃæÇÐ»»Í¨Öª
- *  \details  µ±Ç°»­Ãæ¸Ä±äÊ±(»òµ÷ÓÃGetScreen)£¬Ö´ÐÐ´Ëº¯Êý
- *  \param screen_id µ±Ç°»­ÃæID
+ *  \brief  ï¿½ï¿½ï¿½ï¿½ï¿½Ð»ï¿½Í¨Öª
+ *  \details  ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½Ä±ï¿½Ê±(ï¿½ï¿½ï¿½ï¿½ï¿½GetScreen)ï¿½ï¿½Ö´ï¿½Ð´Ëºï¿½ï¿½ï¿½
+ *  \param screen_id ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ID
  */
 void NotifyScreen(uint16_t screen_id);
 
 /*! 
- *  \brief  ´¥Ãþ×ø±êÊÂ¼þÏìÓ¦
- *  \param press 1°´ÏÂ´¥ÃþÆÁ£¬3ËÉ¿ª´¥ÃþÆÁ
- *  \param x x×ø±ê
- *  \param y y×ø±ê
+ *  \brief  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½ï¿½ï¿½Ó¦
+ *  \param press 1ï¿½ï¿½ï¿½Â´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½3ï¿½É¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ *  \param x xï¿½ï¿½ï¿½ï¿½
+ *  \param y yï¿½ï¿½ï¿½ï¿½
  */
 void NotifyTouchXY(uint8_t press,uint16_t x,uint16_t y);
 
 /*! 
- *  \brief  °´Å¥¿Ø¼þÍ¨Öª
- *  \details  µ±°´Å¥×´Ì¬¸Ä±ä(»òµ÷ÓÃGetControlValue)Ê±£¬Ö´ÐÐ´Ëº¯Êý
- *  \param screen_id »­ÃæID
- *  \param control_id ¿Ø¼þID
- *  \param state °´Å¥×´Ì¬£º0µ¯Æð£¬1°´ÏÂ
+ *  \brief  ï¿½ï¿½Å¥ï¿½Ø¼ï¿½Í¨Öª
+ *  \details  ï¿½ï¿½ï¿½ï¿½Å¥×´Ì¬ï¿½Ä±ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½GetControlValue)Ê±ï¿½ï¿½Ö´ï¿½Ð´Ëºï¿½ï¿½ï¿½
+ *  \param screen_id ï¿½ï¿½ï¿½ï¿½ID
+ *  \param control_id ï¿½Ø¼ï¿½ID
+ *  \param state ï¿½ï¿½Å¥×´Ì¬ï¿½ï¿½0ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½
  */
 void NotifyButton(uint16_t screen_id, uint16_t control_id, uint8_t  state);
 
 /*! 
- *  \brief  ÎÄ±¾¿Ø¼þÍ¨Öª
- *  \details  µ±ÎÄ±¾Í¨¹ý¼üÅÌ¸üÐÂ(»òµ÷ÓÃGetControlValue)Ê±£¬Ö´ÐÐ´Ëº¯Êý
- *  \param screen_id »­ÃæID
- *  \param control_id ¿Ø¼þID
- *  \param str ÎÄ±¾¿Ø¼þÄÚÈÝ
+ *  \brief  ï¿½Ä±ï¿½ï¿½Ø¼ï¿½Í¨Öª
+ *  \details  ï¿½ï¿½ï¿½Ä±ï¿½Í¨ï¿½ï¿½ï¿½ï¿½ï¿½Ì¸ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½GetControlValue)Ê±ï¿½ï¿½Ö´ï¿½Ð´Ëºï¿½ï¿½ï¿½
+ *  \param screen_id ï¿½ï¿½ï¿½ï¿½ID
+ *  \param control_id ï¿½Ø¼ï¿½ID
+ *  \param str ï¿½Ä±ï¿½ï¿½Ø¼ï¿½ï¿½ï¿½ï¿½ï¿½
  */
 void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str);
 
 /*! 
- *  \brief  ½ø¶ÈÌõ¿Ø¼þÍ¨Öª
- *  \details  µ÷ÓÃGetControlValueÊ±£¬Ö´ÐÐ´Ëº¯Êý
- *  \param screen_id »­ÃæID
- *  \param control_id ¿Ø¼þID
+ *  \brief  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½Í¨Öª
+ *  \details  ï¿½ï¿½ï¿½ï¿½GetControlValueÊ±ï¿½ï¿½Ö´ï¿½Ð´Ëºï¿½ï¿½ï¿½
+ *  \param screen_id ï¿½ï¿½ï¿½ï¿½ID
+ *  \param control_id ï¿½Ø¼ï¿½ID
  *  \param value Öµ
  */
 void NotifyProgress(uint16_t screen_id, uint16_t control_id, uint32_t value);
 
 /*! 
- *  \brief  ¶¯»­¿Ø¼þÍ¨Öª
- *  \details  µ±¶¯»­¸Ä±ä(»òµ÷ÓÃGetControlValue)Ê±£¬Ö´ÐÐ´Ëº¯Êý
- *  \param screen_id »­ÃæID
- *  \param control_id ¿Ø¼þID
- *  \param starus    0x00±íÊ¾´¥Ãþ°´ÏÂ£¬0x01±íÊ¾µ¯Æð
+ *  \brief  ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½Í¨Öª
+ *  \details  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä±ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½GetControlValue)Ê±ï¿½ï¿½Ö´ï¿½Ð´Ëºï¿½ï¿½ï¿½
+ *  \param screen_id ï¿½ï¿½ï¿½ï¿½ID
+ *  \param control_id ï¿½Ø¼ï¿½ID
+ *  \param starus    0x00ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â£ï¿½0x01ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
  *  \param iconimage_id Öµ
  */
 void  NotifyAnimation(uint16_t screen_id, uint16_t control_id,uint8_t status,uint8_t iconimage_id);
 
 /*! 
- *  \brief  »¬¶¯Ìõ¿Ø¼þÍ¨Öª
- *  \details  µ±»¬¶¯Ìõ¸Ä±ä(»òµ÷ÓÃGetControlValue)Ê±£¬Ö´ÐÐ´Ëº¯Êý
- *  \param screen_id »­ÃæID
- *  \param control_id ¿Ø¼þID
+ *  \brief  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½Í¨Öª
+ *  \details  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä±ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½GetControlValue)Ê±ï¿½ï¿½Ö´ï¿½Ð´Ëºï¿½ï¿½ï¿½
+ *  \param screen_id ï¿½ï¿½ï¿½ï¿½ID
+ *  \param control_id ï¿½Ø¼ï¿½ID
  *  \param value Öµ
  */
 void NotifySlider(uint16_t screen_id, uint16_t control_id, uint32_t value);
 
 /*! 
- *  \brief  ÒÇ±í¿Ø¼þÍ¨Öª
- *  \details  µ÷ÓÃGetControlValueÊ±£¬Ö´ÐÐ´Ëº¯Êý
- *  \param screen_id »­ÃæID
- *  \param control_id ¿Ø¼þID
+ *  \brief  ï¿½Ç±ï¿½Ø¼ï¿½Í¨Öª
+ *  \details  ï¿½ï¿½ï¿½ï¿½GetControlValueÊ±ï¿½ï¿½Ö´ï¿½Ð´Ëºï¿½ï¿½ï¿½
+ *  \param screen_id ï¿½ï¿½ï¿½ï¿½ID
+ *  \param control_id ï¿½Ø¼ï¿½ID
  *  \param value Öµ
  */
 void NotifyMeter(uint16_t screen_id, uint16_t control_id, uint32_t value);
 
 /*! 
- *  \brief  ²Ëµ¥¿Ø¼þÍ¨Öª
- *  \details  µ±²Ëµ¥Ïî°´ÏÂ»òËÉ¿ªÊ±£¬Ö´ÐÐ´Ëº¯Êý
- *  \param screen_id »­ÃæID
- *  \param control_id ¿Ø¼þID
- *  \param item ²Ëµ¥ÏîË÷Òý
- *  \param state °´Å¥×´Ì¬£º0ËÉ¿ª£¬1°´ÏÂ
+ *  \brief  ï¿½Ëµï¿½ï¿½Ø¼ï¿½Í¨Öª
+ *  \details  ï¿½ï¿½ï¿½Ëµï¿½ï¿½î°´ï¿½Â»ï¿½ï¿½É¿ï¿½Ê±ï¿½ï¿½Ö´ï¿½Ð´Ëºï¿½ï¿½ï¿½
+ *  \param screen_id ï¿½ï¿½ï¿½ï¿½ID
+ *  \param control_id ï¿½Ø¼ï¿½ID
+ *  \param item ï¿½Ëµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ *  \param state ï¿½ï¿½Å¥×´Ì¬ï¿½ï¿½0ï¿½É¿ï¿½ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½
  */
 void NotifyMenu(uint16_t screen_id, uint16_t control_id, uint8_t  item, uint8_t  state);
 
 /*! 
- *  \brief  Ñ¡Ôñ¿Ø¼þÍ¨Öª
- *  \details  µ±Ñ¡Ôñ¿Ø¼þ±ä»¯Ê±£¬Ö´ÐÐ´Ëº¯Êý
- *  \param screen_id »­ÃæID
- *  \param control_id ¿Ø¼þID
- *  \param item µ±Ç°Ñ¡Ïî
+ *  \brief  Ñ¡ï¿½ï¿½Ø¼ï¿½Í¨Öª
+ *  \details  ï¿½ï¿½Ñ¡ï¿½ï¿½Ø¼ï¿½ï¿½ä»¯Ê±ï¿½ï¿½Ö´ï¿½Ð´Ëºï¿½ï¿½ï¿½
+ *  \param screen_id ï¿½ï¿½ï¿½ï¿½ID
+ *  \param control_id ï¿½Ø¼ï¿½ID
+ *  \param item ï¿½ï¿½Ç°Ñ¡ï¿½ï¿½
  */
 void NotifySelector(uint16_t screen_id, uint16_t control_id, uint8_t  item);
 
 /*! 
- *  \brief  ¶¨Ê±Æ÷³¬Ê±Í¨Öª´¦Àí
- *  \param screen_id »­ÃæID
- *  \param control_id ¿Ø¼þID
+ *  \brief  ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½Ê±Í¨Öªï¿½ï¿½ï¿½ï¿½
+ *  \param screen_id ï¿½ï¿½ï¿½ï¿½ID
+ *  \param control_id ï¿½Ø¼ï¿½ID
  */
 void NotifyTimer(uint16_t screen_id, uint16_t control_id);
 
 /*! 
- *  \brief  ¶ÁÈ¡ÓÃ»§FLASH×´Ì¬·µ»Ø
- *  \param status 0Ê§°Ü£¬1³É¹¦
- *  \param _data ·µ»ØÊý¾Ý
- *  \param length Êý¾Ý³¤¶È
+ *  \brief  ï¿½ï¿½È¡ï¿½Ã»ï¿½FLASH×´Ì¬ï¿½ï¿½ï¿½ï¿½
+ *  \param status 0Ê§ï¿½Ü£ï¿½1ï¿½É¹ï¿½
+ *  \param _data ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ *  \param length ï¿½ï¿½ï¿½Ý³ï¿½ï¿½ï¿½
  */
 void NotifyReadFlash(uint8_t status,uint8_t *_data,uint16_t length);
 
 /*! 
- *  \brief  Ð´ÓÃ»§FLASH×´Ì¬·µ»Ø
- *  \param status 0Ê§°Ü£¬1³É¹¦
+ *  \brief  Ð´ï¿½Ã»ï¿½FLASH×´Ì¬ï¿½ï¿½ï¿½ï¿½
+ *  \param status 0Ê§ï¿½Ü£ï¿½1ï¿½É¹ï¿½
  */
 void NotifyWriteFlash(uint8_t status);
 
 /*! 
- *  \brief  ¶ÁÈ¡RTCÊ±¼ä£¬×¢Òâ·µ»ØµÄÊÇBCDÂë
- *  \param year Äê£¨BCD£©
- *  \param month ÔÂ£¨BCD£©
- *  \param week ÐÇÆÚ£¨BCD£©
- *  \param day ÈÕ£¨BCD£©
- *  \param hour Ê±£¨BCD£©
- *  \param minute ·Ö£¨BCD£©
- *  \param second Ãë£¨BCD£©
+ *  \brief  ï¿½ï¿½È¡RTCÊ±ï¿½ä£¬×¢ï¿½â·µï¿½Øµï¿½ï¿½ï¿½BCDï¿½ï¿½
+ *  \param year ï¿½ê£¨BCDï¿½ï¿½
+ *  \param month ï¿½Â£ï¿½BCDï¿½ï¿½
+ *  \param week ï¿½ï¿½ï¿½Ú£ï¿½BCDï¿½ï¿½
+ *  \param day ï¿½Õ£ï¿½BCDï¿½ï¿½
+ *  \param hour Ê±ï¿½ï¿½BCDï¿½ï¿½
+ *  \param minute ï¿½Ö£ï¿½BCDï¿½ï¿½
+ *  \param second ï¿½ë£¨BCDï¿½ï¿½
  */
 void NotifyReadRTC(uint8_t year,uint8_t month,uint8_t week,uint8_t day,uint8_t hour,uint8_t minute,uint8_t second);
 

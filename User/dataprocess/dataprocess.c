@@ -181,13 +181,16 @@ void read_Holdingregister(void)
 //write Holding register
 void  write_Holdingregister(void)
 {
-	dev_info.setTemp = (float)usRegHoldingBuf[512]/10;
-	dev_info.testTime = (float)usRegHoldingBuf[513]/10;		
-	dev_info.flash_setvalue.warning1_up = (float)usRegHoldingBuf[514]/10;
-	dev_info.flash_setvalue.warning2_up = (float)usRegHoldingBuf[515]/10;
-	dev_info.flash_setvalue.temp_backdiff = (float)usRegHoldingBuf[516]/10;	
+	if (!runstatus)
+	{
+		dev_info.testtemp = (float)usRegHoldingBuf[512]/10;
+		dev_info.testtime = (float)usRegHoldingBuf[513]/10;		
+		dev_info.flash_setvalue.warning1_up = (float)usRegHoldingBuf[514]/10;
+		dev_info.flash_setvalue.warning2_up = (float)usRegHoldingBuf[515]/10;
+		dev_info.flash_setvalue.temp_backdiff = (float)usRegHoldingBuf[516]/10;	
 
-	writeholdingflag = 0;
+		writeholdingflag = 0;
+	}
 }
 
 void read_Discreteregister(void)

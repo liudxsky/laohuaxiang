@@ -27,7 +27,8 @@ extern dev_info_t dev_info;
 extern uint8_t pwmgpiostatus;
 extern uint16_t gpiostatus;
 			
-			
+RtcTime rtctime,settime;					
+RtcTime  nopowertime = {2028,12,12,0,0,0};			
 
 
 PCTRL_MSG msg;						
@@ -39,7 +40,7 @@ extern struct mainTextStruct mainPageText;
 extern struct argSetErrorStruct argSetErrorIcon;
 extern struct IOStatusStruct IOStatus;
 BIG_SCREEN_ID_TAB bigchinese_screen = {0,1,2,3,4,5,6,7,8,9,10,11,12,13};
-BIG_SCREEN_ID_TAB bigenglish_screen = {14,15,16,17,18,19,20,21,22,23,24,25,26,27};
+BIG_SCREEN_ID_TAB bigenglish_screen = {13,14,15,16,17,18,19,20,21,22,23,24,25};
 BIG_SCREEN_ID_TAB biglanguage_screen = {0};
 
 
@@ -178,7 +179,11 @@ void NotifyScreen(uint16_t screen_id)
 	{
 
 	}
-	else if(screen_id == biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN)	//param setting no invalid
+	else if(screen_id == biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN1)	//param setting no invalid1
+	{
+		
+	}
+	else if(screen_id == biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN2)	//param setting no invalid2
 	{
 
 	}
@@ -254,17 +259,22 @@ void NotifyButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 		{
 			setCurrentScreen(biglanguage_screen.BIG_ADJUST_PROTECT_SCREEN);
 		}
+		else if(passwordwrongflag == 3)
+		{
+			MySetScreen(biglanguage_screen.BIG_AUTO_NOPOWER_RECOVER);
+		}
 		
 	}
 	
 	//time setting
 	if(screen_id == biglanguage_screen.BIG_CONTROL_TIME_SET)
 	{
-		setCurrentScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);
+		SetRtcTime(settime.Sec,settime.Min,settime.Hour,settime.Day,0,settime.Mon,settime.Year);
+//		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);			
 	}
 
 	//invalid setting
-	if(screen_id == biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN)
+	if(screen_id == biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN1)
 	{
 		setCurrentScreen(biglanguage_screen.BIG_PARAM_SET_SCREEN);		
 	}
@@ -486,7 +496,6 @@ void NotifyIcon(uint16_t screen_id, uint16_t control_id,uint8_t status,uint8_t i
 		}
 	}
 	dev_info.dev_status_changed_flag = 1;
-	//FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
 }
 
 

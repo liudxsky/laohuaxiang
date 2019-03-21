@@ -196,34 +196,18 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>360</LineNumber>
+          <LineNumber>923</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134247408</Address>
+          <Address>134232314</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>C:\Users\alandell\OneDrive\椤圭洰\鑰佸寲绠?laohuaxiang\User\pidcontroller.c</Filename>
+          <Filename>..\User\screen\screen.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\test\../User/pidcontroller.c\360</Expression>
-        </Bp>
-        <Bp>
-          <Number>1</Number>
-          <Type>0</Type>
-          <LineNumber>367</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134247428</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>C:\Users\alandell\OneDrive\椤圭洰\鑰佸寲绠?laohuaxiang\User\pidcontroller.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\test\../User/pidcontroller.c\367</Expression>
+          <Expression>\\test\../User/screen/screen.c\923</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
@@ -1160,7 +1144,7 @@
 
   <Group>
     <GroupName>Modbus</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>

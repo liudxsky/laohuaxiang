@@ -38,7 +38,7 @@ typedef struct
 	uint8_t  modbus_tran_rate_flag;						//Modbus传输速率
 	Pid_Value pidvalue;									//pid值
 	CoilValue flash_setvalue;							//参数设置
-	AutoNoPowerTime autonopowertime;					//自动断电时间
+	RtcTime autonopowertime;							//自动断电时间
 	uint8_t  autonopowerpassword[PASSWORDLENGTH];			//自动断电密码
 	//
 	//
