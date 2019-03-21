@@ -2,7 +2,7 @@
 #define _SCREEN_H
 #include "stm32f4xx.h"
 #include "dataprocess.h"
-
+#include "./screen/screenStatus.h"
 
 #define  SHOW  0
 #define  HIDE  1
@@ -13,15 +13,6 @@
 
 #define  BIG_SIZE    1
 #define  SMALL_SIZE  0
-
-#define  CHANGE_AIR_SIZE 21
-#define  PASSWORDLENGTH  6
-#define  COMMONSIZE  6
-#define  RTCBUFFSIZE 16
-#define  ADDTESTTIMESIZE  10
-
-
-
 
 
 //5寸显示屏界面宏定义
@@ -281,27 +272,8 @@ typedef struct
 	uint8_t    cmd_tail[4];   		//帧尾
 }CTRL_MSG,*PCTRL_MSG;
 
-//RTC 时间
-typedef struct
-{
-	uint16_t Year;
-	uint8_t Mon;
-	uint8_t Day;
-	uint8_t Hour;
-	uint8_t Min;
-	uint8_t Sec;
-}RtcTime;
 
-//设备设置RTC 时间
-typedef struct
-{
-	uint8_t Year[COMMONSIZE];
-	uint8_t Mon[COMMONSIZE];
-	uint8_t Day[COMMONSIZE];
-	uint8_t Hour[COMMONSIZE];
-	uint8_t Min[COMMONSIZE];
-	uint8_t Sec[COMMONSIZE];
-}RtcSetTime;
+
 
 
 //自动断电时间
@@ -311,85 +283,6 @@ typedef struct
 	uint8_t month;
 	uint8_t day;
 }AutoNoPowerTime;
-
-//自动断电时间设置
-typedef struct 
-{
-	uint8_t year[COMMONSIZE];
-	uint8_t month[COMMONSIZE];
-	uint8_t day[COMMONSIZE];
-}AutoNoPowerTimeSet;
-
-
-//主页面文本设置值
-typedef struct 
-{
-	float 	current_temp_vlaue;
-	float 	setting_temp;
-	RtcTime start_time;
-	RtcTime end_time;
-	float test_time;
-	uint16_t left_time_hou;
-	uint16_t left_time_min;
-	uint8_t add_all_time;
-	uint8_t change_air_time;
-	uint8_t air_door_angle;
-}MainShowTextValue;
-
-
-//主页面文本显示
-typedef struct 
-{
-	uint8_t  softversion[ADDTESTTIMESIZE];
-	uint8_t current_temp_int[COMMONSIZE];
-	uint8_t current_temp_dec[COMMONSIZE];
-	uint8_t setting_temp_int[COMMONSIZE];
-	uint8_t setting_temp_dec[COMMONSIZE];
-	uint8_t  start_time[RTCBUFFSIZE];
-	uint8_t  end_time[RTCBUFFSIZE];
-	uint8_t test_time[COMMONSIZE];
-	uint8_t left_time_hour[COMMONSIZE];
-	uint8_t left_time_min[COMMONSIZE];
-	uint8_t add_all_time[ADDTESTTIMESIZE];
-	uint8_t change_air_time[COMMONSIZE];
-	uint8_t air_door_angle[COMMONSIZE];
-}MainShowText;
-
-
-typedef struct{
-	float warning1_up;												//报警1上限
-	float warning2_up;												//报警2上限
-	float temp_backdiff;											//温度回差
-	uint8_t menu_password[PASSWORDLENGTH];							//菜单密码
-	uint8_t secondtime_password[PASSWORDLENGTH];					//再输入一次菜单密码
-	uint8_t protect_password[PASSWORDLENGTH];				//保护界面密码
-	uint8_t protect_secondtime_password[PASSWORDLENGTH];	//再输入一次保护密码
-	uint16_t change_air_time;						//换气次数
-	uint16_t change_max_time;						//换气次数最大值
-	uint8_t screen_light_value;						//屏幕亮度调节
-	uint8_t air_door_angle;							//风门角度
-	uint8_t modbus_address;							//modbus节点地址
-	uint8_t modbus_tran_rate;						//modbus通信速率
-	uint8_t menu_language;							//菜单语言
-}CoilValue;					//保持寄存器存储值
-
-
-typedef struct
-{
-	uint8_t change_air_times[CHANGE_AIR_SIZE][COMMONSIZE];		//保存风门角度查表值
-	uint8_t airdoor_value[COMMONSIZE];				//保存风门角度设置值
-	uint8_t screen_light_value[COMMONSIZE];			//保存屏幕亮度值
-	uint8_t menu_password[COMMONSIZE];				//菜单密码
-	uint8_t  protect_password[PASSWORDLENGTH];		//保护界面输入密码
-	uint8_t autonopowerpassword[PASSWORDLENGTH];	//自动断电后恢复密码
-	uint8_t Pidvalue[3][PASSWORDLENGTH];			//PID值设置保存
-	uint8_t temp_adjust_value[COMMONSIZE];			//温度值校正
-	CoilSaveValue  coilsavevalue;					//保持寄存器存储值
-	AutoNoPowerTimeSet autotime;					//自动断电时间设定
-	MainShowText   textvaluebuff;					//主页面文本控件保存缓存数组
-	RtcSetTime  device_time_setting;				//时间设置
-}TextValueTab;
-
 
 
 typedef struct
@@ -402,7 +295,7 @@ typedef struct
 
 #pragma pack(pop)
 
-
+void SetTextValueRTC(uint16_t screen_id, uint16_t control_id,RtcTime datetime);
 void SetTextValueInt32(uint16_t screen_id, uint16_t control_id,int32_t value);
 void SetTextValueFloat(uint16_t screen_id, uint16_t control_id,float value);
 
@@ -529,50 +422,6 @@ void NotifyWriteFlash(uint8_t status);
 void NotifyReadRTC(uint8_t year,uint8_t month,uint8_t week,uint8_t day,uint8_t hour,uint8_t minute,uint8_t second);
 
 void ProcessMessage( PCTRL_MSG msg, uint16_t size );
-
-
-void startscreen(void);
-
-
-void  mergetimechar(RtcTime datetime);
-
-void mergehour_min(uint16_t hour,uint16_t min);
-
-uint32_t to_day(RtcTime time);
-
-void endtimecalcu(RtcTime starttime,float testtime);
-
-uint32_t diff_time(RtcTime starttime,RtcTime endtime);
-
-float myabs(float a,float b);
-
-void lefttimecalculate(void);
-
-void start_endtime_set(void);
-
-void addup_testtime(void);
-
-uint8_t change_air_times(void);
-
-void check_pidstatus(void);
-
-
-
-void screen_init(void);
-
-
-
-uint8_t DectoBCD(uint8_t Dec);
-
-uint8_t BcdToDec(uint8_t bcd);
-
-uint8_t max_change_air(uint8_t *buff);
-
-uint8_t judge_changeair_time(uint16_t change_time);
-
-void update_dev_status(void);
-
-void check_heat_switch(void);
 
 
 

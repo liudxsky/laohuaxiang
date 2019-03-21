@@ -28,11 +28,9 @@ extern uint16_t ADC_ConvertedValue[ADC_NOFCHANEL];
 extern uint8_t writecoilflag,readcoilflag,readholdingflag,writeholdingflag,readinputflag;
 
 extern dev_info_t dev_info;
-extern RtcTime rtctime;
 extern uint8_t cmd_buffer[CMD_MAX_SIZE];		//ָInstruction cache
 extern uint8_t press_flag;
-extern MainShowTextValue	showtextvalue;	//��ҳ���ı��ؼ�����ֵ
-int runstatus=0;
+
 int runstatus_last=0;
 int debuginfo=0;
 extern arm_pid_instance_f32 PID;
@@ -69,6 +67,7 @@ float temper_usart;
 /* ----------------------- Start implementation -----------------------------*/
 int main( void )
 {
+	 dev_info.runstatus=0;
 	float temperFilter=0;
 	float temperRaw=0;
 	float SetPoint=100;
@@ -79,6 +78,8 @@ int main( void )
 	volatile uint32_t t_thread100=0;
 	volatile uint32_t t_thread500=0;
 	volatile uint32_t t_thread3s=0;
+	volatile uint32_t t_thread30s=0; 
+	volatile uint32_t t_thread1h=0;
 	uint32_t t_thread1min=0;
 	uint16_t Ktemperature = 0;
   eMBErrorCode    eStatus;
@@ -93,7 +94,7 @@ int main( void )
 	
 //	SetBackLight(30);
 
-	SetPoint=dev_info.testtemp;
+	SetPoint=dev_info.setTemp;
 	PIDInit(dev_info.pidvalue.PID_P,dev_info.pidvalue.PID_I,dev_info.pidvalue.PID_D,SetPoint);//need to be reset after chage setpoint
 
 	while(1)
@@ -113,33 +114,32 @@ int main( void )
 		if(getMsCounter()-t_thread500>500)
 		{
 			t_thread500=getMsCounter();
-			if(runstatus>0&&runstatus_last==0)
+			if(dev_info.runstatus>0&&runstatus_last==0)
 			{
-				SetPoint=dev_info.testtemp;
+				SetPoint=dev_info.setTemp;
 				PIDInit(dev_info.pidvalue.PID_P,dev_info.pidvalue.PID_I,dev_info.pidvalue.PID_D,SetPoint);
-				HEAT_ON;
 			}
-			runstatus_last=runstatus;
+			runstatus_last=dev_info.runstatus;
 		//	printf("global T:%d", t_thread500);
 			Ktemperature=Max6675_Read_Tem()+ dev_info.compensatetemp;
 			temperRaw=Ktemperature*0.25-7;
 			//SetPoint=100;
 			temperFilter=getFilterTemper(temperRaw);
-//			printf("%f\n",temperFilter);
+			printf("%f\n",temperFilter);
 			//temperFilter=temper_usart;
 			error=SetPoint-temperFilter;
 //			if(debuginfo)
 //			printf("Setpoint:%.2lf\n",SetPoint);
 			//use button to change status
-			if(runstatus==1)
+			if(dev_info.runstatus==1)
 			{
 				pwmOut=pidCalc(error);
 			}
-			if(runstatus==2) //button event to set tuning flag
+			if(dev_info.runstatus==2) //button event to set tuning flag
 			{
 				autoTuneParam.f_autoTuning=1;
 				autoTuneParam.SetPoint=SetPoint;
-				runstatus=3;
+				dev_info.runstatus=3;
 			}
 			if(autoTuneParam.f_autoTuning)
 			{
@@ -159,8 +159,10 @@ int main( void )
 						dev_info.pidvalue.PID_I=autoTuneParam.Ki_auto;
 						dev_info.pidvalue.PID_D=autoTuneParam.Kd_auto;
 						dev_info.dev_status_changed_flag=1;
+						FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));	
+						//updatePIDScreen(0);
 						printf("Kp:%f,Ki:%f,Kd%f\n",PID.Kp,PID.Ki,PID.Kd);
-						runstatus=1;
+						dev_info.runstatus=1;
 					}
 					else
 					{
@@ -174,17 +176,13 @@ int main( void )
 				}
 			}
 
-			if(runstatus>0)//start heating
+			if(dev_info.runstatus>0)//start heating
 			{
 				SetPwmValue(pwmOut);
-				//heat icon update
-				HEAT_ON;
 			}
-			else//(runstatus==0)
+			else//(dev_info.runstatus==0)
 			{
 				SetPwmValue(0);
-				//heat icon update
-				HEAT_OFF;
 			}
 		}
 		
@@ -198,17 +196,36 @@ int main( void )
 			Check_All_Status();	
 			modbus_register_handle();
 			update_dev_status();
+			//modebus register update;
+			//main text and icon update
+			//
 //			printf("%f,%f\n",temperFilter,showtextvalue.current_temp_vlaue);
 		}
-		if(getMsCounter() - t_thread3s > 60000)
+		if(getMsCounter()-t_thread3s>3000)
 		{
-			t_thread3s = getMsCounter();
-			//3s thread
-
-			if(dev_info.dev_status_changed_flag == 1)
+			t_thread3s=getMsCounter();
+			//update dev_info into other text and icon
+			//
+	
+		}
+		if(getMsCounter()-t_thread30s>30000)
+		{
+			t_thread30s=getMsCounter();
+			addup_testtime();
+			if(dev_info.dev_status_changed_flag==1)//fast write
 			{
 				dev_info.dev_status_changed_flag=0;
-				SetPoint=dev_info.testtemp;
+			}
+		}
+		if(getMsCounter() - t_thread1h > 60000)
+		{
+			t_thread1h = getMsCounter();
+			//1h thread
+
+			if(dev_info.dev_status_changed_flag > 1)//slow write
+			{
+				dev_info.dev_status_changed_flag=0;
+				SetPoint=dev_info.setTemp;
 				FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));	
 				
 			}
@@ -216,7 +233,7 @@ int main( void )
 			{
 				dev_info.dev_status_changed_flag = 0;
 			}
-			addup_testtime();			
+
 		}
 			device_timing_selfcheck();
 		#endif

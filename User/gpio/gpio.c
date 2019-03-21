@@ -1,10 +1,27 @@
 #include "./gpio/gpio.h"
 #include "./delaytime/delaytime.h"
-
+#include "stm32f4xx.h" 
+#include "./screen/screenStatus.h"
+#include "./flash/deviceinfo.h"
+#include "./dac/dac.h"
 int timer100;
 int blinkcnt=0;
 int ledstatus=0;
+extern dev_info_t dev_info;
+extern 
 //LED
+void digitalHi(GPIO_TypeDef * p,int i)
+{
+	p->BSRRL=i;
+}
+void digitalLo(GPIO_TypeDef * p,int i)
+{
+	p->BSRRH=i;
+}
+void digitalToggle(GPIO_TypeDef * p,int i)
+{
+	p->ODR ^=i;
+}
 void led_init(void)
 {
 	GPIO_InitTypeDef  GPIO_InitStructure;

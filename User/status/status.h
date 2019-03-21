@@ -2,7 +2,7 @@
 #define _STATUS_H
 #include "stm32f4xx.h"
 #include "./screen/screen.h"
-
+#include "./screen/screenStatus.h"
 
 #define OK 			0
 #define ERROR 		1

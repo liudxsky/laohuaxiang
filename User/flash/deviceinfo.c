@@ -38,6 +38,8 @@ void DeviceInfo_Init(void)
 		dev_info.flash_adjusttemp = 0;
 		dev_info.compensatetemp = 0;
 		dev_info.addup_testtime = 0;
+		dev_info.Rs485Status = 2;
+		dev_info.thermocouple_flag=0;
 //		autogeneratepassword();
 		/*∏≥≥ı÷µ*/
 		FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
@@ -62,8 +64,8 @@ void DeviceInfo_Init(void)
 		{
 			printf("%d : %d \r\n",100 - 5*i,dev_info.change_air_time[i]);
 		}
-		printf("\r\n device current set testtime is :%f\r\n",dev_info.testtime);
-		printf("\r\n device current set testtime is :%f\r\n",dev_info.testtime);		
+		printf("\r\n device current set testtime is :%f\r\n",dev_info.testTime);
+		printf("\r\n device current set testtime is :%f\r\n",dev_info.testTime);		
 		printf("\r\n device current set modbus address is :%d\r\n",dev_info.Modbus_address);
 	}
 

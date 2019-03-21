@@ -1,8 +1,8 @@
 #include "./max6675/max6675.h"
- #include "./delaytime/delaytime.h"
- #include "stdio.h"
-
-uint8_t thermocouple_flag = 0;
+#include "./delaytime/delaytime.h"
+#include "stdio.h"
+#include "./flash/deviceinfo.h"
+extern  dev_info_t dev_info;
  
 //max6675 gpio³õÊ¼»¯ÉèÖÃ
 void Max6675_Gpio_Init(void)
@@ -137,7 +137,7 @@ uint16_t Max6675_Read_Tem(void)
 	temp |= SPI2_ReadWriteByte(0xff);
 	
 	SPI_MAX6675_CS_HIGH();
-	thermocouple_flag = (temp>>2)&0x01;
+	dev_info.thermocouple_flag = (temp>>2)&0x01;
 	if(temp & 4)
 	{
 		temp = 4095;

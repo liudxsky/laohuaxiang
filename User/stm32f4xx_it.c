@@ -184,8 +184,6 @@ uint8_t RxBuffer[RxBufferSize];
 
 __IO uint8_t RxCounter = 0x00;
 extern dev_info_t dev_info;
-extern MainShowTextValue showtextvalue;	//主页面文本控件缓存值
-extern int runstatus;//0 stop, 1 start, 2, autotune
 extern int debuginfo;
 extern float temper_usart;
 const int dstlen=32;
@@ -248,7 +246,7 @@ void RS232_USART_IRQHandler(void)
 //				FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));			
 				//TIM_PWMOUTPUT_Config();
 				printf("\r\n\r\npwmvalue is set: \r\n------dec: %d\r\n------hex: 0x%x\r\n",dev_info.pwmvalue,dev_info.pwmvalue);
-				printf("\r\n\r\ncurrent temperature is : %.2lf\r\n",showtextvalue.current_temp_vlaue);
+				printf("\r\n\r\ncurrent temperature is : %.2lf\r\n",dev_info.currentTemp);
 			}
 			else if(strstr((char *)RxBuffer,uart_cmd[SET_ANGLE].cmd)) 	
 			{					
@@ -268,7 +266,7 @@ void RS232_USART_IRQHandler(void)
 				printf("\r\n***********device info*********\r\n");
 				printf("\r\ncurrent PWM Scope is  0 -- %d \r\n",dev_info.pwmscope);
 				printf("\r\ncurrent PWM Value is %d \r\n",dev_info.pwmvalue);	
-				printf("\r\n\r\ncurrent temperature is :%.2lf\r\n",showtextvalue.current_temp_vlaue);
+				printf("\r\n\r\ncurrent temperature is :%.2lf\r\n",dev_info.currentTemp);
 				printf("\r\n\r\ncurrent air valve angle value is set: \r\n------dec: %d\r\n------hex: 0x%x\r\n",dev_info.flash_setvalue.air_door_angle,dev_info.flash_setvalue.air_door_angle);
 				printf("\r\n\r\ncurrent back value  is : %04x  %d\r\n",dev_info.flash_setvalue.air_door_angle,dev_info.flash_setvalue.air_door_angle);
 			}
@@ -287,7 +285,7 @@ void RS232_USART_IRQHandler(void)
 				index = uart_cmd[RUN].len;
 				memset((void *)dst_vale,0,dstlen);
 				strncpy(dst_vale,(char *)&RxBuffer[index],RxCounter-index);
-				runstatus=atoi(dst_vale);
+				dev_info.runstatus=atoi(dst_vale);
 			}
 			else if(strstr((char *)RxBuffer,uart_cmd[DEBUG].cmd))
 			{
@@ -301,7 +299,7 @@ void RS232_USART_IRQHandler(void)
 				index = uart_cmd[SETPOINT].len;
 				memset((void *)dst_vale,0,dstlen);
 				strncpy(dst_vale,(char *)&RxBuffer[index],RxCounter-index);
-				showtextvalue.setting_temp=atoi(dst_vale);
+				dev_info.setTemp=atoi(dst_vale);
 			}
 			else if(strstr((char *)RxBuffer,uart_cmd[SIMTEMP].cmd))
 			{

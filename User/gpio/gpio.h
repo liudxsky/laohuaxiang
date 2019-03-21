@@ -62,34 +62,41 @@
 /*-----------------------------------------------------------------------*/
 
 /* 控制寄存器直接控制gpio */
-#define	digitalHi(p,i)			 {p->BSRRL=i;}		//低电平
-#define digitalLo(p,i)			 {p->BSRRH=i;}		//高电平
-#define digitalToggle(p,i)	 	 {p->ODR ^=i;}		//反转
+//#define	digitalHi(p,i)			 {p->BSRRL=i;}		//低电平
+
+//#define digitalLo(p,i)			 {p->BSRRH=i;}		//高电平
+//#define digitalToggle(p,i)	 	 {p->ODR ^=i;}		//反转
 
 /* LED控制宏定义 */
 #define LED_TOGGLE			digitalToggle(LED_GPIO_PORT,LED_PIN)
 #define LED_OFF				digitalHi(LED_GPIO_PORT,LED_PIN)
 #define LED_ON				digitalLo(LED_GPIO_PORT,LED_PIN)
 
-
+void digitalHi(GPIO_TypeDef * p,int i);
+void digitalLo(GPIO_TypeDef * p,int i);
+void digitalToggle(GPIO_TypeDef * p,int i);
 /* 驱动开关触点控制宏定义 */
 /*-----------------------------------------------------------------------*/
-#define HEAT_ON					digitalHi(DRIVER_GPIO_PORT,HEAT_CONTROL_PIN)		//加热器
-#define HEAT_OFF				digitalLo(DRIVER_GPIO_PORT,HEAT_CONTROL_PIN)
+#define HEAT_SWITCH_ON					digitalHi(DRIVER_GPIO_PORT,HEAT_CONTROL_PIN)		//加热器
+#define HEAT_SWITCH_OFF				digitalLo(DRIVER_GPIO_PORT,HEAT_CONTROL_PIN)
+#define HEAT_SWITCH(x)       ((x)==0?(digitalLo(DRIVER_GPIO_PORT,HEAT_CONTROL_PIN)):(digitalHi(DRIVER_GPIO_PORT,HEAT_CONTROL_PIN)	))
+
 
 #define SPINNER_RACK_ON			digitalHi(DRIVER_GPIO_PORT,SPINNER_RACK_CONTROL_PIN)//旋转架
 #define SPINNER_RACK_OFF		digitalLo(DRIVER_GPIO_PORT,SPINNER_RACK_CONTROL_PIN)
+#define SPINNER_RACK(x)    ((x)==0?(SPINNER_RACK_OFF):(SPINNER_RACK_ON))
 
 #define CIRCULATING_FUN_ON		digitalHi(DRIVER_GPIO_PORT,CIRCULATING_FUN_CONTROL_PIN)//风机
 #define CIRCULATING_FUN_OFF		digitalLo(DRIVER_GPIO_PORT,CIRCULATING_FUN_CONTROL_PIN)
+#define CIRCULATING(x) 				((x)==0?(CIRCULATING_FUN_OFF):(CIRCULATING_FUN_ON))
 
 #define ALARM1_ON				digitalHi(DRIVER_GPIO_PORT,ALARM_CONTROL1_PIN)	//报警器1
-#define ALARM1_OFF				digitalLo(DRIVER_GPIO_PORT,ALARM_CONTROL1_PIN)
-
+#define ALARM1_OFF			digitalLo(DRIVER_GPIO_PORT,ALARM_CONTROL1_PIN)
+#define ALARM1(x) 			((x)==0?(ALARM1_OFF):(ALARM1_ON))
 
 #define ALARM2_ON				digitalHi(DRIVER_GPIO_PORT,ALARM_CONTROL2_PIN)	//报警器2
 #define ALARM2_OFF				digitalLo(DRIVER_GPIO_PORT,ALARM_CONTROL2_PIN)
-
+#define ALARM2(x) 				((x)==0?(ALARM2_OFF):(ALARM2_ON))
 /*-----------------------------------------------------------------------*/
 
 void led_init(void);
@@ -99,8 +106,6 @@ void Gpio_Init(void);
 
 void ledBlinkThread();
 void led_blink(uint8_t num);
-
-
 
 void test(void);
 

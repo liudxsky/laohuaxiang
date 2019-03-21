@@ -2,7 +2,7 @@
 #define __DEVICEID_H
 #include "stm32f4xx.h"
 #include "./screen/screen.h"
-
+#include "./screen/screenStatus.h"
 
 
 #define INVALID_INFO		0xFFFF
@@ -27,8 +27,9 @@ typedef struct
 	uint16_t pwmvalue;									//pwm控制温度值
 	uint8_t  change_air_time[CHANGE_AIR_SIZE];			//风门角度换气次数
 	uint8_t  biglanguagestatus;							//语言选择
-	float testtime;										//实验时间
-	float testtemp;										//实验温度
+	float testTime;										//实验时间
+	float setTemp;										//实验温度
+	float currentTemp;
 	float temp_backdiff;								//温度回差
 	float flash_adjusttemp;								//调整温度值
 	uint8_t airdooropenangle;						//风门开启角度
@@ -39,15 +40,25 @@ typedef struct
 	CoilValue flash_setvalue;							//参数设置
 	AutoNoPowerTime autonopowertime;					//自动断电时间
 	uint8_t  autonopowerpassword[PASSWORDLENGTH];			//自动断电密码
-	uint8_t  warmstart_time[RTCBUFFSIZE];
-	uint8_t  warmend_time[RTCBUFFSIZE];
+	//
+	//
+	RtcTime start_time;
+	RtcTime end_time;
+
 	int compensatetemp;									//补偿温度
-	
+	//exame start time
+	//exame stop time
+	//f_fast_dev_status_chagned
+	//struct IOStatusStruct IOStatus;
+	int runstatus;
+	uint8_t temp_warnning1;
+	uint8_t temp_warnning2;
+	uint8_t Rs485Status;
+	uint8_t thermocouple_flag;//error flag
+	RtcTime timenow;//system time now
+	uint8_t lefttimeflag;
+	uint8_t passwordwrongflag;
 }dev_info_t;
-
-
-
-
 
 
 #pragma pack(pop)

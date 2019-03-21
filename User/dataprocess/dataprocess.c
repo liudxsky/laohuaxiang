@@ -20,13 +20,11 @@ extern uint16_t		usRegHoldingBuf[REG_HOLDING_NREGS];			//03,06,16
 extern uint16_t		ucRegCoilsBuf[REG_COILS_SIZE];				//01,05,15
 extern uint16_t		ucRegDiscreteBuf[REG_DISCRETE_SIZE];		//02
 
-extern dev_info_t dev_info;
-extern MainShowTextValue showtextvalue;								
+extern dev_info_t dev_info;							
 extern uint8_t cmd_buffer[CMD_MAX_SIZE];							
 extern BIG_SCREEN_ID_TAB biglanguage_screen;;						
 CoilSaveValue  coilsavevalue;										
-
-
+extern struct IOStatusStruct IOStatus;
 
 extern ThermalLag heattime_log;									
 extern RtcTime changetime;											
@@ -88,15 +86,17 @@ void  write_Coilregister(void)
 	
 	if(ucRegCoilsBuf[0] & 0x04)
 	{	
-		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_FAN_OPERATION_ID,SHOW);
-		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_FR_WORK_STATUS_ID,HIDE);
-		GPIO_WriteBit(DRIVER_GPIO_PORT,CIRCULATING_FUN_CONTROL_PIN,Bit_SET);
+		IOStatus.blower=1;
+//		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_FAN_OPERATION_ID,SHOW);
+//		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_FR_WORK_STATUS_ID,HIDE);
+//		GPIO_WriteBit(DRIVER_GPIO_PORT,CIRCULATING_FUN_CONTROL_PIN,Bit_SET);
 	}
 	else
 	{
-		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_FAN_OPERATION_ID,HIDE);
-		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_FR_WORK_STATUS_ID,SHOW);
-		GPIO_WriteBit(DRIVER_GPIO_PORT,CIRCULATING_FUN_CONTROL_PIN,Bit_RESET);
+		IOStatus.blower=0;
+//		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_FAN_OPERATION_ID,HIDE);
+//		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_FR_WORK_STATUS_ID,SHOW);
+//		GPIO_WriteBit(DRIVER_GPIO_PORT,CIRCULATING_FUN_CONTROL_PIN,Bit_RESET);
 	}
 	
 	if(ucRegCoilsBuf[0] & 0x08)
@@ -142,10 +142,10 @@ extern uint8_t savethermalbuff[TIMERECORDNUM][38];
 void read_Inputregister(void)
 {
 	uint8_t i = 0;
-	uint16_t testtemp = showtextvalue.current_temp_vlaue*10;
+	uint16_t testtemp = dev_info.currentTemp*10;
 	usRegInputBuf[0] = testtemp;
-	usRegInputBuf[1] = dev_info.testtemp*10;
-	usRegInputBuf[2] = dev_info.testtime*10;
+	usRegInputBuf[1] = dev_info.setTemp*10;
+	usRegInputBuf[2] = dev_info.testTime*10;
 	for(i = 0;i < TIMERECORDNUM;i++)
 	{
 		memcpy(usRegInputBuf[2*i+3],savethermalbuff[i],sizeof(char)*19);
@@ -162,10 +162,10 @@ void read_Inputregister(void)
 //read Holding register
 void read_Holdingregister(void)
 {
-	uint16_t testtemp = showtextvalue.current_temp_vlaue*10;
+	uint16_t testtemp = dev_info.currentTemp*10;
 	usRegHoldingBuf[0] = testtemp;
-	usRegHoldingBuf[1] = dev_info.testtemp*10;
-	usRegHoldingBuf[2] = dev_info.testtime*10;
+	usRegHoldingBuf[1] = dev_info.setTemp*10;
+	usRegHoldingBuf[2] = dev_info.testTime*10;
 	usRegHoldingBuf[3] = dev_info.flash_setvalue.warning1_up*10;
 	usRegHoldingBuf[4] = dev_info.flash_setvalue.warning2_up*10;
 	usRegHoldingBuf[5] = dev_info.flash_setvalue.temp_backdiff*10;
@@ -181,8 +181,8 @@ void read_Holdingregister(void)
 //write Holding register
 void  write_Holdingregister(void)
 {
-	dev_info.testtemp = (float)usRegHoldingBuf[512]/10;
-	dev_info.testtime = (float)usRegHoldingBuf[513]/10;		
+	dev_info.setTemp = (float)usRegHoldingBuf[512]/10;
+	dev_info.testTime = (float)usRegHoldingBuf[513]/10;		
 	dev_info.flash_setvalue.warning1_up = (float)usRegHoldingBuf[514]/10;
 	dev_info.flash_setvalue.warning2_up = (float)usRegHoldingBuf[515]/10;
 	dev_info.flash_setvalue.temp_backdiff = (float)usRegHoldingBuf[516]/10;	
@@ -200,8 +200,8 @@ void read_Discreteregister(void)
 
 void modbus_register_init(void)
 {
-	usRegHoldingBuf[0] = dev_info.testtemp * 10;
-	usRegHoldingBuf[1] = dev_info.testtime * 100;
+	usRegHoldingBuf[0] = dev_info.setTemp * 10;
+	usRegHoldingBuf[1] = dev_info.testTime * 100;
 	usRegHoldingBuf[2] = dev_info.flash_setvalue.warning1_up*10;
 	usRegHoldingBuf[3] = dev_info.flash_setvalue.warning2_up*10;
 	usRegHoldingBuf[4] = dev_info.flash_setvalue.temp_backdiff*10;
