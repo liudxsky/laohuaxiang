@@ -15,7 +15,6 @@
 
 uint8_t  soft_ver[10] = "Ver:1.0";
 
-//uint8_t passwordwrongflag = 0;
 
 uint8_t cmd_buffer[CMD_MAX_SIZE];		//screen data buffer
 uint8_t change_air_time[CHANGE_AIR_SIZE] = {0};
@@ -27,13 +26,11 @@ extern dev_info_t dev_info;
 extern uint8_t pwmgpiostatus;
 extern uint16_t gpiostatus;
 			
-RtcTime rtctime,settime;					
-RtcTime  nopowertime = {2028,12,12,0,0,0};			
 
-
+RtcTime rtctime;
 PCTRL_MSG msg;						
 TextValueTab  textvalue;			//text control_id buff
-CoilValue coilvalue;//should update via dev_info, its value should be memoried
+//CoilValue coilvalue;//should update via dev_info, its value should be memoried
 
 extern struct mainIconStruct mainIcon;
 extern struct mainTextStruct mainPageText;
@@ -88,38 +85,31 @@ void screen_init(void)
 	mainIcon.trouble_indicate=HIDE;
 	mainIcon.air_door_open_angle=SHOW;
 	mainIcon.fan_operation=HIDE;
-	mainIcon.IO.sample_frame=HIDE;
 	mainIcon.pid_run=HIDE;
-	mainIcon.IO.heat_switch=HIDE;
-	mainIcon.IO.heat_output=HIDE;
 	
 	mainPageText.left_time_hour=0;
 	mainPageText.left_time_min=0;
-	
-	updater_mainScreen();
-	
-	sprintf(coilvalue.modbus_address,"%d",dev_info.Modbus_address);
-	coilvalue.modbus_tran_rate = 3;
-	coilvalue.menu_language = 1;
 
-	argSetErrorIcon.change_air_set_fail=HIDE;
-	argSetErrorIcon.modebus_addr_set_fail=HIDE;
-	argSetErrorIcon.pass_update_fail=HIDE;
-	argSetErrorIcon.test_temp_set_fail=HIDE;
-	argSetErrorIcon.test_time_set_fail=HIDE;
 	
-	updater_argSetErrorScreen();
 	
+	argSetErrorIcon.change_air_set_fail = HIDE;
+	argSetErrorIcon.modebus_addr_set_fail = HIDE;
+	argSetErrorIcon.test_temp_set_fail = HIDE;
+	argSetErrorIcon.test_time_set_fail = HIDE;
+	argSetErrorIcon.return_diff_set_fail = HIDE;
+	argSetErrorIcon.temp_up_set_fail = HIDE;
+	argSetErrorIcon.temp_up2_set_fail = HIDE;
+	argSetErrorIcon.light_set_fail = HIDE;
+	argSetErrorIcon.pass1_set_fail = HIDE;
+	argSetErrorIcon.pass2_set_fail = HIDE;
+	argSetErrorIcon.air_angle_set_fail = HIDE;
+	argSetErrorIcon.temp_adjust_fail = HIDE;
+	argSetErrorIcon.auto_no_power_set_fail = HIDE;
+	updater_mainScreen();
+	updater_argSetErrorScreen1();
+	updater_argSetErrorScreen2();
 	update_dev_status();
 	
-	//	AnimationPlayFrame(biglanguage_screen.BIG_SELF_TEST_NOTPASS_SCREEN,BIG_ERROR1_TEXT,HIDE);
-//	delay_ms(100);
-//	AnimationPlayFrame(biglanguage_screen.BIG_SELF_TEST_NOTPASS_SCREEN,BIG_ERROR2_TEXT,HIDE);
-//	delay_ms(100);
-//	AnimationPlayFrame(biglanguage_screen.BIG_SELF_TEST_NOTPASS_SCREEN,BIG_ERROR3_TEXT,HIDE);
-//	delay_ms(100);
-//	AnimationPlayFrame(biglanguage_screen.BIG_SELF_TEST_NOTPASS_SCREEN,BIG_ERROR4_TEXT,HIDE);
-//	delay_ms(100);
 }
 
 //DEC TO BCD
@@ -159,33 +149,34 @@ void NotifyScreen(uint16_t screen_id)
 	else if(screen_id == biglanguage_screen.BIG_PID_SET_SCREEN)	//PID
 	{
 		updater_PIDScreen(screen_id);
-		
 	}
 	else if(screen_id == biglanguage_screen.BIG_PARAM_SET_SCREEN)	//menu param setting
 	{
 		updater_menuParam(screen_id);
-	
 	}
 	else if(screen_id == biglanguage_screen.BIG_AUTO_NOPOWER_RECOVER)	//auto no power recover password
 	{
 		SetTextValue(screen_id,BIG_PASSWORD_PROTECT_INPUT,"");
 	}
+	else if(screen_id == biglanguage_screen.BIG_TIME_RECORD_SCREEN)	//time record
+	{
+		
+	}
 	else if(screen_id == biglanguage_screen.BIG_ADJUST_SCREEN)	//Adjust screen
 	{
 		updater_adjScreen(screen_id);
-		
 	}
 	else if(screen_id == biglanguage_screen.BIG_CONTROL_TIME_SET)
 	{
-
+		
 	}
 	else if(screen_id == biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN1)	//param setting no invalid1
 	{
-		
+		updater_argSetErrorScreen1();
 	}
 	else if(screen_id == biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN2)	//param setting no invalid2
 	{
-
+		updater_argSetErrorScreen2();
 	}
 	else if(screen_id == biglanguage_screen.BIG_MAIN_SHOW_SCREEN)
 	{
@@ -216,144 +207,41 @@ void NotifyButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 	//pid
 	if(screen_id == biglanguage_screen.BIG_PID_SET_SCREEN)
 	{
-		if(control_id == BIG_SELF_ADJUST)							//self adjust
-		{
-			dev_info.runstatus=2;
-		}
-		else if(control_id == BIG_PID_RETURN_BUTTON)  				
-		{
-			//this should be in dev_info or screen status
-			setCurrentScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);
-			//MySetScreen(biglanguage_screen.BIG_SCREAT_PROTECT_SCREEN);
-		}
-		
+		pidScreenButton(screen_id,control_id,state);
 	}
 	//menu screen
 	if(screen_id == biglanguage_screen.BIG_PARAM_SET_SCREEN)
 	{
-		if(control_id == BIG_SET_RETURN_BUTTON)							
-		{
-			setCurrentScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);
-			
-		}
-		else if(control_id == BIG_ADJUST_BUTTON)				
-		{
-			
-			setCurrentScreen(biglanguage_screen.BIG_ADJUST_PROTECT_SCREEN);
-		}
+		menuScreenButton(screen_id,control_id,state);
 	}
 	//time record
 	if(screen_id == biglanguage_screen.BIG_TIME_RECORD_SCREEN)
 	{
-		setCurrentScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);
+		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);
 	}
 	if(screen_id == biglanguage_screen.BIG_PASSWORD_ERROR_SCREEN)
-	{
-		
-		if(dev_info.passwordwrongflag == 1)
-		{
-			setCurrentScreen(biglanguage_screen.BIG_SCREAT_PROTECT_SCREEN);
-			
-		}
-		else if(dev_info.passwordwrongflag == 2)
-		{
-			setCurrentScreen(biglanguage_screen.BIG_ADJUST_PROTECT_SCREEN);
-		}
-		else if(dev_info.passwordwrongflag == 3)
-		{
-			MySetScreen(biglanguage_screen.BIG_AUTO_NOPOWER_RECOVER);
-		}
-		
+	{		
+		passwordInputWrongScreenButton(screen_id,control_id, state);	
 	}
-	
 	//time setting
 	if(screen_id == biglanguage_screen.BIG_CONTROL_TIME_SET)
 	{
-		SetRtcTime(settime.Sec,settime.Min,settime.Hour,settime.Day,0,settime.Mon,settime.Year);
-//		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);			
+		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);			
 	}
-
 	//invalid setting
 	if(screen_id == biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN1)
 	{
-		setCurrentScreen(biglanguage_screen.BIG_PARAM_SET_SCREEN);		
+		MySetScreen(biglanguage_screen.BIG_PARAM_SET_SCREEN);		
 	}
 	//main show screen
 	if(screen_id == biglanguage_screen.BIG_MAIN_SHOW_SCREEN)
 	{
-		switch (control_id)
-		{
-			case BIG_MENU_ID:
-				setCurrentScreen(biglanguage_screen.BIG_SCREAT_PROTECT_SCREEN);
-				break;
-			case BIG_TIME_RECORD_ID:
-				setCurrentScreen(biglanguage_screen.BIG_TIME_RECORD_SCREEN);
-				break;
-			case BIG_SAMPLE_FRAME_MENU_ID:
-				if(state)
-				{
-					//should chage dev_info, and update to screen status
-					IOStatus.sample_frame=1;
-					mainIcon.rr_work_status=HIDE;
-					//SPINNER_RACK_ON;
-				}
-				else
-				{
-					//SPINNER_RACK_OFF;
-					IOStatus.sample_frame=0;
-					mainIcon.rr_work_status=SHOW;
-				}
-
-				break;
-			case BIG_BLOWER_MENU_ID:
-				if(state)
-				{
-					mainIcon.fan_operation=SHOW;
-					mainIcon.fr_work_status=HIDE;
-				}
-				else
-				{
-					mainIcon.fan_operation=HIDE;
-					mainIcon.fr_work_status=SHOW;
-					
-				}
-				break;
-			case BIG_START_OR_PAUSE_ID:
-				if(dev_info.runstatus>0)
-				{
-					SetPwmValue(0);
-					dev_info.runstatus = 0;
-					dev_info.lefttimeflag=0;
-
-				}
-				else
-				{
-					dev_info.runstatus = 1;			
-				}
-			
-				break;
-			default:
-				break;
-		}
+		mainShowScreenButton(screen_id,control_id,state);
 	}
 	//adjust screen
 	if(screen_id == biglanguage_screen.BIG_ADJUST_SCREEN)
 	{
-		switch (control_id)
-		{
-			case BIG_NO_POWER_RETURN_BUTTON:
-				setCurrentScreen(biglanguage_screen.BIG_PARAM_SET_SCREEN);
-				
-				break;
-			case BIG_EDIT_BUTTON:
-				setCurrentScreen(biglanguage_screen.BIG_AIR_CHANGE_RATE_SCREEN);
-				break;
-			case BIG_PID_BUTTON:
-				setCurrentScreen(biglanguage_screen.BIG_PID_SET_SCREEN);
-				break;
-			default:
-				break;
-		}
+		adjustScreenButton(screen_id,control_id,state);
 	}
 }
 
@@ -394,7 +282,6 @@ void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 	{
 		menuSettingScreen(control_id,str);
 	}
-	
 	//adjust screen setting
 	if(screen_id == biglanguage_screen.BIG_ADJUST_SCREEN)
 	{
@@ -430,72 +317,7 @@ void  NotifyAnimation(uint16_t screen_id, uint16_t control_id,uint8_t status,uin
 
 void NotifyIcon(uint16_t screen_id, uint16_t control_id,uint8_t status,uint8_t iconimage_id)
 {
-	if(screen_id == biglanguage_screen.BIG_PARAM_SET_SCREEN)
-	{
-		switch (control_id)
-		{
-			case BIG_BPS_1200:
-				if(!status)
-				{
-					AnimationPlayFrame(screen_id,control_id,SHOW);
-					AnimationPlayFrame(screen_id,BIG_BPS_2400,HIDE);
-					AnimationPlayFrame(screen_id,BIG_BPS_4800,HIDE);
-					AnimationPlayFrame(screen_id,BIG_BPS_9600,HIDE);
-					dev_info.modbus_tran_rate_flag = 0;
-				}
-				break;
-			case BIG_BPS_2400:
-				if(!status)
-				{
-					AnimationPlayFrame(screen_id,control_id,SHOW);
-					AnimationPlayFrame(screen_id,BIG_BPS_1200,HIDE);
-					AnimationPlayFrame(screen_id,BIG_BPS_4800,HIDE);
-					AnimationPlayFrame(screen_id,BIG_BPS_9600,HIDE);
-					dev_info.modbus_tran_rate_flag = 1;
-				}
-				break;
-			case BIG_BPS_4800:
-				if(!status)
-				{
-					AnimationPlayFrame(screen_id,control_id,SHOW);
-					AnimationPlayFrame(screen_id,BIG_BPS_1200,HIDE);
-					AnimationPlayFrame(screen_id,BIG_BPS_2400,HIDE);
-					AnimationPlayFrame(screen_id,BIG_BPS_9600,HIDE);
-					dev_info.modbus_tran_rate_flag = 2;
-				}
-				break;
-			case BIG_BPS_9600:
-				if(!status)
-				{
-					AnimationPlayFrame(screen_id,control_id,SHOW);
-					AnimationPlayFrame(screen_id,BIG_BPS_1200,HIDE);
-					AnimationPlayFrame(screen_id,BIG_BPS_4800,HIDE);
-					AnimationPlayFrame(screen_id,BIG_BPS_2400,HIDE);
-					dev_info.modbus_tran_rate_flag = 3;
-				}
-				break;
-			case BIG_CHINESE_LANGUAGE:
-				if(!status)
-				{
-					AnimationPlayFrame(screen_id,control_id,SHOW);
-					AnimationPlayFrame(screen_id,BIG_ENGLISH_LANGUAGE,HIDE);
-					dev_info.biglanguagestatus = 1;
-				}
-				break;
-			case BIG_ENGLISH_LANGUAGE:
-				if(!status)
-				{
-					AnimationPlayFrame(screen_id,control_id,SHOW);
-					AnimationPlayFrame(screen_id,BIG_CHINESE_LANGUAGE,HIDE);
-					dev_info.biglanguagestatus = 0;
-				}
-				break;
-			default:
-				dev_info.modbus_tran_rate_flag = 3;
-				dev_info.biglanguagestatus = 1;
-		}
-	}
-	dev_info.dev_status_changed_flag = 1;
+	
 }
 
 
@@ -555,14 +377,12 @@ void NotifyWriteFlash(uint8_t status)
  */
 void NotifyReadRTC(uint8_t year,uint8_t month,uint8_t week,uint8_t day,uint8_t hour,uint8_t minute,uint8_t second)
 {	
-	RtcTime rtctime;
 	rtctime.Year = BcdToDec(year);
 	rtctime.Mon = BcdToDec(month);
 	rtctime.Day = BcdToDec(day);
 	rtctime.Hour = BcdToDec(hour);
 	rtctime.Min = BcdToDec(minute);
 	rtctime.Sec = BcdToDec(second);
-	readRTCFromScreen(rtctime);
 //	printf("%d/%d/%d  %02d:%02d:%02d\r\n",rtctime.Year,rtctime.Mon,rtctime.Day,rtctime.Hour,rtctime.Min,rtctime.Sec);
 }
 

@@ -8,11 +8,272 @@ extern TextValueTab  textvalue;			//text control_id buff
 extern BIG_SCREEN_ID_TAB biglanguage_screen;
 uint8_t passwordwrongflag = 0;
 uint8_t global_str_temp[COMMONSIZE];
+RtcTime  nopowertime = {2028,12,12,0,0,0};	
+
+
+extern RtcTime rtctime;					
 
 extern struct mainIconStruct mainIcon;
 extern struct mainTextStruct mainPageText;
 extern struct argSetErrorStruct argSetErrorIcon;
 extern struct IOStatusStruct IOStatus;
+
+/************************************BUTTON FUNC***********************************************************/
+
+void pidScreenButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
+{
+	switch (control_id)
+	{
+		case BIG_SELF_ADJUST:							//self adjust
+			dev_info.runstatus=2;
+			break;
+		case BIG_PID_RETURN_BUTTON: 				
+			//this should be in dev_info or screen status
+			MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);
+			//MySetScreen(biglanguage_screen.BIG_SCREAT_PROTECT_SCREEN);
+			break;
+	}
+}
+
+void menuScreenButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
+{
+	switch (control_id)
+		{
+			case BIG_SET_RETURN_BUTTON:
+				MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);
+				break;
+			case BIG_ADJUST_BUTTON:
+				MySetScreen(biglanguage_screen.BIG_ADJUST_PROTECT_SCREEN);
+				break;
+			case BIG_BPS_1200_BUTTON:
+				if(!state)
+				{
+					AnimationPlayFrame(screen_id,BIG_BPS_1200,SHOW);
+					AnimationPlayFrame(screen_id,BIG_BPS_2400,HIDE);
+					AnimationPlayFrame(screen_id,BIG_BPS_4800,HIDE);
+					AnimationPlayFrame(screen_id,BIG_BPS_9600,HIDE);
+					dev_info.modbus_tran_rate = 1200;
+				}
+				break;
+			case BIG_BPS_2400_BUTTON:
+				if(!state)
+				{
+					AnimationPlayFrame(screen_id,BIG_BPS_2400,SHOW);
+					AnimationPlayFrame(screen_id,BIG_BPS_1200,HIDE);
+					AnimationPlayFrame(screen_id,BIG_BPS_4800,HIDE);
+					AnimationPlayFrame(screen_id,BIG_BPS_9600,HIDE);
+					dev_info.modbus_tran_rate = 2400;
+				}
+				break;
+			case BIG_BPS_4800_BUTTON:
+				if(!state)
+				{
+					AnimationPlayFrame(screen_id,BIG_BPS_4800,SHOW);
+					AnimationPlayFrame(screen_id,BIG_BPS_1200,HIDE);
+					AnimationPlayFrame(screen_id,BIG_BPS_2400,HIDE);
+					AnimationPlayFrame(screen_id,BIG_BPS_9600,HIDE);
+					dev_info.modbus_tran_rate = 4800;
+				}
+				break;
+			case BIG_BPS_9600_BUTTON:
+				if(!state)
+				{
+					AnimationPlayFrame(screen_id,BIG_BPS_9600,SHOW);
+					AnimationPlayFrame(screen_id,BIG_BPS_1200,HIDE);
+					AnimationPlayFrame(screen_id,BIG_BPS_4800,HIDE);
+					AnimationPlayFrame(screen_id,BIG_BPS_2400,HIDE);
+					dev_info.modbus_tran_rate = 9600;
+				}
+				break;
+			case BIG_CHINESE_LANGUAGE_BUTTON:
+				if(!state)
+				{
+					AnimationPlayFrame(screen_id,BIG_CHINESE_LANGUAGE,SHOW);
+					AnimationPlayFrame(screen_id,BIG_ENGLISH_LANGUAGE,HIDE);
+					dev_info.biglanguagestatus = 1;
+				}
+				break;
+			case BIG_ENGLISH_LANGUAGE_BUTTON:
+				if(!state)
+				{
+					AnimationPlayFrame(screen_id,BIG_ENGLISH_LANGUAGE,SHOW);
+					AnimationPlayFrame(screen_id,BIG_CHINESE_LANGUAGE,HIDE);
+					dev_info.biglanguagestatus = 0;
+				}
+				break;
+			default:
+				dev_info.modbus_tran_rate = 9600;
+				dev_info.biglanguagestatus = 1;
+		}
+		dev_info.dev_status_changed_flag = 1;
+
+}
+
+
+void mainShowScreenButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
+{
+	switch (control_id)
+		{
+			case BIG_MENU_ID:
+				MySetScreen(biglanguage_screen.BIG_SCREAT_PROTECT_SCREEN);
+				break;
+			case BIG_TIME_RECORD_ID:
+				MySetScreen(biglanguage_screen.BIG_TIME_RECORD_SCREEN);
+				break;
+			case BIG_SAMPLE_FRAME_MENU_ID:
+				if(state)
+				{
+					//should chage dev_info, and update to screen status
+					IOStatus.sample_frame=1;
+					mainIcon.sample_frame=SHOW;
+					mainIcon.rr_work_status=HIDE;
+					//SPINNER_RACK_ON;
+				}
+				else
+				{
+					//SPINNER_RACK_OFF;
+					IOStatus.sample_frame=0;
+					mainIcon.sample_frame=HIDE;
+					mainIcon.rr_work_status=SHOW;
+				}
+
+				break;
+			case BIG_BLOWER_MENU_ID:
+				if(state)
+				{
+					IOStatus.blower = 1;
+					mainIcon.fan_operation=SHOW;
+					mainIcon.fr_work_status=HIDE;
+				}
+				else
+				{
+					IOStatus.blower = 0;
+					mainIcon.fan_operation=HIDE;
+					mainIcon.fr_work_status=SHOW;
+					
+				}
+				break;
+			case BIG_START_OR_PAUSE_ID:
+				if(dev_info.runstatus>0)
+				{
+					SetPwmValue(0);
+					IOStatus.heat_output = 0;
+					dev_info.runstatus = 0;
+					dev_info.lefttimeflag=0;
+
+				}
+				else
+				{
+					IOStatus.heat_output = 1;
+					dev_info.runstatus = 1;			
+				}
+				break;
+			default:
+				break;
+		}
+
+}
+
+void passwordInputWrongScreenButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
+{
+	if(dev_info.passwordwrongflag == 1)
+	{
+		MySetScreen(biglanguage_screen.BIG_SCREAT_PROTECT_SCREEN);	
+	}
+	else if(dev_info.passwordwrongflag == 2)
+	{
+		MySetScreen(biglanguage_screen.BIG_ADJUST_PROTECT_SCREEN);
+	}
+	else if(dev_info.passwordwrongflag == 3)
+	{
+		MySetScreen(biglanguage_screen.BIG_AUTO_NOPOWER_RECOVER);
+	}
+}
+
+
+
+void adjustScreenButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
+{
+	switch (control_id)
+	{
+		case BIG_NO_POWER_RETURN_BUTTON:
+			MySetScreen(biglanguage_screen.BIG_PARAM_SET_SCREEN);	
+			break;
+		case BIG_EDIT_BUTTON:
+			MySetScreen(biglanguage_screen.BIG_AIR_CHANGE_RATE_SCREEN);
+			break;
+		case BIG_PID_BUTTON:
+			MySetScreen(biglanguage_screen.BIG_PID_SET_SCREEN);
+			break;
+		default:
+			break;
+	}
+}
+
+
+
+/***************************************************ICON********************************************************************/
+void mainShowScreenIcon(void)
+{
+//	switch (control_id)
+//	{
+//		case BIG_HEAT_SWITCH_ID:
+			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_HEAT_SWITCH_ID,mainIcon.heat_switch);
+//			break;
+//		case BIG_HEAT_OUTPUT_ID:
+			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_HEAT_OUTPUT_ID,mainIcon.heat_output);
+//			break;
+//		case BIG_PID_RUN_ID:
+			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_PID_RUN_ID,mainIcon.pid_run);
+//			break;
+//		case BIG_FAN_OPERATION_ID:
+			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_FAN_OPERATION_ID,mainIcon.fan_operation);
+//			break;
+//		case BIG_TEMP_WARNING1_ID:
+			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TEMP_WARNING1_ID,mainIcon.temp_warnning1);
+//			break;
+//		case BIG_TEMP_WARNING2_ID:
+			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TEMP_WARNING2_ID,mainIcon.temp_warnning2);
+//			break;
+//		case BIG_AIR_DOOR_OPEN_ANGLE_ID:
+			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_AIR_DOOR_OPEN_ANGLE_ID,mainIcon.air_door_open_angle);
+//			break;
+//		case BIG_SAMPLE_FRAME_MOTOR_ID:
+			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_SAMPLE_FRAME_MOTOR_ID,mainIcon.sample_frame);
+//			break;
+//		case BIG_TROUBLE_INDICATE_ID:
+			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TROUBLE_INDICATE_ID,mainIcon.trouble_indicate);
+//			break;
+//		case BIG_AR1_WORK_STATUS_ID:
+			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_AR1_WORK_STATUS_ID,mainIcon.ar1_work_status);
+//			break;
+//		case BIG_AR2_WORK_STATUS_ID:
+			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_AR2_WORK_STATUS_ID,mainIcon.ar2_work_status);
+//			break;
+//		case BIG_FR_WORK_STATUS_ID:
+			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_FR_WORK_STATUS_ID,mainIcon.fr_work_status);
+//			break;
+//		case BIG_RR_WORK_STATUS_ID:
+			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_RR_WORK_STATUS_ID,mainIcon.rr_work_status);
+//			break;
+//		case BIG_RS485_COMMU_ID:
+			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_RS485_COMMU_ID,mainIcon.rs485_comm);
+//			break;
+			
+		
+//	}
+
+}
+
+
+
+
+
+
+/***********************************************************************************************************************/
+
+
+
 
 void changeAirTimes(uint16_t control_id,uint8_t *str)
 {
@@ -136,38 +397,31 @@ void changeAirTimes(uint16_t control_id,uint8_t *str)
 void menuPassword(uint16_t control_id, uint8_t *str)
 {
 	memset(textvalue.menu_password,0,sizeof(char)*PASSWORDLENGTH);
-		memcpy(textvalue.menu_password,str,sizeof(char)*PASSWORDLENGTH);
-		if(!strncmp(textvalue.menu_password,dev_info.flash_setvalue.menu_password,PASSWORDLENGTH))
-		{
-			argSetErrorIcon.pass_update_fail=HIDE;
-			setCurrentScreen(biglanguage_screen.BIG_PARAM_SET_SCREEN);
-			//???
-			
-		}
-		else
-		{
-			argSetErrorIcon.pass_update_fail=SHOW;
-			setCurrentScreen(biglanguage_screen.BIG_PASSWORD_ERROR_SCREEN);
-			passwordwrongflag = 1;	
-		}
+	memcpy(textvalue.menu_password,str,sizeof(char)*PASSWORDLENGTH);
+	if(!strncmp(textvalue.menu_password,dev_info.flash_setvalue.menu_password,PASSWORDLENGTH))
+	{
+		MySetScreen(biglanguage_screen.BIG_PARAM_SET_SCREEN);
+	}
+	else
+	{
+		MySetScreen(biglanguage_screen.BIG_PASSWORD_ERROR_SCREEN);
+		passwordwrongflag = 1;	
+	}
 }
 void adjustProtectPassword(uint16_t control_id,uint8_t *str)
 {
 	memset(textvalue.protect_password,0,sizeof(char)*PASSWORDLENGTH);
-		memcpy(textvalue.protect_password,str,sizeof(char)*PASSWORDLENGTH);
-		if(!strncmp(textvalue.protect_password,dev_info.flash_setvalue.protect_password,PASSWORDLENGTH))
-		{
-			argSetErrorIcon.pass_update_fail=HIDE;
-			setCurrentScreen(biglanguage_screen.BIG_ADJUST_PROTECT_SCREEN);
-			passwordwrongflag = 0;
-		}
-		else
-		{
-			argSetErrorIcon.pass_update_fail=SHOW;
-			//AnimationPlayFrame(biglanguage_screen.BIG_PASSWORD_ERROR_SCREEN,BIG_PASS_UPDATE_FAIL,SHOW);
-			setCurrentScreen(biglanguage_screen.BIG_PASSWORD_ERROR_SCREEN);
-			passwordwrongflag = 2;	
-		}
+	memcpy(textvalue.protect_password,str,sizeof(char)*PASSWORDLENGTH);
+	if(!strncmp(textvalue.protect_password,dev_info.flash_setvalue.protect_password,PASSWORDLENGTH))
+	{
+		MySetScreen(biglanguage_screen.BIG_ADJUST_SCREEN);
+		passwordwrongflag = 0;
+	}
+	else
+	{
+		MySetScreen(biglanguage_screen.BIG_PASSWORD_ERROR_SCREEN);
+		passwordwrongflag = 2;	
+	}
 }
 void autoNoPowerScreen(uint16_t control_id,uint8_t *str)
 {
@@ -176,44 +430,41 @@ void autoNoPowerScreen(uint16_t control_id,uint8_t *str)
 		if(!strncmp(str,dev_info.autonopowerpassword,PASSWORDLENGTH))	
 		{
 			//have power , control device work normal
-			argSetErrorIcon.pass_update_fail=HIDE;
-			//AnimationPlayFrame(biglanguage_screen.BIG_PASSWORD_ERROR_SCREEN,BIG_PASS_UPDATE_FAIL,HIDE);
-			setCurrentScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);
+			MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);
+			dev_info.autonopowertime.Year += 100;
 			passwordwrongflag = 0;
 		}
 		else
 		{
 			//control device no work
-			argSetErrorIcon.pass_update_fail=SHOW;
-			//AnimationPlayFrame(biglanguage_screen.BIG_PASSWORD_ERROR_SCREEN,BIG_PASS_UPDATE_FAIL,SHOW);
-			setCurrentScreen(biglanguage_screen.BIG_PASSWORD_ERROR_SCREEN);
+			MySetScreen(biglanguage_screen.BIG_PASSWORD_ERROR_SCREEN);
 			passwordwrongflag = 3;
 		}
 }
 void pidSettingScreen(uint16_t control_id,uint8_t *str)
 {
 	switch (control_id)
-		{
-			case BIG_P_VALUE_SET:
-				memset(textvalue.Pidvalue[0],0,sizeof(char)*PASSWORDLENGTH);
-				memcpy(textvalue.Pidvalue[0],str,sizeof(char)*PASSWORDLENGTH);
-				dev_info.pidvalue.PID_P = atof(textvalue.Pidvalue[0]);
-				break;
-			case BIG_I_VALUE_SET:
-				memset(textvalue.Pidvalue[1],0,sizeof(char)*PASSWORDLENGTH);
-				memcpy(textvalue.Pidvalue[1],str,sizeof(char)*PASSWORDLENGTH);
-				dev_info.pidvalue.PID_I = atof(textvalue.Pidvalue[1]);
-				dev_info.pidvalue.PID_I=dev_info.pidvalue.PID_I/10000;
-				break;
-			case BIG_D_VALUE_SET:
-				memset(textvalue.Pidvalue[2],0,sizeof(char)*PASSWORDLENGTH);
-				memcpy(textvalue.Pidvalue[2],str,sizeof(char)*PASSWORDLENGTH);
-				dev_info.pidvalue.PID_D = atof(textvalue.Pidvalue[2]);
-				break;
-			default:
-				break;
-		}
-		dev_info.dev_status_changed_flag = 1;
+	{
+		case BIG_P_VALUE_SET:
+			memset(textvalue.Pidvalue[0],0,sizeof(char)*PASSWORDLENGTH);
+			memcpy(textvalue.Pidvalue[0],str,sizeof(char)*PASSWORDLENGTH);
+			dev_info.pidvalue.PID_P = atof(textvalue.Pidvalue[0]);
+			break;
+		case BIG_I_VALUE_SET:
+			memset(textvalue.Pidvalue[1],0,sizeof(char)*PASSWORDLENGTH);
+			memcpy(textvalue.Pidvalue[1],str,sizeof(char)*PASSWORDLENGTH);
+			dev_info.pidvalue.PID_I = atof(textvalue.Pidvalue[1]);
+			dev_info.pidvalue.PID_I=dev_info.pidvalue.PID_I/10000;
+			break;
+		case BIG_D_VALUE_SET:
+			memset(textvalue.Pidvalue[2],0,sizeof(char)*PASSWORDLENGTH);
+			memcpy(textvalue.Pidvalue[2],str,sizeof(char)*PASSWORDLENGTH);
+			dev_info.pidvalue.PID_D = atof(textvalue.Pidvalue[2]);
+			break;
+		default:
+			break;
+	}
+	dev_info.dev_status_changed_flag = 1;
 }
 void menuSettingScreen(uint16_t control_id, uint8_t *str)
 {
@@ -221,327 +472,321 @@ void menuSettingScreen(uint16_t control_id, uint8_t *str)
 	double d_temp;
 	int i_temp;
 	memset(str_temp,0,sizeof(char)*COMMONSIZE);
-		switch (control_id)
-		{
-			case BIG_TEST_TIME_VALUE:	//set time
-				
-				memcpy(str_temp,str,sizeof(char)*COMMONSIZE);
-				
-				d_temp = atof(str_temp);
-				
-				SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_TEST_TIME_VALUE,str_temp);
-				if(mainPageText.test_time < 0.1 || mainPageText.test_time >= 9999.9)
-				{
-					dev_info.testTime = 0;
-					argSetErrorIcon.test_temp_set_fail=SHOW;
-					//£¿£¿£¿£¿
-					//AnimationPlayFrame(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN,BIG_TESTTIME_SET_FAIL,SHOW);
-					setCurrentScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN1);
-				}
-				else 
-				{
-					dev_info.testTime = mainPageText.test_time;
-					argSetErrorIcon.test_temp_set_fail=HIDE;
-					dev_info.dev_status_changed_flag = 1;
-				}
-				
-				break;
-			case BIG_TEST_TEMP_VALUE:	//set temp
-				if(dev_info.runstatus>0)
-					return;
-				memcpy(str_temp,str,sizeof(char)*COMMONSIZE);	
-				SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_TEST_TEMP_VALUE,str);			
-				d_temp = atof(str_temp);			
-				if(d_temp < 50 || d_temp >= 400)
-				{
-					dev_info.setTemp = 0;
-					argSetErrorIcon.test_temp_set_fail=SHOW;
-					setCurrentScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN1);
-				}
-				else
-				{
-					dev_info.setTemp = d_temp;
-					argSetErrorIcon.test_temp_set_fail=HIDE;
-					dev_info.dev_status_changed_flag = 1;
-				}
-				
-				break;	
-			case BIG_TEMP_RETURN_DIFF:
-				memcpy(str_temp,str,sizeof(char)*COMMONSIZE);
-				SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_TEMP_RETURN_DIFF,str);			
-				d_temp = atof(str_temp);
-				if(d_temp < 0.1 || d_temp > 20)
-				{
-					dev_info.temp_backdiff = 0;
-					argSetErrorIcon.return_diff_set_fail=SHOW;
-					setCurrentScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN1);
-				}
-				else
-				{
-					dev_info.temp_backdiff = d_temp;
-					argSetErrorIcon.return_diff_set_fail=HIDE;
-					dev_info.dev_status_changed_flag = 1;
-				}
-				
-				break;
-				
-			case BIG_WARNING1_UP_VALUE:
-				
-				memcpy(str_temp,str,sizeof(char)*COMMONSIZE);
-				SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_WARNING1_UP_VALUE,str);
-				d_temp = atof(str_temp);
-				
-				if(d_temp < 0.1 || d_temp > 50)
-				{
-					dev_info.flash_setvalue.warning1_up = 0;
-					argSetErrorIcon.temp_up_set_fail=SHOW;
-					
-					setCurrentScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN1);
-				}
-				else
-				{
-					dev_info.flash_setvalue.warning1_up = d_temp;
-					argSetErrorIcon.temp_up_set_fail=HIDE;
-					dev_info.dev_status_changed_flag = 1;
-				}
-				
-				break;	
-			case BIG_WARNING2_UP_VALUE:
-				memcpy(str_temp,str,sizeof(char)*COMMONSIZE);
-				SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_WARNING2_UP_VALUE,str);
-				d_temp = atof(str_temp);
-				
-				if(d_temp < 0.1 || d_temp > 50)
-				{
-					dev_info.flash_setvalue.warning2_up = 0;
-					argSetErrorIcon.temp_up2_set_fail=SHOW;
-					setCurrentScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN1);
-				}
-				else
-				{
-					dev_info.flash_setvalue.warning2_up = d_temp;
-					argSetErrorIcon.temp_up2_set_fail=HIDE;
-					dev_info.dev_status_changed_flag = 1;
-				}
+	switch (control_id)
+	{
+		case BIG_TEST_TIME_VALUE:	//set time
 			
-				break;	
-				
-			case BIG_NEW_PASSWORD:
-				memcpy(global_str_temp,str,sizeof(char)*PASSWORDLENGTH);
-				SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_NEW_PASSWORD,str);
-//				printf("password is :%s\r\n",str);
-				break;
-			case BIG_SECOND_INPUT_PASSWORD:
-				memcpy(str_temp,str,sizeof(char)*PASSWORDLENGTH);
-//				printf("second password is :%s\r\n",str);
-				if(strncmp(global_str_temp,str_temp,PASSWORDLENGTH))
-				{
-//					printf("second password is OK!\r\n");
-					argSetErrorIcon.pass_update_fail=SHOW;
-					setCurrentScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN1);	
-				}
-				else
-				{
-					memcpy(dev_info.flash_setvalue.menu_password,str_temp,sizeof(char)*COMMONSIZE);
-					argSetErrorIcon.pass_update_fail=HIDE;
-					dev_info.dev_status_changed_flag = 1;
-				}
-				
-				break;
-			case BIG_CHANGE_AIR_TIME_SET:
-				//in menu, change air set
-				memcpy(str_temp,str,sizeof(char)*COMMONSIZE);
-				i_temp= atoi(str_temp);
-				if(judge_changeair_time(i_temp))
-				{
-					argSetErrorIcon.change_air_set_fail=HIDE;
-					dev_info.flash_setvalue.change_air_time = i_temp;
-					dev_info.airdooropenangle = getChangeAirTimes(i_temp);
-					dev_info.dev_status_changed_flag = 1;
-				}
-				else
-				{
-					argSetErrorIcon.change_air_set_fail=SHOW;
-					setCurrentScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN1);	
-				}
-				
-				break;
-			case BIG_SCREEN_BRIGHT_ADJUST:
-				memcpy(str_temp ,str,sizeof(char)*4);
-				SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_SCREEN_BRIGHT_ADJUST,str);
-				i_temp = atoi(str_temp);
-				
-				if(i_temp > 0 && i_temp <= 100)
-				{
-					if (i_temp > 100) i_temp = 100;
-					dev_info.flash_setvalue.screen_light_value = i_temp;
-					SetBackLight(200 - i_temp*2);
-					argSetErrorIcon.light_set_fail=HIDE;
-				}
-				else
-				{
-					argSetErrorIcon.light_set_fail=SHOW;
-				}
+			memcpy(str_temp,str,sizeof(char)*COMMONSIZE);
+			
+			d_temp = atof(str_temp);
+			
+			SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_TEST_TIME_VALUE,str_temp);
+			if(d_temp < 0.1 || d_temp >= 9999.9)
+			{
+//				dev_info.testTime = 0;
+				argSetErrorIcon.test_temp_set_fail=SHOW;
+				MySetScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN1);
+			}
+			else 
+			{
+				dev_info.testTime = d_temp;
+				argSetErrorIcon.test_temp_set_fail=HIDE;
 				dev_info.dev_status_changed_flag = 1;
-				break;
+			}
 			
-			case BIG_MODBUS_NODE_ADDRESS:
-				memcpy(str_temp,str,sizeof(char)*COMMONSIZE);
-				SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_MODBUS_NODE_ADDRESS,str);
-				i_temp = atoi(str_temp);
-				if(i_temp < 1 || i_temp > 32)
-				{
-					
-					setCurrentScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN1);	
-					argSetErrorIcon.modebus_addr_set_fail=SHOW;
-					
-				}
-				else
-				{
-					dev_info.flash_setvalue.modbus_address = i_temp;
-					argSetErrorIcon.modebus_addr_set_fail=HIDE;
-					dev_info.dev_status_changed_flag = 1;
-				}
-				break;
-				
-		}
+			break;
+		case BIG_TEST_TEMP_VALUE:	//set temp
+			if(dev_info.runstatus>0)
+				return;
+			memcpy(str_temp,str,sizeof(char)*COMMONSIZE);	
+			SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_TEST_TEMP_VALUE,str);			
+			d_temp = atof(str_temp);			
+			if(d_temp < 50 || d_temp >= 400)
+			{
+//				dev_info.setTemp = 0;
+				argSetErrorIcon.test_temp_set_fail=SHOW;
+				MySetScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN1);
+			}
+			else
+			{
+				dev_info.setTemp = d_temp;
+				argSetErrorIcon.test_temp_set_fail=HIDE;
+				dev_info.dev_status_changed_flag = 1;
+			}
+			
+			break;	
+		case BIG_TEMP_RETURN_DIFF:
+			memcpy(str_temp,str,sizeof(char)*COMMONSIZE);
+			SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_TEMP_RETURN_DIFF,str);			
+			d_temp = atof(str_temp);
+			if(d_temp < 0.1 || d_temp > 20)
+			{
+//				dev_info.temp_backdiff = 0;
+				argSetErrorIcon.return_diff_set_fail=SHOW;
+				MySetScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN1);
+			}
+			else
+			{
+				dev_info.temp_backdiff = d_temp;
+				argSetErrorIcon.return_diff_set_fail=HIDE;
+				dev_info.dev_status_changed_flag = 1;
+			}		
+			break;			
+		case BIG_WARNING1_UP_VALUE:			
+			memcpy(str_temp,str,sizeof(char)*COMMONSIZE);
+			SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_WARNING1_UP_VALUE,str);
+			d_temp = atof(str_temp);
+			
+			if(d_temp < 0.1 || d_temp > 50)
+			{
+//				dev_info.flash_setvalue.warning1_up = 0;
+				argSetErrorIcon.temp_up_set_fail=SHOW;
+				MySetScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN1);
+			}
+			else
+			{
+				dev_info.flash_setvalue.warning1_up = d_temp;
+				argSetErrorIcon.temp_up_set_fail=HIDE;
+				dev_info.dev_status_changed_flag = 1;
+			}
+			
+			break;	
+		case BIG_WARNING2_UP_VALUE:
+			memcpy(str_temp,str,sizeof(char)*COMMONSIZE);
+			SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_WARNING2_UP_VALUE,str);
+			d_temp = atof(str_temp);
+			if(d_temp < 0.1 || d_temp > 50)
+			{
+//				dev_info.flash_setvalue.warning2_up = 0;
+				argSetErrorIcon.temp_up2_set_fail=SHOW;
+				MySetScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN1);
+			}
+			else
+			{
+				dev_info.flash_setvalue.warning2_up = d_temp;
+				argSetErrorIcon.temp_up2_set_fail=HIDE;
+				dev_info.dev_status_changed_flag = 1;
+			}		
+			break;				
+		case BIG_NEW_PASSWORD:
+			memcpy(global_str_temp,str,sizeof(char)*PASSWORDLENGTH);
+			SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_NEW_PASSWORD,str);
+			break;
+		case BIG_SECOND_INPUT_PASSWORD:
+			memcpy(str_temp,str,sizeof(char)*PASSWORDLENGTH);
+			if(strncmp(global_str_temp,str_temp,PASSWORDLENGTH))
+			{
+				argSetErrorIcon.pass1_set_fail=SHOW;
+				MySetScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN1);	
+			}
+			else
+			{
+				memcpy(dev_info.flash_setvalue.menu_password,str_temp,sizeof(char)*COMMONSIZE);
+				argSetErrorIcon.pass1_set_fail=HIDE;
+				dev_info.dev_status_changed_flag = 1;
+			}
+			
+			break;
+		case BIG_CHANGE_AIR_TIME_SET:
+			//in menu, change air set
+			memcpy(str_temp,str,sizeof(char)*COMMONSIZE);
+			i_temp= atoi(str_temp);
+			if(judge_changeair_time(i_temp))
+			{
+				argSetErrorIcon.change_air_set_fail=HIDE;
+				dev_info.flash_setvalue.change_air_time = i_temp;
+				dev_info.airdooropenangle = getChangeAirTimes(i_temp);
+				dev_info.dev_status_changed_flag = 1;
+			}
+			else
+			{
+				argSetErrorIcon.change_air_set_fail=SHOW;
+				MySetScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN1);	
+			}
+			
+			break;
+		case BIG_SCREEN_BRIGHT_ADJUST:
+			memcpy(str_temp ,str,sizeof(char)*4);
+			SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_SCREEN_BRIGHT_ADJUST,str);
+			i_temp = atoi(str_temp);			
+			if(i_temp > 0 && i_temp <= 100)
+			{
+				if (i_temp > 100) i_temp = 100;
+				dev_info.flash_setvalue.screen_light_value = i_temp;
+				SetBackLight(200 - i_temp*2);
+				argSetErrorIcon.light_set_fail=HIDE;
+			}
+			else
+			{
+				argSetErrorIcon.light_set_fail=SHOW;
+			}
+			dev_info.dev_status_changed_flag = 1;
+			break;
+		
+		case BIG_MODBUS_NODE_ADDRESS:
+			memcpy(str_temp,str,sizeof(char)*COMMONSIZE);
+			SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_MODBUS_NODE_ADDRESS,str);
+			i_temp = atoi(str_temp);
+			if(i_temp < 1 || i_temp > 32)
+			{				
+				MySetScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN1);	
+				argSetErrorIcon.modebus_addr_set_fail=SHOW;				
+			}
+			else
+			{
+				dev_info.flash_setvalue.modbus_address = i_temp;
+				argSetErrorIcon.modebus_addr_set_fail=HIDE;
+				dev_info.dev_status_changed_flag = 1;
+			}
+			break;
+			
+	}
 }
 void deviceTimeSet(uint16_t control_id,uint8_t *str)
 {
 	switch (control_id)
-		{
-			case BIG_CONTROL_DATE_YEAR_SET:
-				memset(textvalue.device_time_setting.Year,0,sizeof(char)*COMMONSIZE);
-				memcpy(textvalue.device_time_setting.Year,str,sizeof(char)*COMMONSIZE);	
-				dev_info.timenow.Year = atoi(textvalue.device_time_setting.Year);
-				dev_info.timenow.Year = DectoBCD(dev_info.timenow.Year);
-				break;
-			case BIG_CONTROL_DATE_MONTH_SET:
-				memset(textvalue.device_time_setting.Mon,0,sizeof(char)*COMMONSIZE);
-				memcpy(textvalue.device_time_setting.Mon,str,sizeof(char)*COMMONSIZE);
-				dev_info.timenow.Mon = atoi(textvalue.device_time_setting.Mon);
-				dev_info.timenow.Mon = DectoBCD(dev_info.timenow.Mon);
-				break;	
-			case BIG_CONTROL_DATE_DAY_SET:
-				memset(textvalue.device_time_setting.Day,0,sizeof(char)*COMMONSIZE);
-				memcpy(textvalue.device_time_setting.Day,str,sizeof(char)*COMMONSIZE);
-				dev_info.timenow.Day = atoi(textvalue.device_time_setting.Day);
-				dev_info.timenow.Day = DectoBCD(dev_info.timenow.Day);
-				break;	
-			case BIG_CONTROL_TIME_HOUR_SET:
-				memset(textvalue.device_time_setting.Hour,0,sizeof(char)*COMMONSIZE);
-				memcpy(textvalue.device_time_setting.Hour,str,sizeof(char)*COMMONSIZE);
-				dev_info.timenow.Hour = atoi(textvalue.device_time_setting.Hour);
-				dev_info.timenow.Hour = DectoBCD(dev_info.timenow.Hour);
-				break;
-			case BIG_CONTROL_TIME_MINUTE_SET:
-				memset(textvalue.device_time_setting.Min,0,sizeof(char)*COMMONSIZE);
-				memcpy(textvalue.device_time_setting.Min,str,sizeof(char)*COMMONSIZE);
-				dev_info.timenow.Min = atoi(textvalue.device_time_setting.Min);
-				dev_info.timenow.Min = DectoBCD(dev_info.timenow.Min);
-				break;	
-			case BIG_CONTROL_TIME_SECOND_SET:
-				memset(textvalue.device_time_setting.Sec,0,sizeof(char)*COMMONSIZE);
-				memcpy(textvalue.device_time_setting.Sec,str,sizeof(char)*COMMONSIZE);
-				dev_info.timenow.Sec = atoi(textvalue.device_time_setting.Sec);
-				dev_info.timenow.Sec = DectoBCD(dev_info.timenow.Sec);
-				break;	
-//			default:
-//				break;
-		}
-		SetRtcTime(dev_info.timenow.Sec,dev_info.timenow.Min,dev_info.timenow.Hour,dev_info.timenow.Day,0,dev_info.timenow.Mon,dev_info.timenow.Year);
+	{
+		case BIG_CONTROL_DATE_YEAR_SET:
+			memset(textvalue.device_time_setting.Year,0,sizeof(char)*COMMONSIZE);
+			memcpy(textvalue.device_time_setting.Year,str,sizeof(char)*COMMONSIZE);	
+			dev_info.timenow.Year = atoi(textvalue.device_time_setting.Year);
+			dev_info.timenow.Year = DectoBCD(dev_info.timenow.Year);
+			break;
+		case BIG_CONTROL_DATE_MONTH_SET:
+			memset(textvalue.device_time_setting.Mon,0,sizeof(char)*COMMONSIZE);
+			memcpy(textvalue.device_time_setting.Mon,str,sizeof(char)*COMMONSIZE);
+			dev_info.timenow.Mon = atoi(textvalue.device_time_setting.Mon);
+			dev_info.timenow.Mon = DectoBCD(dev_info.timenow.Mon);
+			break;	
+		case BIG_CONTROL_DATE_DAY_SET:
+			memset(textvalue.device_time_setting.Day,0,sizeof(char)*COMMONSIZE);
+			memcpy(textvalue.device_time_setting.Day,str,sizeof(char)*COMMONSIZE);
+			dev_info.timenow.Day = atoi(textvalue.device_time_setting.Day);
+			dev_info.timenow.Day = DectoBCD(dev_info.timenow.Day);
+			break;	
+		case BIG_CONTROL_TIME_HOUR_SET:
+			memset(textvalue.device_time_setting.Hour,0,sizeof(char)*COMMONSIZE);
+			memcpy(textvalue.device_time_setting.Hour,str,sizeof(char)*COMMONSIZE);
+			dev_info.timenow.Hour = atoi(textvalue.device_time_setting.Hour);
+			dev_info.timenow.Hour = DectoBCD(dev_info.timenow.Hour);
+			break;
+		case BIG_CONTROL_TIME_MINUTE_SET:
+			memset(textvalue.device_time_setting.Min,0,sizeof(char)*COMMONSIZE);
+			memcpy(textvalue.device_time_setting.Min,str,sizeof(char)*COMMONSIZE);
+			dev_info.timenow.Min = atoi(textvalue.device_time_setting.Min);
+			dev_info.timenow.Min = DectoBCD(dev_info.timenow.Min);
+			break;	
+		case BIG_CONTROL_TIME_SECOND_SET:
+			memset(textvalue.device_time_setting.Sec,0,sizeof(char)*COMMONSIZE);
+			memcpy(textvalue.device_time_setting.Sec,str,sizeof(char)*COMMONSIZE);
+			dev_info.timenow.Sec = atoi(textvalue.device_time_setting.Sec);
+			dev_info.timenow.Sec = DectoBCD(dev_info.timenow.Sec);
+			break;	
+	}
+	SetRtcTime(dev_info.timenow.Sec,dev_info.timenow.Min,dev_info.timenow.Hour,dev_info.timenow.Day,0,dev_info.timenow.Mon,dev_info.timenow.Year);
 }
 void adjustScreenSetting(uint16_t control_id,uint8_t *str)
 {
 	uint8_t str_temp[COMMONSIZE];
 	int i_temp;
-	float  data_temp = 0;
-	AutoNoPowerTime  nopowertime = {1985,12,12};			
+	float  data_temp = 0;	
+	uint8_t timeSetFlag = 0;
 	switch (control_id)
-		{
-			case BIG_ADJUST_PASSWORD1:
-				memcpy(global_str_temp,str,sizeof(char)*PASSWORDLENGTH);
-				SetTextValue(biglanguage_screen.BIG_ADJUST_SCREEN,BIG_ADJUST_PASSWORD1,str);
-				break;
-			case BIG_ADJUST_PASSWORD2:
-				memset(str_temp,0,sizeof(char)*PASSWORDLENGTH);
-				memcpy(str_temp,str,sizeof(char)*PASSWORDLENGTH);
-				SetTextValue(biglanguage_screen.BIG_ADJUST_SCREEN,BIG_ADJUST_PASSWORD2,str);
-				if(strncmp(global_str_temp,str_temp,PASSWORDLENGTH))
-				{
-					argSetErrorIcon.pass2_set_fail=SHOW;
-					MySetScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN2);	
-				}
-				else
-				{
-					memcpy(dev_info.flash_setvalue.protect_password,str_temp,sizeof(char)*PASSWORDLENGTH);
-					argSetErrorIcon.pass2_set_fail=HIDE;
-					dev_info.dev_status_changed_flag = 1;
-				}
-				break;
-			case BIG_AIR_DOOR_ANGLE_SET:
-				memset(textvalue.airdoor_value,0,sizeof(char)*4);
-				memcpy(textvalue.airdoor_value,str,sizeof(char)*4);
-				SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_AIR_DOOR_ANGLE_INPUT_ID,str);
-				SetTextValue(biglanguage_screen.BIG_ADJUST_SCREEN,BIG_AIR_DOOR_ANGLE_SET,str);
-				i_temp = atoi(textvalue.airdoor_value);
-				if (i_temp >= 0 && i_temp <= 100)
-				{
-					Dac1_Set_Vol(33*i_temp);
-					dev_info.flash_setvalue.air_door_angle = i_temp;
-					argSetErrorIcon.air_angle_set_fail=HIDE;
-					dev_info.dev_status_changed_flag = 1;
-				}
-				else
-				{
-					argSetErrorIcon.air_angle_set_fail=SHOW;
-					setCurrentScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN2);
-				}
-				break;
-			case BIG_TEMP_VALUE_REVUSE_SET:
-				memset(textvalue.temp_adjust_value,0,sizeof(char)*COMMONSIZE);
-				memcpy(textvalue.temp_adjust_value,str,sizeof(char)*COMMONSIZE);
-				data_temp =  atof(textvalue.temp_adjust_value);
-				if(data_temp >= -20 && data_temp <= 20)
-				{
-					dev_info.flash_adjusttemp =  data_temp;
-					argSetErrorIcon.temp_adjust_fail=HIDE;
-					dev_info.dev_status_changed_flag = 1;
-				}
-				else
-				{
-					argSetErrorIcon.temp_adjust_fail=SHOW;
-					setCurrentScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN2);
-				}
-				break;
-			case BIG_YEAR_SET:
-				memset(textvalue.autotime.year,0,sizeof(char)*COMMONSIZE);
-				memcpy(textvalue.autotime.year,str,sizeof(char)*COMMONSIZE);
-				nopowertime.year = atoi(textvalue.autotime.year);
-				nopowertime.year = DectoBCD(nopowertime.year);
-				dev_info.autonopowertime.Year = nopowertime.year; 
-				break;
-			case BIG_MONTH_SET:
-				memset(textvalue.autotime.month,0,sizeof(char)*COMMONSIZE);
-				memcpy(textvalue.autotime.month,str,sizeof(char)*COMMONSIZE);
-				nopowertime.month = atoi(textvalue.autotime.month);
-				nopowertime.month = DectoBCD(nopowertime.month);
-				dev_info.autonopowertime.Mon = nopowertime.month;
-				break;	
-			case BIG_DAY_SET:
-				memset(textvalue.autotime.day,0,sizeof(char)*COMMONSIZE);
-				memcpy(textvalue.autotime.day,str,sizeof(char)*COMMONSIZE);
-				nopowertime.day = atoi(textvalue.autotime.day);
-				nopowertime.day = DectoBCD(nopowertime.day);
-				dev_info.autonopowertime.Day = nopowertime.day;
+	{
+		case BIG_ADJUST_PASSWORD1:
+			memcpy(global_str_temp,str,sizeof(char)*PASSWORDLENGTH);
+			SetTextValue(biglanguage_screen.BIG_ADJUST_SCREEN,BIG_ADJUST_PASSWORD1,str);
+			break;
+		case BIG_ADJUST_PASSWORD2:
+			memset(str_temp,0,sizeof(char)*PASSWORDLENGTH);
+			memcpy(str_temp,str,sizeof(char)*PASSWORDLENGTH);
+			SetTextValue(biglanguage_screen.BIG_ADJUST_SCREEN,BIG_ADJUST_PASSWORD2,str);
+			if(strncmp(global_str_temp,str_temp,PASSWORDLENGTH))
+			{
+				argSetErrorIcon.pass2_set_fail=SHOW;
+				MySetScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN2);	
+			}
+			else
+			{
+				memcpy(dev_info.flash_setvalue.protect_password,str_temp,sizeof(char)*PASSWORDLENGTH);
+				argSetErrorIcon.pass2_set_fail=HIDE;
 				dev_info.dev_status_changed_flag = 1;
-				break;	
-		}
+			}
+			break;
+		case BIG_AIR_DOOR_ANGLE_SET:
+			memset(textvalue.airdoor_value,0,sizeof(char)*4);
+			memcpy(textvalue.airdoor_value,str,sizeof(char)*4);
+			SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_AIR_DOOR_ANGLE_INPUT_ID,str);
+			SetTextValue(biglanguage_screen.BIG_ADJUST_SCREEN,BIG_AIR_DOOR_ANGLE_SET,str);
+			i_temp = atoi(textvalue.airdoor_value);
+			if (i_temp >= 0 && i_temp <= 100)
+			{
+				Dac1_Set_Vol(33*i_temp);
+				dev_info.flash_setvalue.air_door_angle = i_temp;
+				argSetErrorIcon.air_angle_set_fail=HIDE;
+				dev_info.dev_status_changed_flag = 1;
+			}
+			else
+			{
+				argSetErrorIcon.air_angle_set_fail=SHOW;
+				MySetScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN2);
+			}
+			break;
+		case BIG_TEMP_VALUE_REVUSE_SET:
+			memset(textvalue.temp_adjust_value,0,sizeof(char)*COMMONSIZE);
+			memcpy(textvalue.temp_adjust_value,str,sizeof(char)*COMMONSIZE);
+			data_temp =  atof(textvalue.temp_adjust_value);
+			if(data_temp >= -20 && data_temp <= 20)
+			{
+				dev_info.flash_adjusttemp =  data_temp;
+				argSetErrorIcon.temp_adjust_fail=HIDE;
+				dev_info.dev_status_changed_flag = 1;
+			}
+			else
+			{
+				argSetErrorIcon.temp_adjust_fail=SHOW;
+				MySetScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN2);
+			}
+			break;
+		case BIG_YEAR_SET:
+			timeSetFlag++;
+			memset(textvalue.autotime.year,0,sizeof(char)*COMMONSIZE);
+			memcpy(textvalue.autotime.year,str,sizeof(char)*COMMONSIZE);
+			nopowertime.Year = atoi(textvalue.autotime.year);
+			nopowertime.Year = DectoBCD(nopowertime.Year);
+			 
+			break;
+		case BIG_MONTH_SET:
+			timeSetFlag++;
+			memset(textvalue.autotime.month,0,sizeof(char)*COMMONSIZE);
+			memcpy(textvalue.autotime.month,str,sizeof(char)*COMMONSIZE);
+			nopowertime.Mon = atoi(textvalue.autotime.month);
+			nopowertime.Mon = DectoBCD(nopowertime.Mon);
+			break;	
+		case BIG_DAY_SET:
+			timeSetFlag++;
+			memset(textvalue.autotime.day,0,sizeof(char)*COMMONSIZE);
+			memcpy(textvalue.autotime.day,str,sizeof(char)*COMMONSIZE);
+			nopowertime.Day = atoi(textvalue.autotime.day);
+			nopowertime.Day = DectoBCD(nopowertime.Day);
+			break;	
+	}
+	if((timeSetFlag)&&(diff_time(rtctime, nopowertime)))
+	{
+		timeSetFlag = 0;
+		dev_info.autonopowertime.Year = nopowertime.Year;
+		dev_info.autonopowertime.Mon = nopowertime.Mon;
+		dev_info.autonopowertime.Day = nopowertime.Day;
+		dev_info.dev_status_changed_flag = 1;
+		argSetErrorIcon.auto_no_power_set_fail=HIDE;
+	}
+	else
+	{
+		argSetErrorIcon.auto_no_power_set_fail=SHOW;
+		MySetScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN2);
+	}
 }
-void readRTCFromScreen(RtcTime t)
-{
-	dev_info.timenow=t;
-}
+
 
 
 //merge time str

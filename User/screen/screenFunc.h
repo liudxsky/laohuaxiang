@@ -4,6 +4,20 @@
 #include "./screen/screenStatus.h"
 #define TRUE 1
 #define FALSE 0
+
+
+
+
+
+void pidScreenButton(uint16_t screen_id, uint16_t control_id, uint8_t  state);
+void menuScreenButton(uint16_t screen_id, uint16_t control_id, uint8_t  state);
+void mainShowScreenButton(uint16_t screen_id, uint16_t control_id, uint8_t  state);
+void passwordInputWrongScreenButton(uint16_t screen_id, uint16_t control_id, uint8_t  state);
+void adjustScreenButton(uint16_t screen_id, uint16_t control_id, uint8_t  state);
+
+
+void mainShowScreenIcon(void);
+
 void changeAirTimes(uint16_t control_id,uint8_t *str);
 void check_heat_switch(void);
 void updatePIDScreen(uint16_t id);
@@ -15,7 +29,6 @@ void pidSettingScreen(uint16_t control_id,uint8_t *str);
 void autoNoPowerScreen(uint16_t control_id,uint8_t *str);
 void adjustProtectPassword(uint16_t control_id,uint8_t *str);
 void menuPassword(uint16_t control_id, uint8_t *str);
-void readRTCFromScreen(RtcTime t);
 
 uint8_t judge_changeair_time(uint16_t change_time);
 uint8_t max_change_air(uint8_t *buff);

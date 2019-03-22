@@ -37,10 +37,7 @@ void changestruct(void);
 
 void door_open_status(void);
 
-
 uint16_t Get_GPIO_Status(void);
-
-void check_modbuss_rate(void);
 
 void check_language_select(void);
 

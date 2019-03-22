@@ -35,7 +35,7 @@ typedef struct
 	uint8_t airdooropenangle;						//风门开启角度
 	uint32_t  addup_testtime;							//累计试验时间
 	uint8_t  Modbus_address;							//Modbus地址
-	uint8_t  modbus_tran_rate_flag;						//Modbus传输速率
+	uint16_t  modbus_tran_rate;						//Modbus传输速率
 	Pid_Value pidvalue;									//pid值
 	CoilValue flash_setvalue;							//参数设置
 	RtcTime autonopowertime;							//自动断电时间

@@ -23,7 +23,7 @@ extern BIG_SCREEN_ID_TAB biglanguage_screen;
 
 
 extern uint16_t current_screen_id;
-extern TextValueTab  textvalue;					//�ı��ؼ�����ֵ
+extern TextValueTab  textvalue;					
 
 extern uint8_t cmd_buffer[CMD_MAX_SIZE];
 extern dev_info_t dev_info;
@@ -40,20 +40,16 @@ extern struct IOStatusStruct IOStatus;
 uint8_t  pwmgpiostatus = 0;
 uint16_t gpiostatus = 0;
 uint32_t door_openstatus = 0,door_closestatus = 0;
-uint16_t Modbus_rate = 9600;
 
 
 
-ThermalLag heattime_log;						//���ͺ�ʱ���¼�ṹ��?
+ThermalLag heattime_log;						
 uint8_t  control_mode[2][8] = {"4-20mA","2-10V"};
-uint8_t  Rs485TX = 0,Rs485RX = 0;				//0��ʾͨ��������1��ʾͨ���쳣��2��ʾ485ͨ��δ����
+uint8_t  Rs485TX = 0,Rs485RX = 0;				
 
 
 
 
-
-
-//���̵�����������״̬�仯
 uint16_t Get_GPIO_Status(void)
 {
 	
@@ -86,9 +82,8 @@ uint16_t Get_GPIO_Status(void)
 
 
 
-//�ϵ��Լ���ʾ���������ͨ���������˸LED��
 extern uint8_t screen_flag;
-//�����Ļ����?
+
 void check_screen_connect(void)
 {
 	if(screen_flag)
@@ -107,10 +102,8 @@ void check_screen_connect(void)
 }
 
 
-//����Ƿ񵽶�ʱ�ϵ�ʱ��?
 void check_nopowertime(void)
 {
-	//????
 	//after this day, it will work
 	if((dev_info.timenow.Year >= dev_info.autonopowertime.Year)&&(dev_info.timenow.Mon >= dev_info.autonopowertime.Mon)&&(dev_info.timenow.Day >= dev_info.autonopowertime.Day))
 	{
@@ -119,7 +112,7 @@ void check_nopowertime(void)
 	}
 }
 
-//������ͨ��
+//check pwm
 void check_pwmicon(void)
 {
 	if(dev_info.pwmvalue != 0)
@@ -133,7 +126,7 @@ void check_pwmicon(void)
 }
 
 
-//���?85ͨ��״̬
+//check Rs485
 void Check_Rs485(void)
 {
 	if(Rs485TX&Rs485RX)
@@ -168,54 +161,28 @@ void Check_Rs485(void)
 }
 
 
-//��������Ƿ��е�ͨ���ж��ϴζϵ�ʱ���Ƿ�С��?001���ж�
 void check_powertime(void)
 {
-	if(dev_info.timenow.Year == 0)
-	{
-		MySetScreen(biglanguage_screen.BIG_CONTROL_TIME_SET);
-	}		
+//	if(dev_info.timenow.Year == 0)
+//	{
+//		MySetScreen(biglanguage_screen.BIG_CONTROL_TIME_SET);
+//	}		
 }
 
-//����ѡ��
 void check_language_select(void)
 {
 	if(dev_info.biglanguagestatus == 1)
 	{
 		biglanguage_screen = bigchinese_screen; 		//Chinese
-		current_screen_id = 11;
 	}
 	else
 	{
 		biglanguage_screen = bigenglish_screen; 		//English
-		current_screen_id = 22;
-	}
-}
-
-//modbus��������
-void check_modbuss_rate(void)
-{
-	switch(dev_info.modbus_tran_rate_flag)
-	{
-		case 0:
-			Modbus_rate = 1200;
-			break;
-		case 1:
-			Modbus_rate = 2400;
-			break;
-		case 2:
-			Modbus_rate = 4800;
-			break;
-		case 3:
-			Modbus_rate = 9600;
-			break;
-		default:
-			Modbus_rate = 9600;
 	}
 }
 
 
-//���PWM���?
+
 void check_pwm(void)
 {
 	pwmgpiostatus = GPIO_ReadInputDataBit(PWM_GPIO_PORT,BACK_PWM_PIN);
@@ -274,7 +241,7 @@ void Check_All_Status(void)
 
 uint8_t thermalbuff[38] = {0};
 
-//��ʽת��
+
 void changestruct(void)
 {
 	uint8_t j;

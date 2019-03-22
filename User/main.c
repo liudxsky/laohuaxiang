@@ -59,7 +59,6 @@ uint16_t	ucRegDiscreteBuf[REG_DISCRETE_SIZE] = {0};
 
 extern  uint32_t password1;
 extern uint32_t password2;
-extern uint16_t Modbus_rate;
 float temper_usart;
 
 
@@ -85,8 +84,7 @@ int main( void )
   eMBErrorCode    eStatus;
 	qsize  size = 0;
 	System_Init();												//init
-
-	eStatus = eMBInit( MB_RTU, dev_info.Modbus_address, 0x01, Modbus_rate, MB_PAR_NONE ); //Modbus Init
+	eStatus = eMBInit( MB_RTU, dev_info.Modbus_address, 0x01, dev_info.modbus_tran_rate, MB_PAR_NONE ); //Modbus Init
 	eStatus = eMBEnable();									//Free MODBUS enable
 	delay_s(1);
 	STM32_Read_ID();
@@ -256,7 +254,6 @@ void System_Init(void)
 	Crypto_DeInit();		//DeInitialize STM32 Cryptographic Library												
 	TIMx_Configuration();	//pwm time config						
 	TIMx_Init();			//timekeeping init	
-	check_modbuss_rate();	//modbus rate
 	check_language_select();//language select
 	Analog_Init();			//adc init						
 	DAC1_Init();			//dac init						

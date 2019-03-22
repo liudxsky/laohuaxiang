@@ -12,7 +12,6 @@ uint8_t ChipUniqueID[12] = {0};
 uint32_t * const  p = (uint32_t *)(0x08070000); 
 #define INVALID_INFO		0xFFFF
 dev_info_t dev_info;
-extern uint8_t Modbus_rate;
 
 void DeviceInfo_Init(void)
 {
@@ -29,17 +28,18 @@ void DeviceInfo_Init(void)
 		{
 			dev_info.change_air_time[i] = 0;
 		}
-		dev_info.flash_setvalue.warning1_up = 999;
-		dev_info.flash_setvalue.warning2_up = 999;
+		dev_info.flash_setvalue.warning1_up = 50;
+		dev_info.flash_setvalue.warning2_up = 50;
 		dev_info.flash_setvalue.screen_light_value = 100;
 		dev_info.Modbus_address = 1;					
 		dev_info.biglanguagestatus = 1;
-		dev_info.modbus_tran_rate_flag = 3;
+		dev_info.modbus_tran_rate = 9600;
 		dev_info.flash_adjusttemp = 0;
 		dev_info.compensatetemp = 0;
 		dev_info.addup_testtime = 0;
 		dev_info.Rs485Status = 2;
 		dev_info.thermocouple_flag=0;
+		dev_info.autonopowertime.Year = 30;  // Prevent direct access to the recovery interface
 //		autogeneratepassword();
 		/*∏≥≥ı÷µ*/
 		FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
@@ -302,10 +302,10 @@ void autogeneratepassword(void)
 			hexdata += MAC[i]*(pow(256,(MACLength -i-1)));
 			printf("hexdata is %6x\n",hexdata);
 		} 
-		sprintf(demobuff,"%d",hexdata); 
-		strncpy(dev_info.autonopowerpassword,demobuff,PASSWORDLENGTH);
-		printf("destbuff is %6s \n",dev_info.autonopowerpassword);
-		
+//		sprintf(demobuff,"%d",hexdata); 
+//		strncpy(dev_info.autonopowerpassword,demobuff,PASSWORDLENGTH);
+//		printf("destbuff is %6s \n",dev_info.autonopowerpassword);
+		sprintf(dev_info.autonopowerpassword,"%06d",111111);
 		sprintf(dev_info.flash_setvalue.menu_password,"%06d",666666);
 		sprintf(dev_info.flash_setvalue.protect_password,"%06d",888888);
 		printf("\r\n*************************************************************** :\r\n");

@@ -102,7 +102,6 @@ struct mainTextStruct
 
 struct argSetErrorStruct
 {
-	uint8_t pass_update_fail;
 	uint8_t test_temp_set_fail;
 	uint8_t test_time_set_fail;
 	uint8_t change_air_set_fail;
@@ -115,6 +114,7 @@ struct argSetErrorStruct
 	uint8_t pass2_set_fail;
 	uint8_t air_angle_set_fail;
 	uint8_t temp_adjust_fail;
+	uint8_t auto_no_power_set_fail;
 };
 
 struct IOStatusStruct
@@ -141,21 +141,18 @@ struct IOStatusStruct
 
 struct mainIconStruct
 {
-	struct IOStatusStruct IO;
-	//uint8_t sample_frame;
-	//uint8_t blower;
+//	struct IOStatusStruct IO;
+	uint8_t sample_frame;
 	uint8_t trouble_indicate;
-	//uint8_t heat_switch;
+	uint8_t heat_switch;
 	uint8_t pid_run;
 	uint8_t fan_operation;
 	uint8_t air_door_open_angle;
-	//uint8_t rs485_comm;
-	//uint8_t door_open;
-	//uint8_t heat_output;
-	//uint8_t temp_warnning1;
-	//uint8_t temp_warnning2;
-	//uint8_t alarm1;
-	//uint8_t alram2;
+	uint8_t rs485_comm;
+	uint8_t door_open;
+	uint8_t heat_output;
+	uint8_t temp_warnning1;
+	uint8_t temp_warnning2;
 	uint8_t ar1_work_status;
 	uint8_t ar2_work_status;
 	uint8_t fr_work_status;
@@ -183,10 +180,12 @@ struct menuPageStruct
 
 
 void update_dev_status(void);
-void updater_mainScreen();
-void updater_mainIcon();
-void updater_mainText();
-void updater_argSetErrorScreen();
+void updater_mainScreen(void);
+void updater_mainIcon(void);
+void updater_mainText(void);
+void updater_argSetErrorScreen1(void);
+void updater_argSetErrorScreen2(void);
+
 void updater_editAirDoor(uint16_t screen_id);
 void updater_PIDScreen(uint16_t screen_id);
 void updater_menuParam(uint16_t screen_id);
