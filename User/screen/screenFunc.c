@@ -6,7 +6,6 @@
 extern dev_info_t dev_info;
 extern TextValueTab  textvalue;			//text control_id buff 
 extern BIG_SCREEN_ID_TAB biglanguage_screen;
-uint8_t passwordwrongflag = 0;
 uint8_t global_str_temp[COMMONSIZE];
 RtcTime  nopowertime = {2028,12,12,0,0,0};	
 
@@ -178,7 +177,7 @@ void passwordInputWrongScreenButton(uint16_t screen_id, uint16_t control_id, uin
 {
 	if(dev_info.passwordwrongflag == 1)
 	{
-		MySetScreen(biglanguage_screen.BIG_SCREAT_PROTECT_SCREEN);	
+		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);	
 	}
 	else if(dev_info.passwordwrongflag == 2)
 	{
@@ -405,7 +404,7 @@ void menuPassword(uint16_t control_id, uint8_t *str)
 	else
 	{
 		MySetScreen(biglanguage_screen.BIG_PASSWORD_ERROR_SCREEN);
-		passwordwrongflag = 1;	
+		dev_info.passwordwrongflag = 1;	
 	}
 }
 void adjustProtectPassword(uint16_t control_id,uint8_t *str)
@@ -415,12 +414,12 @@ void adjustProtectPassword(uint16_t control_id,uint8_t *str)
 	if(!strncmp(textvalue.protect_password,dev_info.flash_setvalue.protect_password,PASSWORDLENGTH))
 	{
 		MySetScreen(biglanguage_screen.BIG_ADJUST_SCREEN);
-		passwordwrongflag = 0;
+		dev_info.passwordwrongflag = 0;
 	}
 	else
 	{
 		MySetScreen(biglanguage_screen.BIG_PASSWORD_ERROR_SCREEN);
-		passwordwrongflag = 2;	
+		dev_info.passwordwrongflag = 2;	
 	}
 }
 void autoNoPowerScreen(uint16_t control_id,uint8_t *str)
@@ -432,13 +431,13 @@ void autoNoPowerScreen(uint16_t control_id,uint8_t *str)
 			//have power , control device work normal
 			MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);
 			dev_info.autonopowertime.Year += 100;
-			passwordwrongflag = 0;
+			dev_info.passwordwrongflag = 0;
 		}
 		else
 		{
 			//control device no work
 			MySetScreen(biglanguage_screen.BIG_PASSWORD_ERROR_SCREEN);
-			passwordwrongflag = 3;
+			dev_info.passwordwrongflag = 3;
 		}
 }
 void pidSettingScreen(uint16_t control_id,uint8_t *str)

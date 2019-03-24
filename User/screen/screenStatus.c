@@ -31,7 +31,7 @@ void startscreen(void)
 	uint8_t strtemp[COMMONSIZE];
 	sprintf(strtemp,"Ver:1.0");
 	printf("%s\r\n",strtemp);				
-  	memcpy(mainPageText.softversion,strtemp,COMMONSIZE);
+  memcpy(mainPageText.softversion,strtemp,COMMONSIZE);
 	MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);							
 }
 //check pid's status
@@ -106,8 +106,8 @@ void updater_IOStatus(void)
 	CIRCULATING(IOStatus.blower);
 	SPINNER_RACK(IOStatus.sample_frame);
 	HEAT_SWITCH(IOStatus.heat_switch);
-	ALARM1(IOStatus.alarm1);
-	ALARM2(IOStatus.alarm2);
+	ALARM1(IOStatus.temp_warnning1);
+	ALARM2(IOStatus.temp_warnning2);
 }
 void dev2mainScreen(void)
 {
@@ -132,7 +132,8 @@ void dev2IOstatus()
 	{
 		IOStatus.heat_output=0;
 	}
-	
+	IOStatus.temp_warnning1=dev_info.temp_warnning1;
+	IOStatus.temp_warnning2=dev_info.temp_warnning2;
 	if(dev_info.runstatus>0&&dev_info.temp_warnning1==0)
 	{
 		IOStatus.heat_switch=1;
@@ -141,6 +142,26 @@ void dev2IOstatus()
 	{
 		IOStatus.heat_switch=0;
 	}
+}
+void IOstatus2mainIcon()
+{
+	//SHOW=0, HIDE=1, IO ON=1, OFF=0
+	mainIcon.door_open=!IOStatus.door_open;
+	mainIcon.fan_operation=!IOStatus.blower;
+	mainIcon.fr_work_status=!mainIcon.fan_operation;
+	mainIcon.heat_switch=!IOStatus.heat_switch;
+	if(dev_info.runstatus>2)
+	{
+		mainIcon.pid_run=SHOW;
+	}
+	mainIcon.sample_frame=!IOStatus.sample_frame;
+	mainIcon.rr_work_status=!mainIcon.sample_frame;
+	mainIcon.temp_warnning1=!IOStatus.temp_warnning1;
+	mainIcon.ar1_work_status=!mainIcon.temp_warnning1;
+	mainIcon.temp_warnning2=!IOStatus.temp_warnning2;
+	mainIcon.ar2_work_status=!mainIcon.temp_warnning2;
+	
+	
 }
 void dev2modBus()
 {
@@ -154,6 +175,7 @@ void update_dev_status(void)//back compatility
 	dev2mainScreen();
 	dev2IOstatus();
 	dev2modBus();
+	IOstatus2mainIcon();
 	updater_mainScreen();
 	//push dev_info into IO
 	updater_IOStatus();

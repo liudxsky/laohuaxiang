@@ -117,11 +117,12 @@ void check_pwmicon(void)
 {
 	if(dev_info.pwmvalue != 0)
 	{
-		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_HEAT_OUTPUT_ID,SHOW);
+		mainIcon.heat_output=SHOW;
+		
 	}
 	else
 	{
-		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_HEAT_OUTPUT_ID,HIDE);
+		mainIcon.heat_output=HIDE;
 	}
 }
 

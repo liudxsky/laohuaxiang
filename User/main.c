@@ -213,6 +213,7 @@ int main( void )
 			if(dev_info.dev_status_changed_flag==1)//fast write
 			{
 				dev_info.dev_status_changed_flag=0;
+				FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));	
 			}
 		}
 		if(getMsCounter() - t_thread1h > 60000)
@@ -226,10 +227,6 @@ int main( void )
 				SetPoint=dev_info.setTemp;
 				FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));	
 				
-			}
-			else
-			{
-				dev_info.dev_status_changed_flag = 0;
 			}
 
 		}
