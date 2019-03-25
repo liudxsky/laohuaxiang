@@ -88,8 +88,6 @@ void screen_init(void)
 	
 	mainPageText.left_time_hour=0;
 	mainPageText.left_time_min=0;
-
-	
 	
 	argSetErrorIcon.change_air_set_fail = HIDE;
 	argSetErrorIcon.modebus_addr_set_fail = HIDE;
@@ -200,8 +198,9 @@ void NotifyButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 	//change air times editor
 	if(screen_id == biglanguage_screen.BIG_AIR_CHANGE_RATE_SCREEN)
 	{
+		//air change rate return button goes here
 		//this should be in dev_info or screen status
-		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);			
+		MySetScreen(biglanguage_screen.BIG_ADJUST_SCREEN);			
 	}
 	//pid
 	if(screen_id == biglanguage_screen.BIG_PID_SET_SCREEN)

@@ -19,7 +19,7 @@ void startscreen(void)
 {	
 	uint8_t strtemp[ADDTESTTIMESIZE] = "Ver:1.0";
 	printf("%s\r\n",strtemp);				
-  	memcpy(mainPageText.softversion,strtemp,ADDTESTTIMESIZE);
+  memcpy(mainPageText.softversion,strtemp,ADDTESTTIMESIZE);
 	MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);							
 }
 
@@ -102,7 +102,7 @@ void dev2mainScreen(void)
 }
 void dev2IOstatus()
 {
-	if(dev_info.pwmvalue>0)
+	if(dev_info.pwmvalue>1)
 	{
 		IOStatus.heat_output=1;
 	}
@@ -241,7 +241,7 @@ void updater_menuParam(uint16_t screen_id)
 void updater_adjScreen(uint16_t screen_id)
 {
 	SetTextValue(screen_id,BIG_ADJUST_PASSWORD1,"");
-	SetTextValue(screen_id,BIG_ADJUST_PASSWORD1,"");
+	SetTextValue(screen_id,BIG_ADJUST_PASSWORD2,"");
 	SetTextValueInt32(screen_id,BIG_AIR_DOOR_ANGLE_SET,dev_info.flash_setvalue.air_door_angle);
 	SetTextValueFloat(screen_id,BIG_TEMP_VALUE_REVUSE_SET,dev_info.flash_adjusttemp);
 	SetTextValueInt32(screen_id,BIG_YEAR_SET,BcdToDec(dev_info.autonopowertime.Year));

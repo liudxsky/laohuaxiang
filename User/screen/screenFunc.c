@@ -9,10 +9,7 @@ extern dev_info_t dev_info;
 extern TextValueTab  textvalue;			//text control_id buff 
 extern BIG_SCREEN_ID_TAB biglanguage_screen;
 uint8_t global_str_temp[COMMONSIZE];
-RtcTime  nopowertime = {2028,12,12,0,0,0};	
-
-
-extern RtcTime rtctime;					
+RtcTime  nopowertime = {2028,12,12,0,0,0};				
 
 extern struct mainIconStruct mainIcon;
 extern struct mainTextStruct mainPageText;
@@ -185,7 +182,7 @@ void passwordInputWrongScreenButton(uint16_t screen_id, uint16_t control_id, uin
 	}
 	else if(dev_info.passwordwrongflag == 2)
 	{
-		MySetScreen(biglanguage_screen.BIG_ADJUST_PROTECT_SCREEN);
+		MySetScreen(biglanguage_screen.BIG_PARAM_SET_SCREEN);
 	}
 	else if(dev_info.passwordwrongflag == 3)
 	{
@@ -695,7 +692,7 @@ void adjustScreenSetting(uint16_t control_id,uint8_t *str)
 				MySetScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN2);
 			}
 			break;
-		case BIG_YEAR_SET:
+		case BIG_YEAR_SET://bug here, but I don't understand
 			timeSetFlag++;
 			memset(textvalue.autotime.year,0,sizeof(char)*COMMONSIZE);
 			memcpy(textvalue.autotime.year,str,sizeof(char)*COMMONSIZE);
@@ -718,20 +715,24 @@ void adjustScreenSetting(uint16_t control_id,uint8_t *str)
 			nopowertime.Day = DectoBCD(nopowertime.Day);
 			break;	
 	}
-	if((timeSetFlag)&&(diff_time(rtctime, nopowertime)))
+	if(timeSetFlag)
 	{
-		timeSetFlag = 0;
-		dev_info.autonopowertime.Year = nopowertime.Year;
-		dev_info.autonopowertime.Mon = nopowertime.Mon;
-		dev_info.autonopowertime.Day = nopowertime.Day;
-		dev_info.dev_status_changed_flag = 1;
-		argSetErrorIcon.auto_no_power_set_fail=HIDE;
+		if(diff_time(dev_info.timenow, nopowertime))
+		{
+			timeSetFlag = 0;
+			dev_info.autonopowertime.Year = nopowertime.Year;
+			dev_info.autonopowertime.Mon = nopowertime.Mon;
+			dev_info.autonopowertime.Day = nopowertime.Day;
+			dev_info.dev_status_changed_flag = 1;
+			argSetErrorIcon.auto_no_power_set_fail=HIDE;
+		}
+		else
+		{
+			argSetErrorIcon.auto_no_power_set_fail=SHOW;
+			MySetScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN2);
+		}
 	}
-	else
-	{
-		argSetErrorIcon.auto_no_power_set_fail=SHOW;
-		MySetScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN2);
-	}
+	
 }
 
 
