@@ -13,7 +13,6 @@
 #include "./screen/screenFunc.h"
 #include "./screen/screenStatus.h"
 
-uint8_t  soft_ver[10] = "Ver:1.0";
 
 
 uint8_t cmd_buffer[CMD_MAX_SIZE];		//screen data buffer

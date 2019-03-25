@@ -17,10 +17,9 @@ uint16_t currentScreen;
 //start screen 
 void startscreen(void)
 {	
-	uint8_t strtemp[COMMONSIZE];
-	sprintf(strtemp,"Ver:1.0");
+	uint8_t strtemp[ADDTESTTIMESIZE] = "Ver:1.0";
 	printf("%s\r\n",strtemp);				
-  	memcpy(mainPageText.softversion,strtemp,COMMONSIZE);
+  	memcpy(mainPageText.softversion,strtemp,ADDTESTTIMESIZE);
 	MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);							
 }
 

@@ -27,7 +27,6 @@ extern TextValueTab  textvalue;
 
 extern uint8_t cmd_buffer[CMD_MAX_SIZE];
 extern dev_info_t dev_info;
-extern uint8_t  soft_ver[10];
 extern RtcTime rtctime;
 
 
@@ -293,6 +292,7 @@ void Check_All_Status(void)
 	check_screen_connect();
 	check_nopowertime();
 	check_warning();
+	Check_Rs485();
 	door_open_status();
 }
 
