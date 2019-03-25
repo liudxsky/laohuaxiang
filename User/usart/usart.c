@@ -199,7 +199,7 @@ void RS485_USART_Config(u32 RS485_USART_BAUDRATE)
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;					//速度100MHz
 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP; 						//推挽复用输出
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP; 						//上拉
-	GPIO_Init(RS485_USART_RX_GPIO_PORT,&GPIO_InitStructure); 								//初始化PA2，PA3
+	GPIO_Init(RS485_USART_RX_GPIO_PORT,&GPIO_InitStructure); 			//初始化PA2，PA3
 	
 	//推挽输出，485模式控制  
   	GPIO_InitStructure.GPIO_Pin = RS485_RE_PIN; 						

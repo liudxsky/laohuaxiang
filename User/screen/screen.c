@@ -310,14 +310,13 @@ void NotifySlider(uint16_t screen_id, uint16_t control_id, uint32_t value)
 
 void  NotifyAnimation(uint16_t screen_id, uint16_t control_id,uint8_t status,uint8_t iconimage_id)
 {
-	
-		
+	//TODO	
 }
 
 
 void NotifyIcon(uint16_t screen_id, uint16_t control_id,uint8_t status,uint8_t iconimage_id)
 {
-	
+	//TODO
 }
 
 
@@ -334,7 +333,6 @@ void NotifyMeter(uint16_t screen_id, uint16_t control_id, uint32_t value)
 void NotifyMenu(uint16_t screen_id, uint16_t control_id, uint8_t  item, uint8_t  state)
 {
 	//TODO
-
 }
 
 

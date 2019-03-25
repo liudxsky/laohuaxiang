@@ -11,7 +11,7 @@
 //输入寄存器起始地址 only read
 #define 	REG_INPUT_START 		0x0000
 //输入寄存器数量
-#define 	REG_INPUT_NREGS 		500
+#define 	REG_INPUT_NREGS 		100
 
 
 //保持寄存器起始地址   read and write

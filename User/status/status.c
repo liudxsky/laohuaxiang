@@ -51,9 +51,7 @@ uint8_t  Rs485TX = 0,Rs485RX = 0;
 
 
 uint16_t Get_GPIO_Status(void)
-{
-	
-	
+{	
 	uint8_t i;
 	uint16_t status = 0;
 	uint8_t readgpio[GPIO_TABLE_SIZE] = {0},gpioback[GPIO_TABLE_SIZE] = {0};
@@ -90,7 +88,6 @@ void check_screen_connect(void)
 	{
 		if(current_screen_id == biglanguage_screen.BIG_MAIN_SHOW_SCREEN)
 		{
-			
 			MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);
 		}
 	}
@@ -112,19 +109,7 @@ void check_nopowertime(void)
 	}
 }
 
-//check pwm
-void check_pwmicon(void)
-{
-	if(dev_info.pwmvalue != 0)
-	{
-		mainIcon.heat_output=SHOW;
-		
-	}
-	else
-	{
-		mainIcon.heat_output=HIDE;
-	}
-}
+
 
 
 //check Rs485
@@ -142,23 +127,23 @@ void Check_Rs485(void)
 	{
 		dev_info.Rs485Status = 2;
 	}
-	switch (dev_info.Rs485Status)
-	{
-		case 0:
-			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_RS485_COMMU_ID,0);
-			break;
-		case 1:
-			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_RS485_COMMU_ID,1);
-			delay_ms(300);
-			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_RS485_COMMU_ID,0);
-			delay_ms(300);
-			break;
-		case 2:
-			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_RS485_COMMU_ID,2);
-			break;
-		default:
-			break;
-	}
+//	switch (dev_info.Rs485Status)
+//	{
+//		case 0:
+//			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_RS485_COMMU_ID,0);
+//			break;
+//		case 1:
+//			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_RS485_COMMU_ID,1);
+//			delay_ms(300);
+//			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_RS485_COMMU_ID,0);
+//			delay_ms(300);
+//			break;
+//		case 2:
+//			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_RS485_COMMU_ID,2);
+//			break;
+//		default:
+//			break;
+//	}
 }
 
 
@@ -210,6 +195,79 @@ void check_warning(void)
 	}
 }
 
+//check pwm
+void check_pwmicon(void)
+{
+	if(dev_info.pwmvalue != 0)
+	{
+		mainIcon.heat_output=SHOW;
+		
+	}
+	else
+	{
+		mainIcon.heat_output=HIDE;
+	}
+}
+
+void check_Rs485_icon(void)
+{
+	mainIcon.rs485_comm = dev_info.Rs485Status;
+}
+
+void check_warning_icon(void)
+{
+	if(dev_info.temp_warnning1)
+	{
+		mainIcon.temp_warnning1 = SHOW;
+	}
+	else
+	{
+		mainIcon.temp_warnning1 = HIDE;
+	}
+
+	if(dev_info.temp_warnning2)
+	{
+		mainIcon.temp_warnning2 = SHOW;
+	}
+	else
+	{
+		mainIcon.temp_warnning2 = HIDE;
+	}
+}
+
+//check pid's status
+void check_pidstatus_icon(void)
+{
+	if(dev_info.runstatus==3)
+	{		
+		mainIcon.pid_run = SHOW;
+	}
+	else
+	{
+		mainIcon.pid_run = HIDE;
+	}
+}
+void check_heat_switch_icon(void)
+{
+	if(dev_info.runstatus>0)
+	{
+		mainIcon.heat_output = SHOW;
+	}
+	else
+	{
+		mainIcon.heat_output = HIDE;
+	}
+}
+
+
+void check_icon(void)
+{
+	check_pwmicon();
+	check_warning_icon();
+	check_pidstatus_icon();
+	check_heat_switch_icon();
+	check_Rs485_icon();
+}
  
 void temp_detection(float dispTemper)
 {
@@ -218,9 +276,11 @@ void temp_detection(float dispTemper)
 	{
 		SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_CURRENT_TEMP_ID, 999);
 		SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_CURRENT_TEMP_DECIMAL_ID, 9);
+		mainIcon.trouble_indicate = SHOW;
 	}
 	else
 	{	
+		mainIcon.trouble_indicate = HIDE;
 		SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_CURRENT_TEMP_ID,mainPageText.currentTempHi);
 		SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_CURRENT_TEMP_DECIMAL_ID,mainPageText.currentTempLo);
 	}
@@ -228,10 +288,7 @@ void temp_detection(float dispTemper)
 
 void Check_All_Status(void)
 {
-//	check_pwm();//pwm hardware self check
-	check_pwmicon();//heat output icon
-	check_pidstatus();//auto turn icon
-	Check_Rs485();
+	check_icon();
 	check_powertime();
 	check_screen_connect();
 	check_nopowertime();
@@ -281,32 +338,33 @@ void changestruct(void)
 }
 
 uint8_t savethermalbuff[TIMERECORDNUM][38] = {0},savenum = 0;
-//����״̬���?���ͺ����ݼ�¼
+
 void door_open_status(void)
 {
 	uint8_t doorflag = 0;
 	doorflag = GPIO_ReadInputDataBit(BOX_DOOR_GPIO_PORT,BOX_DOOR_PIN);
-	if(doorflag)			//����״̬
+	if(doorflag)			
 	{
 		door_openstatus++;
-		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_DOOR_OPEN_ID,SHOW);
+		mainIcon.door_open = SHOW;
+		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_DOOR_OPEN_ID,mainIcon.door_open);
+
 		if(door_openstatus == 1)
 		{
 			door_closestatus = 0;
-			heattime_log.heattime = dev_info.timenow;
-	//		printf("%d/%d/%d  %02d:%02d:%02d\r\n",heattime_log.heattime.Year,heattime_log.heattime.Mon,heattime_log.heattime.Day,heattime_log.heattime.Hour,heattime_log.heattime.Min,heattime_log.heattime.Sec);
+			heattime_log.heattime = rtctime;
 			heattime_log.set_temp = dev_info.setTemp;
-	//		printf("\r\nset temp is %f\r\n",heattime_log.set_temp);
 		}
 	}
 	else
 	{
 		door_closestatus++;
-		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_DOOR_OPEN_ID,HIDE);
+		mainIcon.door_open = HIDE;
+		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_DOOR_OPEN_ID,mainIcon.door_open);
 		if(door_closestatus  == 1)
 		{
 			door_openstatus = 0;
-			heattime_log.closedoor_time = dev_info.timenow;
+			heattime_log.closedoor_time = rtctime;
 			heattime_log.close_temp = dev_info.currentTemp;
 			heattime_log.opendoor_duration = diff_time(heattime_log.heattime,heattime_log.closedoor_time)/60;
 //			if(myabs(showtextvalue.current_temp_vlaue,showtextvalue.setting_temp) < 2)
@@ -329,7 +387,6 @@ void door_open_status(void)
 }
 
 
-//���ſ��Ʒ�ʽѡ��
 void control_mode_select(void)
 {	
 	uint8_t controlflag = GPIO_ReadInputDataBit(DAC_SELECT_GPIO_PORT,DAC_SELECT2_GPIO_PIN);	;

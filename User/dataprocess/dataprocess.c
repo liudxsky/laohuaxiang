@@ -136,32 +136,20 @@ void  write_Coilregister(void)
 	writecoilflag = 0;
 }
 
-extern uint8_t thermalbuff[38];
-extern uint8_t savethermalbuff[TIMERECORDNUM][38];
+
 //read input register
 void read_Inputregister(void)
 {
-	uint8_t i = 0;
-	uint16_t testtemp = dev_info.currentTemp*10;
-	usRegInputBuf[0] = testtemp;
-	usRegInputBuf[1] = dev_info.setTemp*10;
-	usRegInputBuf[2] = dev_info.testTime*10;
-	for(i = 0;i < TIMERECORDNUM;i++)
-	{
-		memcpy(usRegInputBuf[2*i+3],savethermalbuff[i],sizeof(char)*19);
-		memcpy(usRegInputBuf[2*i+4],savethermalbuff[i+19],sizeof(char)*19);
-	}
-	usRegInputBuf[384] = heattime_log.heattime.Year<<8|heattime_log.heattime.Mon;
-	usRegInputBuf[385] = heattime_log.heattime.Day<<8|heattime_log.heattime.Hour;
-	usRegInputBuf[386] = heattime_log.heattime.Min<<8|heattime_log.heattime.Sec;
-	readinputflag = 0;
+	
 }
 
-
+extern uint8_t thermalbuff[38];
+extern uint8_t savethermalbuff[TIMERECORDNUM][38];
 
 //read Holding register
 void read_Holdingregister(void)
 {
+	uint8_t i = 0;
 	uint16_t testtemp = dev_info.currentTemp*10;
 	usRegHoldingBuf[0] = testtemp;
 	usRegHoldingBuf[1] = dev_info.setTemp*10;
@@ -173,7 +161,14 @@ void read_Holdingregister(void)
 	usRegHoldingBuf[7] = atoi(dev_info.flash_setvalue.secondtime_password);
 	usRegHoldingBuf[8] = atoi(dev_info.flash_setvalue.protect_password);
 	usRegHoldingBuf[9] = atoi(dev_info.flash_setvalue.protect_secondtime_password);
-	
+	for(i = 0;i < TIMERECORDNUM;i++)
+	{
+		memcpy(usRegHoldingBuf[2*i+10],savethermalbuff[i],sizeof(char)*19);
+		memcpy(usRegHoldingBuf[2*i+11],savethermalbuff[i+19],sizeof(char)*19);
+	}
+	usRegHoldingBuf[52] = heattime_log.heattime.Year<<8|heattime_log.heattime.Mon;
+	usRegHoldingBuf[53] = heattime_log.heattime.Day<<8|heattime_log.heattime.Hour;
+	usRegHoldingBuf[54] = heattime_log.heattime.Min<<8|heattime_log.heattime.Sec;
 	readholdingflag = 0;
 }
 
@@ -199,8 +194,6 @@ void read_Discreteregister(void)
 
 }
 
-
-
 void modbus_register_init(void)
 {
 	usRegHoldingBuf[0] = dev_info.setTemp * 10;
@@ -214,25 +207,14 @@ void modbus_register_init(void)
 
 void modbus_register_handle(void)
 {
-//	if(readcoilflag)
-//	{
-//		read_Coilregister();
-//	}
-//	if(writecoilflag)
-//	{
-//		write_Coilregister();
-//	}
-	if(1)//readholdingflag)
+	
+	if(1)//(readholdingflag)
 	{
 		read_Holdingregister();
 	}
 	if(writeholdingflag)
 	{
 		write_Holdingregister();
-	}
-	if(readinputflag)
-	{
-		read_Inputregister();
 	}
 }
 

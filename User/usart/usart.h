@@ -27,7 +27,7 @@ typedef struct
 /************************usart1_rs232*******************************/
 #define RS232_USART                             USART1   //usart1
 #define RS232_USART_CLK                         RCC_APB2Periph_USART1
-#define RS232_USART_BAUDRATE                    115200  //���Դ��ڲ�����
+#define RS232_USART_BAUDRATE                    115200  
 
 #define RS232_USART_RX_GPIO_PORT                GPIOA
 #define RS232_USART_RX_GPIO_CLK                 RCC_AHB1Periph_GPIOA
@@ -47,7 +47,6 @@ typedef struct
 
 #define RS485_USART                             USART3	
 #define RS485_USART_CLK                         RCC_APB1Periph_USART3
-//#define RS485_USART3_BAUDRATE                    115200  //������
 
 
 #define RS485_USART_RX_GPIO_PORT                GPIOD
@@ -62,7 +61,7 @@ typedef struct
 #define RS485_USART_TX_AF                       GPIO_AF_USART3
 #define RS485_USART_TX_SOURCE                   GPIO_PinSource8
 
-//RS485�շ���������
+
 #define RS485_RE_GPIO_PORT                      GPIOC 
 #define RS485_RE_GPIO_CLK                       RCC_AHB1Periph_GPIOC 
 #define RS485_RE_PIN                            GPIO_Pin_9
@@ -73,11 +72,8 @@ typedef struct
 
 /*************************************************************************************************************/
 
-
- /*�����շ�����*/ 
-//�������ģ�?����Ҫ����ʱ�ȴ� 485 ���������� 
 #define RS485_RX_EN()  GPIO_ResetBits(RS485_RE_GPIO_PORT,RS485_RE_PIN);
-//���뷢��ģʽ,����Ҫ����ʱ�ȴ� 485 ���������� 
+
 #define RS485_TX_EN()  GPIO_SetBits(RS485_RE_GPIO_PORT,RS485_RE_PIN); 
 
 /*************************************************************************************************************/

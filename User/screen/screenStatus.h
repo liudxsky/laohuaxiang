@@ -121,25 +121,15 @@ struct IOStatusStruct
 {
 	uint8_t sample_frame;
 	uint8_t blower;
-//	uint8_t trouble_indicate;
 	uint8_t heat_switch;
-//	uint8_t pid_run;
-//	uint8_t fan_operation;
-	uint8_t air_door_open_angle;
-	uint8_t rs485_comm;
 	uint8_t door_open;
 	uint8_t heat_output;
 	uint8_t temp_warnning1;
 	uint8_t temp_warnning2;
-//	uint8_t ar1_work_status;
-//	uint8_t ar2_work_status;
-//	uint8_t fr_work_status;
-//	uint8_t rr_work_status;
 };
 
 struct mainIconStruct
 {
-//	struct IOStatusStruct IO;
 	uint8_t sample_frame;
 	uint8_t trouble_indicate;
 	uint8_t heat_switch;

@@ -89,8 +89,6 @@ int main( void )
 	delay_s(1);
 	STM32_Read_ID();
 	startscreen();	
-	
-//	SetBackLight(30);
 
 	SetPoint=dev_info.setTemp;
 	PIDInit(dev_info.pidvalue.PID_P,dev_info.pidvalue.PID_I,dev_info.pidvalue.PID_D,SetPoint);//need to be reset after chage setpoint
@@ -262,10 +260,6 @@ void System_Init(void)
 	ReadRtcTime();
 	autogeneratepassword();
 }
-
-
-
-
 
 
 

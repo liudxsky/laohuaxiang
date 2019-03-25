@@ -13,40 +13,17 @@ struct IOStatusStruct IOStatus;
 struct mainIconStruct mainIcon;
 struct menuPageStruct menuPage;
 uint16_t currentScreen;
-void check_heat_switch(void)
-{
-	if(dev_info.runstatus>0)
-	{
-		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_HEAT_SWITCH_ID,SHOW);
-	}
-	else
-	{
-		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_HEAT_SWITCH_ID,HIDE);
-	}
-	
-}
+
 //start screen 
 void startscreen(void)
 {	
 	uint8_t strtemp[COMMONSIZE];
 	sprintf(strtemp,"Ver:1.0");
 	printf("%s\r\n",strtemp);				
-  memcpy(mainPageText.softversion,strtemp,COMMONSIZE);
+  	memcpy(mainPageText.softversion,strtemp,COMMONSIZE);
 	MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);							
 }
-//check pid's status
-void check_pidstatus(void)
-{
-	if(dev_info.runstatus==3)
-	{		
-		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_PID_RUN_ID,SHOW);
-	}
-	else
-	{
-		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_PID_RUN_ID,HIDE);
-		
-	}
-}
+
 
 void updater_mainScreen(void)
 {
@@ -56,7 +33,8 @@ void updater_mainScreen(void)
 void updater_mainIcon(void)
 {
 	//SHOW =0, HIDE=1, inverse of IOstatus
-
+//	AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_DOOR_OPEN_ID,mainIcon.door_open);
+	
 	AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_HEAT_SWITCH_ID,mainIcon.heat_switch);
 
 	AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_HEAT_OUTPUT_ID,mainIcon.heat_output);
@@ -85,6 +63,7 @@ void updater_mainIcon(void)
 
 	AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_RS485_COMMU_ID,mainIcon.rs485_comm);
 
+	
 }
 
 void updater_mainText(void)
@@ -96,7 +75,7 @@ void updater_mainText(void)
 	SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_CHANGE_AIR_TIME,mainPageText.change_air_time);
 	SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_AIR_DOOR_ANGLE_INPUT_ID,mainPageText.open_angle);
 	SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_ADDUP_TIME_ID,mainPageText.addup_testtime);
-	Dac1_Set_Vol(33*dev_info.airdooropenangle);
+//	Dac1_Set_Vol(33*dev_info.airdooropenangle);
 	
 	SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TIME_LEFT_HOUR_ID,mainPageText.left_time_hour);
 	SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TIME_LEFT_MIN_ID,mainPageText.left_time_min);

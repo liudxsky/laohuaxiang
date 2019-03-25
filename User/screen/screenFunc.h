@@ -16,8 +16,6 @@ void passwordInputWrongScreenButton(uint16_t screen_id, uint16_t control_id, uin
 void adjustScreenButton(uint16_t screen_id, uint16_t control_id, uint8_t  state);
 
 
-void mainShowScreenIcon(void);
-
 void changeAirTimes(uint16_t control_id,uint8_t *str);
 void check_heat_switch(void);
 void updatePIDScreen(uint16_t id);
@@ -45,5 +43,4 @@ uint8_t DectoBCD(uint8_t Dec);
 uint8_t BcdToDec(uint8_t bcd);
 void  mergetimechar(RtcTime datetime);
 void mergehour_min(uint16_t hour,uint16_t min);
-void check_pidstatus(void);
 #endif

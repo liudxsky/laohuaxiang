@@ -29,7 +29,7 @@ typedef struct
 	uint8_t  biglanguagestatus;							//语言选择
 	float testTime;										//实验时间
 	float setTemp;										//实验温度
-	float currentTemp;
+	float currentTemp;									//curent temp
 	float temp_backdiff;								//温度回差
 	float flash_adjusttemp;								//调整温度值
 	uint8_t airdooropenangle;						//风门开启角度
@@ -40,8 +40,7 @@ typedef struct
 	CoilValue flash_setvalue;							//参数设置
 	RtcTime autonopowertime;							//自动断电时间
 	uint8_t  autonopowerpassword[PASSWORDLENGTH];			//自动断电密码
-	//
-	//
+	
 	RtcTime start_time;
 	RtcTime end_time;
 

@@ -3,6 +3,8 @@
 #include "string.h"
 #include "stdlib.h"
 #include "time.h"
+#include "main.h"
+
 extern dev_info_t dev_info;
 extern TextValueTab  textvalue;			//text control_id buff 
 extern BIG_SCREEN_ID_TAB biglanguage_screen;
@@ -52,6 +54,7 @@ void menuScreenButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 					AnimationPlayFrame(screen_id,BIG_BPS_4800,HIDE);
 					AnimationPlayFrame(screen_id,BIG_BPS_9600,HIDE);
 					dev_info.modbus_tran_rate = 1200;
+					eMBInit( MB_RTU, dev_info.Modbus_address, 0x01, dev_info.modbus_tran_rate, MB_PAR_NONE ); //Modbus Init
 				}
 				break;
 			case BIG_BPS_2400_BUTTON:
@@ -62,6 +65,7 @@ void menuScreenButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 					AnimationPlayFrame(screen_id,BIG_BPS_4800,HIDE);
 					AnimationPlayFrame(screen_id,BIG_BPS_9600,HIDE);
 					dev_info.modbus_tran_rate = 2400;
+					eMBInit( MB_RTU, dev_info.Modbus_address, 0x01, dev_info.modbus_tran_rate, MB_PAR_NONE ); //Modbus Init
 				}
 				break;
 			case BIG_BPS_4800_BUTTON:
@@ -72,6 +76,7 @@ void menuScreenButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 					AnimationPlayFrame(screen_id,BIG_BPS_2400,HIDE);
 					AnimationPlayFrame(screen_id,BIG_BPS_9600,HIDE);
 					dev_info.modbus_tran_rate = 4800;
+					eMBInit( MB_RTU, dev_info.Modbus_address, 0x01, dev_info.modbus_tran_rate, MB_PAR_NONE ); //Modbus Init
 				}
 				break;
 			case BIG_BPS_9600_BUTTON:
@@ -82,6 +87,7 @@ void menuScreenButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 					AnimationPlayFrame(screen_id,BIG_BPS_4800,HIDE);
 					AnimationPlayFrame(screen_id,BIG_BPS_2400,HIDE);
 					dev_info.modbus_tran_rate = 9600;
+					eMBInit( MB_RTU, dev_info.Modbus_address, 0x01, dev_info.modbus_tran_rate, MB_PAR_NONE ); //Modbus Init
 				}
 				break;
 			case BIG_CHINESE_LANGUAGE_BUTTON:
@@ -148,8 +154,7 @@ void mainShowScreenButton(uint16_t screen_id, uint16_t control_id, uint8_t  stat
 				{
 					IOStatus.blower = 0;
 					mainIcon.fan_operation=HIDE;
-					mainIcon.fr_work_status=SHOW;
-					
+					mainIcon.fr_work_status=SHOW;	
 				}
 				break;
 			case BIG_START_OR_PAUSE_ID:
@@ -159,7 +164,6 @@ void mainShowScreenButton(uint16_t screen_id, uint16_t control_id, uint8_t  stat
 					IOStatus.heat_output = 0;
 					dev_info.runstatus = 0;
 					dev_info.lefttimeflag=0;
-
 				}
 				else
 				{
@@ -208,62 +212,6 @@ void adjustScreenButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 			break;
 	}
 }
-
-
-
-/***************************************************ICON********************************************************************/
-void mainShowScreenIcon(void)
-{
-//	switch (control_id)
-//	{
-//		case BIG_HEAT_SWITCH_ID:
-			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_HEAT_SWITCH_ID,mainIcon.heat_switch);
-//			break;
-//		case BIG_HEAT_OUTPUT_ID:
-			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_HEAT_OUTPUT_ID,mainIcon.heat_output);
-//			break;
-//		case BIG_PID_RUN_ID:
-			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_PID_RUN_ID,mainIcon.pid_run);
-//			break;
-//		case BIG_FAN_OPERATION_ID:
-			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_FAN_OPERATION_ID,mainIcon.fan_operation);
-//			break;
-//		case BIG_TEMP_WARNING1_ID:
-			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TEMP_WARNING1_ID,mainIcon.temp_warnning1);
-//			break;
-//		case BIG_TEMP_WARNING2_ID:
-			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TEMP_WARNING2_ID,mainIcon.temp_warnning2);
-//			break;
-//		case BIG_AIR_DOOR_OPEN_ANGLE_ID:
-			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_AIR_DOOR_OPEN_ANGLE_ID,mainIcon.air_door_open_angle);
-//			break;
-//		case BIG_SAMPLE_FRAME_MOTOR_ID:
-			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_SAMPLE_FRAME_MOTOR_ID,mainIcon.sample_frame);
-//			break;
-//		case BIG_TROUBLE_INDICATE_ID:
-			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TROUBLE_INDICATE_ID,mainIcon.trouble_indicate);
-//			break;
-//		case BIG_AR1_WORK_STATUS_ID:
-			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_AR1_WORK_STATUS_ID,mainIcon.ar1_work_status);
-//			break;
-//		case BIG_AR2_WORK_STATUS_ID:
-			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_AR2_WORK_STATUS_ID,mainIcon.ar2_work_status);
-//			break;
-//		case BIG_FR_WORK_STATUS_ID:
-			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_FR_WORK_STATUS_ID,mainIcon.fr_work_status);
-//			break;
-//		case BIG_RR_WORK_STATUS_ID:
-			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_RR_WORK_STATUS_ID,mainIcon.rr_work_status);
-//			break;
-//		case BIG_RS485_COMMU_ID:
-			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_RS485_COMMU_ID,mainIcon.rs485_comm);
-//			break;
-			
-		
-//	}
-
-}
-
 
 
 
@@ -985,10 +933,10 @@ uint8_t getChangeAirTimes(int changeTimes)
 
 uint8_t max_change_air(uint8_t *buff)
 {
-	uint8_t i = 0, temp = 0;
+	uint8_t i = 0;
+	uint8_t temp = buff[0];
 	for(i = 1;i<CHANGE_AIR_SIZE;i++)
 	{
-		temp = buff[0];
 		if(buff[i] >= temp)
 		{
 			temp = buff[i];
