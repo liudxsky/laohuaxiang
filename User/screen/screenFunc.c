@@ -697,7 +697,7 @@ void adjustScreenSetting(uint16_t control_id,uint8_t *str)
 			memset(textvalue.autotime.year,0,sizeof(char)*COMMONSIZE);
 			memcpy(textvalue.autotime.year,str,sizeof(char)*COMMONSIZE);
 			nopowertime.Year = atoi(textvalue.autotime.year);
-			nopowertime.Year = DectoBCD(nopowertime.Year);
+//			nopowertime.Year = DectoBCD(nopowertime.Year);
 			 
 			break;
 		case BIG_MONTH_SET:
@@ -705,14 +705,14 @@ void adjustScreenSetting(uint16_t control_id,uint8_t *str)
 			memset(textvalue.autotime.month,0,sizeof(char)*COMMONSIZE);
 			memcpy(textvalue.autotime.month,str,sizeof(char)*COMMONSIZE);
 			nopowertime.Mon = atoi(textvalue.autotime.month);
-			nopowertime.Mon = DectoBCD(nopowertime.Mon);
+//			nopowertime.Mon = DectoBCD(nopowertime.Mon);
 			break;	
 		case BIG_DAY_SET:
 			timeSetFlag++;
 			memset(textvalue.autotime.day,0,sizeof(char)*COMMONSIZE);
 			memcpy(textvalue.autotime.day,str,sizeof(char)*COMMONSIZE);
 			nopowertime.Day = atoi(textvalue.autotime.day);
-			nopowertime.Day = DectoBCD(nopowertime.Day);
+//			nopowertime.Day = DectoBCD(nopowertime.Day);
 			break;	
 	}
 	if(timeSetFlag)
