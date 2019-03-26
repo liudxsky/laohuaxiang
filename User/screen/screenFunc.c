@@ -959,3 +959,23 @@ uint8_t judge_changeair_time(uint16_t change_time)
 	}
 	return FALSE;
 }
+
+void my_itoa(long i, char *string, uint8_t num)
+{
+	int power = 0, j = 0;
+ 
+	j = i;
+	for (power = 1; j>10; j /= 10)
+	{
+		power *= 10;
+	}
+	for (; power>0 && num > 0; power /= 10)
+	{
+		*string++ = '0' + i / power;
+		num --;
+		i %= power;
+	}
+	*string = '\0';
+}
+
+

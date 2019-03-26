@@ -6,7 +6,7 @@
 
 
 #define COILNUM  6
-#define TIMERECORDNUM     20
+#define TIMERECORDNUM     10
 
 
 
@@ -49,7 +49,7 @@ void read_Discreteregister(void);
 
 void modbus_register_init(void);
 
-void modbus_register_handle(void);
+
 
 
 

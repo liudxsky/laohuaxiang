@@ -5,8 +5,12 @@
 #include "./screen/screen.h"
 #include "./SCREEN_DRIVE/hmi_driver.h"
 #include "./status/status.h"
+#include "dataprocess.h"
+
 extern dev_info_t dev_info;
 extern BIG_SCREEN_ID_TAB biglanguage_screen;
+extern uint8_t writecoilflag,readcoilflag,readholdingflag,writeholdingflag,readinputflag;
+
 struct mainTextStruct mainPageText;
 struct argSetErrorStruct argSetErrorIcon;
 struct IOStatusStruct IOStatus;
@@ -141,9 +145,16 @@ void IOstatus2mainIcon()
 	
 	
 }
-void dev2modBus()
+void dev2modBus(void)
 {
-	
+	if(1)//(readholdingflag)
+	{
+		read_Holdingregister();
+	}
+	if(writeholdingflag)
+	{
+		write_Holdingregister();
+	}
 }
 
 void update_dev_status(void)//back compatility

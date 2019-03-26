@@ -53,14 +53,7 @@ typedef struct
 	RtcSetTime  device_time_setting;				//时间设置
 }TextValueTab;//this should be screen obj
 
-//struct mainPageStruct
-//{
-//	//text
-//	struct mainTextStruct mainText;
-//	struct mainIconStruct mainIcon;
-//	//icon
-//}mainPage;
-//主页面文本设置值
+
 
 
 typedef struct{
@@ -87,7 +80,7 @@ struct mainTextStruct
 	RtcTime start_time;
 	uint8_t  softversion[ADDTESTTIMESIZE];
 
-	uint16_t test_time;
+	float test_time;
 	uint16_t left_time_hour;
 	uint16_t left_time_min;
 	int32_t setTempHi;
@@ -179,5 +172,6 @@ void updater_PIDScreen(uint16_t screen_id);
 void updater_menuParam(uint16_t screen_id);
 void updater_adjScreen(uint16_t screen_id);
 void updater_menuPageUpdater(uint16_t screen_id);
+
 
 #endif

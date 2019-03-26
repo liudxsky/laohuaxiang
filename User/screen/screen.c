@@ -26,7 +26,6 @@ extern uint8_t pwmgpiostatus;
 extern uint16_t gpiostatus;
 			
 
-RtcTime rtctime;
 PCTRL_MSG msg;						
 TextValueTab  textvalue;			//text control_id buff
 //CoilValue coilvalue;//should update via dev_info, its value should be memoried
@@ -217,6 +216,7 @@ void NotifyButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 	{
 		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);
 	}
+	//password input error
 	if(screen_id == biglanguage_screen.BIG_PASSWORD_ERROR_SCREEN)
 	{		
 		passwordInputWrongScreenButton(screen_id,control_id, state);	
@@ -226,10 +226,15 @@ void NotifyButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 	{
 		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);			
 	}
-	//invalid setting
+	//invalid setting1
 	if(screen_id == biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN1)
 	{
 		MySetScreen(biglanguage_screen.BIG_PARAM_SET_SCREEN);		
+	}
+	//invalid setting2
+	if(screen_id == biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN2)
+	{
+		MySetScreen(biglanguage_screen.BIG_ADJUST_SCREEN);		
 	}
 	//main show screen
 	if(screen_id == biglanguage_screen.BIG_MAIN_SHOW_SCREEN)
@@ -373,13 +378,13 @@ void NotifyWriteFlash(uint8_t status)
  */
 void NotifyReadRTC(uint8_t year,uint8_t month,uint8_t week,uint8_t day,uint8_t hour,uint8_t minute,uint8_t second)
 {	
-	rtctime.Year = BcdToDec(year);
-	rtctime.Mon = BcdToDec(month);
-	rtctime.Day = BcdToDec(day);
-	rtctime.Hour = BcdToDec(hour);
-	rtctime.Min = BcdToDec(minute);
-	rtctime.Sec = BcdToDec(second);
-//	printf("%d/%d/%d  %02d:%02d:%02d\r\n",rtctime.Year,rtctime.Mon,rtctime.Day,rtctime.Hour,rtctime.Min,rtctime.Sec);
+	dev_info.timenow.Year = BcdToDec(year);
+	dev_info.timenow.Mon = BcdToDec(month);
+	dev_info.timenow.Day = BcdToDec(day);
+	dev_info.timenow.Hour = BcdToDec(hour);
+	dev_info.timenow.Min = BcdToDec(minute);
+	dev_info.timenow.Sec = BcdToDec(second);
+//	printf("%d/%d/%d  %02d:%02d:%02d\r\n",dev_info.timenow.Year,dev_info.timenow.Mon,dev_info.timenow.Day,dev_info.timenow.Hour,dev_info.timenow.Min,dev_info.timenow.Sec);
 }
 
 /*! 

@@ -66,7 +66,7 @@ float temper_usart;
 /* ----------------------- Start implementation -----------------------------*/
 int main( void )
 {
-	 dev_info.runstatus=0;
+	
 	float temperFilter=0;
 	float temperRaw=0;
 	float SetPoint=100;
@@ -81,8 +81,10 @@ int main( void )
 	volatile uint32_t t_thread1h=0;
 	uint32_t t_thread1min=0;
 	uint16_t Ktemperature = 0;
-  eMBErrorCode    eStatus;
+  	eMBErrorCode    eStatus;
+
 	qsize  size = 0;
+	 dev_info.runstatus=0;
 	System_Init();												//init
 	eStatus = eMBInit( MB_RTU, dev_info.Modbus_address, 0x01, dev_info.modbus_tran_rate, MB_PAR_NONE ); //Modbus Init
 	eStatus = eMBEnable();									//Free MODBUS enable
@@ -121,7 +123,7 @@ int main( void )
 			temperRaw=Ktemperature*0.25-7;
 			//SetPoint=100;
 			temperFilter=getFilterTemper(temperRaw);
-			printf("%f\n",temperFilter);
+//			printf("%f\n",temperFilter);
 			//temperFilter=temper_usart;
 			error=SetPoint-temperFilter;
 //			if(debuginfo)
@@ -190,7 +192,6 @@ int main( void )
 			kalman_temp=adj_display(temperFilter);
 			temp_detection(kalman_temp);						//temp detection						
 			Check_All_Status();	
-			modbus_register_handle();
 			update_dev_status();
 			//modebus register update;
 			//main text and icon update

@@ -27,7 +27,6 @@ extern TextValueTab  textvalue;
 
 extern uint8_t cmd_buffer[CMD_MAX_SIZE];
 extern dev_info_t dev_info;
-extern RtcTime rtctime;
 
 
 extern struct mainIconStruct mainIcon;
@@ -148,10 +147,10 @@ void Check_Rs485(void)
 
 void check_powertime(void)
 {
-//	if(dev_info.timenow.Year == 0)
-//	{
-//		MySetScreen(biglanguage_screen.BIG_CONTROL_TIME_SET);
-//	}		
+	if(dev_info.timenow.Year == 0)
+	{
+		MySetScreen(biglanguage_screen.BIG_CONTROL_TIME_SET);
+	}		
 }
 
 void check_language_select(void)
@@ -352,7 +351,7 @@ void door_open_status(void)
 		if(door_openstatus == 1)
 		{
 			door_closestatus = 0;
-			heattime_log.heattime = rtctime;
+			heattime_log.heattime = dev_info.timenow;
 			heattime_log.set_temp = dev_info.setTemp;
 		}
 	}
@@ -364,17 +363,18 @@ void door_open_status(void)
 		if(door_closestatus  == 1)
 		{
 			door_openstatus = 0;
-			heattime_log.closedoor_time = rtctime;
+			heattime_log.closedoor_time = dev_info.timenow;
 			heattime_log.close_temp = dev_info.currentTemp;
 			heattime_log.opendoor_duration = diff_time(heattime_log.heattime,heattime_log.closedoor_time)/60;
 //			if(myabs(showtextvalue.current_temp_vlaue,showtextvalue.setting_temp) < 2)
 //			{
-				heattime_log.regain_set_temp_time = diff_time(heattime_log.closedoor_time,rtctime);
+				heattime_log.regain_set_temp_time = diff_time(heattime_log.closedoor_time,dev_info.timenow);
 				changestruct();
 				AddDataRecord(biglanguage_screen.BIG_TIME_RECORD_SCREEN,BIG_DATA_RECORD,thermalbuff);
 				if(savenum < TIMERECORDNUM)
 				{
 					memcpy(savethermalbuff[savenum],thermalbuff,sizeof(char)*38);
+//					printf("save thermalbuff is %s \n",savethermalbuff[savenum]);
 					savenum++;
 				}
 				else
