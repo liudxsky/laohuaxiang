@@ -1,0 +1,1 @@
+<DrawPage name="Screen7" bk_transparent="0" bk_color="0;0;255" bk_image=""><item name="Image1" id="1" type="image" url="Images\controller_screens_main.png" transparency="0" crop="0" xOffset="0" yOffset="0" width="800" height="480" filter="0" clr_low="0;0;0"/></DrawPage>
