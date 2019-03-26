@@ -244,9 +244,9 @@ void updater_adjScreen(uint16_t screen_id)
 	SetTextValue(screen_id,BIG_ADJUST_PASSWORD2,"");
 	SetTextValueInt32(screen_id,BIG_AIR_DOOR_ANGLE_SET,dev_info.flash_setvalue.air_door_angle);
 	SetTextValueFloat(screen_id,BIG_TEMP_VALUE_REVUSE_SET,dev_info.flash_adjusttemp);
-	SetTextValueInt32(screen_id,BIG_YEAR_SET,BcdToDec(dev_info.autonopowertime.Year));
-	SetTextValueInt32(screen_id,BIG_MONTH_SET,BcdToDec(dev_info.autonopowertime.Mon));
-	SetTextValueInt32(screen_id,BIG_DAY_SET,BcdToDec(dev_info.autonopowertime.Day));
+	SetTextValueInt32(screen_id,BIG_YEAR_SET,dev_info.autonopowertime.Year);
+	SetTextValueInt32(screen_id,BIG_MONTH_SET,dev_info.autonopowertime.Mon);
+	SetTextValueInt32(screen_id,BIG_DAY_SET,dev_info.autonopowertime.Day);
 }
 
 void updater_menuPageUpdater(uint16_t screen_id)
