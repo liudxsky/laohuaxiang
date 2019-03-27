@@ -960,6 +960,7 @@ uint8_t judge_changeair_time(uint16_t change_time)
 	return FALSE;
 }
 
+//int to str
 void my_itoa(long i, char *string, uint8_t num)
 {
 	int power = 0, j = 0;

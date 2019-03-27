@@ -157,13 +157,14 @@ void read_Holdingregister(void)
 	usRegHoldingBuf[4] = dev_info.flash_setvalue.warning2_up*10;
 	usRegHoldingBuf[5] = dev_info.flash_setvalue.temp_backdiff*10;
 	usRegHoldingBuf[6] = atoi(dev_info.flash_setvalue.menu_password)>>16;
-	usRegHoldingBuf[7] = atoi(dev_info.flash_setvalue.menu_password)&0x0000ffff;
-	usRegHoldingBuf[8] = atoi(dev_info.flash_setvalue.secondtime_password)>>16;
-	usRegHoldingBuf[9] = atoi(dev_info.flash_setvalue.secondtime_password)&0x0000ffff;   //不赞成用modbus改密码
-	usRegHoldingBuf[10] = atoi(dev_info.flash_setvalue.protect_password)>>16;
-	usRegHoldingBuf[11] = atoi(dev_info.flash_setvalue.protect_password)&0x0000ffff;
-	usRegHoldingBuf[12] = atoi(dev_info.flash_setvalue.protect_secondtime_password)>>16;
-	usRegHoldingBuf[13] = atoi(dev_info.flash_setvalue.protect_secondtime_password)&0x0000ffff;
+
+//	usRegHoldingBuf[7] = atoi(dev_info.flash_setvalue.menu_password)&0x0000ffff;
+//	usRegHoldingBuf[8] = atoi(dev_info.flash_setvalue.secondtime_password)>>16;
+//	usRegHoldingBuf[9] = atoi(dev_info.flash_setvalue.secondtime_password)&0x0000ffff;   //不赞成用modbus改密码
+//	usRegHoldingBuf[10] = atoi(dev_info.flash_setvalue.protect_password)>>16;
+//	usRegHoldingBuf[11] = atoi(dev_info.flash_setvalue.protect_password)&0x0000ffff;
+//	usRegHoldingBuf[12] = atoi(dev_info.flash_setvalue.protect_secondtime_password)>>16;
+//	usRegHoldingBuf[13] = atoi(dev_info.flash_setvalue.protect_secondtime_password)&0x0000ffff;
 	for(i = 0;i < TIMERECORDNUM;i++)
 	{
 		memcpy(usRegHoldingBuf[19*i+14],savethermalbuff[i],sizeof(char)*38);
@@ -181,17 +182,18 @@ void  write_Holdingregister(void)
 	if (!dev_info.runstatus)
 	{
 		dev_info.setTemp = (float)usRegHoldingBuf[512]/10;            										//0x300
+	}
 		dev_info.testTime = (float)usRegHoldingBuf[513]/10;		
 		dev_info.flash_setvalue.warning1_up = (float)usRegHoldingBuf[514]/10;
 		dev_info.flash_setvalue.warning2_up = (float)usRegHoldingBuf[515]/10;
 		dev_info.flash_setvalue.temp_backdiff = (float)usRegHoldingBuf[516]/10;	
-		my_itoa((usRegHoldingBuf[517]<<16)|usRegHoldingBuf[518],dev_info.flash_setvalue.menu_password,PASSWORDLENGTH);
-		my_itoa((usRegHoldingBuf[519]<<16)|usRegHoldingBuf[520],dev_info.flash_setvalue.secondtime_password,PASSWORDLENGTH);
-		my_itoa((usRegHoldingBuf[521]<<16)|usRegHoldingBuf[522],dev_info.flash_setvalue.protect_password,PASSWORDLENGTH);
-		my_itoa((usRegHoldingBuf[523]<<16)|usRegHoldingBuf[524],dev_info.flash_setvalue.protect_secondtime_password,PASSWORDLENGTH);
+//		my_itoa((usRegHoldingBuf[517]<<16)|usRegHoldingBuf[518],dev_info.flash_setvalue.menu_password,PASSWORDLENGTH);
+//		my_itoa((usRegHoldingBuf[519]<<16)|usRegHoldingBuf[520],dev_info.flash_setvalue.secondtime_password,PASSWORDLENGTH);
+//		my_itoa((usRegHoldingBuf[521]<<16)|usRegHoldingBuf[522],dev_info.flash_setvalue.protect_password,PASSWORDLENGTH);
+//		my_itoa((usRegHoldingBuf[523]<<16)|usRegHoldingBuf[524],dev_info.flash_setvalue.protect_secondtime_password,PASSWORDLENGTH);
 		
 		writeholdingflag = 0;
-	}
+	
 }
 
 void read_Discreteregister(void)
@@ -209,14 +211,14 @@ void modbus_register_init(void)
 	usRegHoldingBuf[3] = dev_info.flash_setvalue.warning2_up*10;
 	usRegHoldingBuf[4] = dev_info.flash_setvalue.temp_backdiff*10;
 
-	usRegHoldingBuf[6] = atoi(dev_info.flash_setvalue.menu_password)>>16;
-	usRegHoldingBuf[7] = atoi(dev_info.flash_setvalue.menu_password)&0xffff;
-	usRegHoldingBuf[8] = atoi(dev_info.flash_setvalue.secondtime_password)>>16;
-	usRegHoldingBuf[9] = atoi(dev_info.flash_setvalue.secondtime_password)&0xffff;
-	usRegHoldingBuf[10] = atoi(dev_info.flash_setvalue.protect_password)>>16;
-	usRegHoldingBuf[11] = atoi(dev_info.flash_setvalue.protect_password)&0xffff;
-	usRegHoldingBuf[12] = atoi(dev_info.flash_setvalue.protect_secondtime_password)>>16;
-	usRegHoldingBuf[13] = atoi(dev_info.flash_setvalue.protect_secondtime_password)&0xffff;
+//	usRegHoldingBuf[6] = atoi(dev_info.flash_setvalue.menu_password)>>16;
+//	usRegHoldingBuf[7] = atoi(dev_info.flash_setvalue.menu_password)&0xffff;
+//	usRegHoldingBuf[8] = atoi(dev_info.flash_setvalue.secondtime_password)>>16;
+//	usRegHoldingBuf[9] = atoi(dev_info.flash_setvalue.secondtime_password)&0xffff;
+//	usRegHoldingBuf[10] = atoi(dev_info.flash_setvalue.protect_password)>>16;
+//	usRegHoldingBuf[11] = atoi(dev_info.flash_setvalue.protect_password)&0xffff;
+//	usRegHoldingBuf[12] = atoi(dev_info.flash_setvalue.protect_secondtime_password)>>16;
+//	usRegHoldingBuf[13] = atoi(dev_info.flash_setvalue.protect_secondtime_password)&0xffff;
 	for(i = 0;i < TIMERECORDNUM;i++)
 	{
 		memcpy(usRegHoldingBuf[19*i+14],savethermalbuff[i],sizeof(char)*38);
@@ -231,14 +233,14 @@ void modbus_register_init(void)
 	usRegHoldingBuf[515] = dev_info.flash_setvalue.warning2_up*10;
 	usRegHoldingBuf[516] = dev_info.flash_setvalue.temp_backdiff*10;
 
-	usRegHoldingBuf[517] = atoi(dev_info.flash_setvalue.menu_password)>>16;
-	usRegHoldingBuf[518] = atoi(dev_info.flash_setvalue.menu_password)&0xffff;
-	usRegHoldingBuf[519] = atoi(dev_info.flash_setvalue.secondtime_password)>>16;
-	usRegHoldingBuf[520] = atoi(dev_info.flash_setvalue.secondtime_password)&0xffff;
-	usRegHoldingBuf[521] = atoi(dev_info.flash_setvalue.protect_password)>>16;
-	usRegHoldingBuf[522] = atoi(dev_info.flash_setvalue.protect_password)&0xffff;
-	usRegHoldingBuf[523] = atoi(dev_info.flash_setvalue.protect_secondtime_password)>>16;
-	usRegHoldingBuf[524] = atoi(dev_info.flash_setvalue.protect_secondtime_password)&0xffff;
+//	usRegHoldingBuf[517] = atoi(dev_info.flash_setvalue.menu_password)>>16;
+//	usRegHoldingBuf[518] = atoi(dev_info.flash_setvalue.menu_password)&0xffff;
+//	usRegHoldingBuf[519] = atoi(dev_info.flash_setvalue.secondtime_password)>>16;
+//	usRegHoldingBuf[520] = atoi(dev_info.flash_setvalue.secondtime_password)&0xffff;
+//	usRegHoldingBuf[521] = atoi(dev_info.flash_setvalue.protect_password)>>16;
+//	usRegHoldingBuf[522] = atoi(dev_info.flash_setvalue.protect_password)&0xffff;
+//	usRegHoldingBuf[523] = atoi(dev_info.flash_setvalue.protect_secondtime_password)>>16;
+//	usRegHoldingBuf[524] = atoi(dev_info.flash_setvalue.protect_secondtime_password)&0xffff;
 	for(i = 0;i < TIMERECORDNUM;i++)
 	{
 		memcpy(usRegHoldingBuf[19*i+525],savethermalbuff[i],sizeof(char)*38);
