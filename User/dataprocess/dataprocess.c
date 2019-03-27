@@ -150,25 +150,28 @@ extern uint8_t savethermalbuff[TIMERECORDNUM][38];
 void read_Holdingregister(void)
 {
 	uint8_t i = 0;
-	uint16_t testtemp = dev_info.currentTemp*10;
-	usRegHoldingBuf[0] = testtemp;
+	usRegHoldingBuf[0] = dev_info.currentTemp*10;									//0x100
 	usRegHoldingBuf[1] = dev_info.setTemp*10;
 	usRegHoldingBuf[2] = dev_info.testTime*10;
 	usRegHoldingBuf[3] = dev_info.flash_setvalue.warning1_up*10;
 	usRegHoldingBuf[4] = dev_info.flash_setvalue.warning2_up*10;
 	usRegHoldingBuf[5] = dev_info.flash_setvalue.temp_backdiff*10;
-	usRegHoldingBuf[6] = atoi(dev_info.flash_setvalue.menu_password);
-	usRegHoldingBuf[7] = atoi(dev_info.flash_setvalue.secondtime_password);
-	usRegHoldingBuf[8] = atoi(dev_info.flash_setvalue.protect_password);
-	usRegHoldingBuf[9] = atoi(dev_info.flash_setvalue.protect_secondtime_password);
+	usRegHoldingBuf[6] = atoi(dev_info.flash_setvalue.menu_password)>>16;
+
+//	usRegHoldingBuf[7] = atoi(dev_info.flash_setvalue.menu_password)&0x0000ffff;
+//	usRegHoldingBuf[8] = atoi(dev_info.flash_setvalue.secondtime_password)>>16;
+//	usRegHoldingBuf[9] = atoi(dev_info.flash_setvalue.secondtime_password)&0x0000ffff;   //不赞成用modbus改密码
+//	usRegHoldingBuf[10] = atoi(dev_info.flash_setvalue.protect_password)>>16;
+//	usRegHoldingBuf[11] = atoi(dev_info.flash_setvalue.protect_password)&0x0000ffff;
+//	usRegHoldingBuf[12] = atoi(dev_info.flash_setvalue.protect_secondtime_password)>>16;
+//	usRegHoldingBuf[13] = atoi(dev_info.flash_setvalue.protect_secondtime_password)&0x0000ffff;
 	for(i = 0;i < TIMERECORDNUM;i++)
 	{
-		memcpy(usRegHoldingBuf[2*i+10],savethermalbuff[i],sizeof(char)*19);
-		memcpy(usRegHoldingBuf[2*i+11],savethermalbuff[i+19],sizeof(char)*19);
+		memcpy(usRegHoldingBuf[19*i+14],savethermalbuff[i],sizeof(char)*38);
 	}
-	usRegHoldingBuf[52] = heattime_log.heattime.Year<<8|heattime_log.heattime.Mon;
-	usRegHoldingBuf[53] = heattime_log.heattime.Day<<8|heattime_log.heattime.Hour;
-	usRegHoldingBuf[54] = heattime_log.heattime.Min<<8|heattime_log.heattime.Sec;
+	usRegHoldingBuf[205] = heattime_log.heattime.Year<<8|heattime_log.heattime.Mon;
+	usRegHoldingBuf[206] = heattime_log.heattime.Day<<8|heattime_log.heattime.Hour;
+	usRegHoldingBuf[207] = heattime_log.heattime.Min<<8|heattime_log.heattime.Sec;
 	readholdingflag = 0;
 }
 
@@ -178,14 +181,19 @@ void  write_Holdingregister(void)
 {
 	if (!dev_info.runstatus)
 	{
-		dev_info.setTemp = (float)usRegHoldingBuf[512]/10;
+		dev_info.setTemp = (float)usRegHoldingBuf[512]/10;            										//0x300
+	}
 		dev_info.testTime = (float)usRegHoldingBuf[513]/10;		
 		dev_info.flash_setvalue.warning1_up = (float)usRegHoldingBuf[514]/10;
 		dev_info.flash_setvalue.warning2_up = (float)usRegHoldingBuf[515]/10;
 		dev_info.flash_setvalue.temp_backdiff = (float)usRegHoldingBuf[516]/10;	
-
+//		my_itoa((usRegHoldingBuf[517]<<16)|usRegHoldingBuf[518],dev_info.flash_setvalue.menu_password,PASSWORDLENGTH);
+//		my_itoa((usRegHoldingBuf[519]<<16)|usRegHoldingBuf[520],dev_info.flash_setvalue.secondtime_password,PASSWORDLENGTH);
+//		my_itoa((usRegHoldingBuf[521]<<16)|usRegHoldingBuf[522],dev_info.flash_setvalue.protect_password,PASSWORDLENGTH);
+//		my_itoa((usRegHoldingBuf[523]<<16)|usRegHoldingBuf[524],dev_info.flash_setvalue.protect_secondtime_password,PASSWORDLENGTH);
+		
 		writeholdingflag = 0;
-	}
+	
 }
 
 void read_Discreteregister(void)
@@ -196,27 +204,55 @@ void read_Discreteregister(void)
 
 void modbus_register_init(void)
 {
+	uint8_t i = 0;
 	usRegHoldingBuf[0] = dev_info.setTemp * 10;
 	usRegHoldingBuf[1] = dev_info.testTime * 100;
 	usRegHoldingBuf[2] = dev_info.flash_setvalue.warning1_up*10;
 	usRegHoldingBuf[3] = dev_info.flash_setvalue.warning2_up*10;
 	usRegHoldingBuf[4] = dev_info.flash_setvalue.temp_backdiff*10;
-}
 
+//	usRegHoldingBuf[6] = atoi(dev_info.flash_setvalue.menu_password)>>16;
+//	usRegHoldingBuf[7] = atoi(dev_info.flash_setvalue.menu_password)&0xffff;
+//	usRegHoldingBuf[8] = atoi(dev_info.flash_setvalue.secondtime_password)>>16;
+//	usRegHoldingBuf[9] = atoi(dev_info.flash_setvalue.secondtime_password)&0xffff;
+//	usRegHoldingBuf[10] = atoi(dev_info.flash_setvalue.protect_password)>>16;
+//	usRegHoldingBuf[11] = atoi(dev_info.flash_setvalue.protect_password)&0xffff;
+//	usRegHoldingBuf[12] = atoi(dev_info.flash_setvalue.protect_secondtime_password)>>16;
+//	usRegHoldingBuf[13] = atoi(dev_info.flash_setvalue.protect_secondtime_password)&0xffff;
+	for(i = 0;i < TIMERECORDNUM;i++)
+	{
+		memcpy(usRegHoldingBuf[19*i+14],savethermalbuff[i],sizeof(char)*38);
+	}
+	usRegHoldingBuf[205] = heattime_log.heattime.Year<<8|heattime_log.heattime.Mon;
+	usRegHoldingBuf[206] = heattime_log.heattime.Day<<8|heattime_log.heattime.Hour;
+	usRegHoldingBuf[207] = heattime_log.heattime.Min<<8|heattime_log.heattime.Sec;
 
+	usRegHoldingBuf[512] = dev_info.setTemp * 10;
+	usRegHoldingBuf[513] = dev_info.testTime * 100;
+	usRegHoldingBuf[514] = dev_info.flash_setvalue.warning1_up*10;
+	usRegHoldingBuf[515] = dev_info.flash_setvalue.warning2_up*10;
+	usRegHoldingBuf[516] = dev_info.flash_setvalue.temp_backdiff*10;
 
-void modbus_register_handle(void)
-{
+//	usRegHoldingBuf[517] = atoi(dev_info.flash_setvalue.menu_password)>>16;
+//	usRegHoldingBuf[518] = atoi(dev_info.flash_setvalue.menu_password)&0xffff;
+//	usRegHoldingBuf[519] = atoi(dev_info.flash_setvalue.secondtime_password)>>16;
+//	usRegHoldingBuf[520] = atoi(dev_info.flash_setvalue.secondtime_password)&0xffff;
+//	usRegHoldingBuf[521] = atoi(dev_info.flash_setvalue.protect_password)>>16;
+//	usRegHoldingBuf[522] = atoi(dev_info.flash_setvalue.protect_password)&0xffff;
+//	usRegHoldingBuf[523] = atoi(dev_info.flash_setvalue.protect_secondtime_password)>>16;
+//	usRegHoldingBuf[524] = atoi(dev_info.flash_setvalue.protect_secondtime_password)&0xffff;
+	for(i = 0;i < TIMERECORDNUM;i++)
+	{
+		memcpy(usRegHoldingBuf[19*i+525],savethermalbuff[i],sizeof(char)*38);
+	}
+	usRegHoldingBuf[716] = heattime_log.heattime.Year<<8|heattime_log.heattime.Mon;
+	usRegHoldingBuf[717] = heattime_log.heattime.Day<<8|heattime_log.heattime.Hour;
+	usRegHoldingBuf[718] = heattime_log.heattime.Min<<8|heattime_log.heattime.Sec; 
 	
-	if(1)//(readholdingflag)
-	{
-		read_Holdingregister();
-	}
-	if(writeholdingflag)
-	{
-		write_Holdingregister();
-	}
 }
+
+
+
 
 
 

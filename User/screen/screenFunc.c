@@ -592,7 +592,7 @@ void deviceTimeSet(uint16_t control_id,uint8_t *str)
 	{
 		case BIG_CONTROL_DATE_YEAR_SET:
 			memset(textvalue.device_time_setting.Year,0,sizeof(char)*COMMONSIZE);
-			memcpy(textvalue.device_time_setting.Year,str,sizeof(char)*COMMONSIZE);	
+			memcpy(textvalue.device_time_setting.Year,str+2,sizeof(char)*COMMONSIZE);	
 			dev_info.timenow.Year = atoi(textvalue.device_time_setting.Year);
 			dev_info.timenow.Year = DectoBCD(dev_info.timenow.Year);
 			break;
@@ -695,7 +695,7 @@ void adjustScreenSetting(uint16_t control_id,uint8_t *str)
 		case BIG_YEAR_SET://bug here, but I don't understand
 			timeSetFlag++;
 			memset(textvalue.autotime.year,0,sizeof(char)*COMMONSIZE);
-			memcpy(textvalue.autotime.year,str,sizeof(char)*COMMONSIZE);
+			memcpy(textvalue.autotime.year,str+2,sizeof(char)*COMMONSIZE);
 			nopowertime.Year = atoi(textvalue.autotime.year);
 //			nopowertime.Year = DectoBCD(nopowertime.Year);
 			 
@@ -808,6 +808,7 @@ void endtimecalcu(RtcTime starttime,float testtime)
 	
 	char timebuff[25] = {0};
 	time_t currenttime = 946684800;
+	
 	currenttime += to_day(starttime) + testtime*3600;
 	strftime(timebuff,20,"%Y/%m/%d %H:%M:%S",localtime(&currenttime));
 	memcpy(mainPageText.warmend_time,timebuff,16);
@@ -903,14 +904,22 @@ void start_endtime_set(void)
 	{
 		steadytempcount = 0;
 	}
-	if((dev_info.runstatus)&&(dev_info.setTemp != 0)&&(dev_info.lefttimeflag == 0)&&(steadytempcount>=1))
+	if((dev_info.runstatus)&&(dev_info.setTemp != 0)&&(dev_info.lefttimeflag == 0)&&(steadytempcount>=120))
 	{	
 		dev_info.lefttimeflag = 1;
 		dev_info.start_time=dev_info.timenow;
 		SetTextValueRTC(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_START_TIME_ID,dev_info.start_time);
-		endtimecalcu(dev_info.start_time,dev_info.testTime);//->mainPageText.warmend_time
+		if(!dev_info.testTime)
+		{
+			SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_END_TIME_ID,"......");
+		}
+		else
+		{
+			endtimecalcu(dev_info.start_time,dev_info.testTime);//->mainPageText.warmend_time
+		}
 		dev_info.dev_status_changed_flag = 1;
 	}
+	
 	if(dev_info.lefttimeflag == 1)
 	{
 		lefttimecalculate();
@@ -959,3 +968,24 @@ uint8_t judge_changeair_time(uint16_t change_time)
 	}
 	return FALSE;
 }
+
+//int to str
+void my_itoa(long i, char *string, uint8_t num)
+{
+	int power = 0, j = 0;
+ 
+	j = i;
+	for (power = 1; j>10; j /= 10)
+	{
+		power *= 10;
+	}
+	for (; power>0 && num > 0; power /= 10)
+	{
+		*string++ = '0' + i / power;
+		num --;
+		i %= power;
+	}
+	*string = '\0';
+}
+
+

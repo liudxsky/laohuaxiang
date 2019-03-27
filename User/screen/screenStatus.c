@@ -5,8 +5,12 @@
 #include "./screen/screen.h"
 #include "./SCREEN_DRIVE/hmi_driver.h"
 #include "./status/status.h"
+#include "dataprocess.h"
+
 extern dev_info_t dev_info;
 extern BIG_SCREEN_ID_TAB biglanguage_screen;
+extern uint8_t writecoilflag,readcoilflag,readholdingflag,writeholdingflag,readinputflag;
+
 struct mainTextStruct mainPageText;
 struct argSetErrorStruct argSetErrorIcon;
 struct IOStatusStruct IOStatus;
@@ -141,9 +145,16 @@ void IOstatus2mainIcon()
 	
 	
 }
-void dev2modBus()
+void dev2modBus(void)
 {
-	
+	if(1)//(readholdingflag)
+	{
+		read_Holdingregister();
+	}
+	if(writeholdingflag)
+	{
+		write_Holdingregister();
+	}
 }
 
 void update_dev_status(void)//back compatility
@@ -244,7 +255,7 @@ void updater_adjScreen(uint16_t screen_id)
 	SetTextValue(screen_id,BIG_ADJUST_PASSWORD2,"");
 	SetTextValueInt32(screen_id,BIG_AIR_DOOR_ANGLE_SET,dev_info.flash_setvalue.air_door_angle);
 	SetTextValueFloat(screen_id,BIG_TEMP_VALUE_REVUSE_SET,dev_info.flash_adjusttemp);
-	SetTextValueInt32(screen_id,BIG_YEAR_SET,dev_info.autonopowertime.Year);
+	SetTextValueInt32(screen_id,BIG_YEAR_SET,dev_info.autonopowertime.Year+2000);
 	SetTextValueInt32(screen_id,BIG_MONTH_SET,dev_info.autonopowertime.Mon);
 	SetTextValueInt32(screen_id,BIG_DAY_SET,dev_info.autonopowertime.Day);
 }
