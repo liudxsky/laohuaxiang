@@ -16,6 +16,7 @@ in this file,dev_info push device main status to other device
 #include "./pwm/pwm.h"
 #include "./flash/deviceinfo.h"
 #include "./dac/dac.h"
+#include "./screen/screenFunc.h"
 
 extern BIG_SCREEN_ID_TAB bigchinese_screen ;
 extern BIG_SCREEN_ID_TAB bigenglish_screen; 
@@ -100,11 +101,15 @@ void check_screen_connect(void)
 void check_nopowertime(void)
 {
 	//after this day, it will work
-	if((dev_info.timenow.Year >= dev_info.autonopowertime.Year)&&(dev_info.timenow.Mon >= dev_info.autonopowertime.Mon)&&(dev_info.timenow.Day >= dev_info.autonopowertime.Day))
+	int32_t closetime=0;
+	closetime=diff_time(dev_info.timenow,dev_info.autonopowertime);
+	if(closetime<=1)
 	{
 		MySetScreen(biglanguage_screen.BIG_AUTO_NOPOWER_RECOVER);
-		RCC_AHB1PeriphClockCmd(DRIVER_GPIO_CLK|BACK_GPIO_CLK|BOX_DOOR_GPIO_CLK, DISABLE);
+		//RCC_AHB1PeriphClockCmd(DRIVER_GPIO_CLK|BACK_GPIO_CLK|BOX_DOOR_GPIO_CLK, DISABLE);
+		dev_info.runstatus=0;
 	}
+	printf("close time%d\n",closetime);
 }
 
 
@@ -193,79 +198,6 @@ void check_warning(void)
 	}
 }
 
-//check pwm
-void check_pwmicon(void)
-{
-	if(dev_info.pwmvalue != 0)
-	{
-		mainIcon.heat_output=SHOW;
-		
-	}
-	else
-	{
-		mainIcon.heat_output=HIDE;
-	}
-}
-
-void check_Rs485_icon(void)
-{
-	mainIcon.rs485_comm = dev_info.Rs485Status;
-}
-
-void check_warning_icon(void)
-{
-	if(dev_info.temp_warnning1)
-	{
-		mainIcon.temp_warnning1 = SHOW;
-	}
-	else
-	{
-		mainIcon.temp_warnning1 = HIDE;
-	}
-
-	if(dev_info.temp_warnning2)
-	{
-		mainIcon.temp_warnning2 = SHOW;
-	}
-	else
-	{
-		mainIcon.temp_warnning2 = HIDE;
-	}
-}
-
-//check pid's status
-void check_pidstatus_icon(void)
-{
-	if(dev_info.runstatus==3)
-	{		
-		mainIcon.pid_run = SHOW;
-	}
-	else
-	{
-		mainIcon.pid_run = HIDE;
-	}
-}
-void check_heat_switch_icon(void)
-{
-	if(dev_info.runstatus>0)
-	{
-		mainIcon.heat_output = SHOW;
-	}
-	else
-	{
-		mainIcon.heat_output = HIDE;
-	}
-}
-
-
-void check_icon(void)
-{
-	check_pwmicon();
-	check_warning_icon();
-	check_pidstatus_icon();
-	check_heat_switch_icon();
-	check_Rs485_icon();
-}
  
 void temp_detection(float dispTemper)
 {
@@ -286,7 +218,7 @@ void temp_detection(float dispTemper)
 
 void Check_All_Status(void)
 {
-	check_icon();
+
 	check_powertime();
 	check_screen_connect();
 	check_nopowertime();

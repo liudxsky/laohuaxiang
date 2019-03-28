@@ -27,7 +27,7 @@ void pidScreenButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 			break;
 		case BIG_PID_RETURN_BUTTON: 				
 			//this should be in dev_info or screen status
-			MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);
+			MySetScreen(biglanguage_screen.BIG_ADJUST_SCREEN);
 			//MySetScreen(biglanguage_screen.BIG_SCREAT_PROTECT_SCREEN);
 			break;
 	}
@@ -211,13 +211,7 @@ void adjustScreenButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 }
 
 
-
-
-
 /***********************************************************************************************************************/
-
-
-
 
 void changeAirTimes(uint16_t control_id,uint8_t *str)
 {
@@ -666,9 +660,9 @@ void adjustScreenSetting(uint16_t control_id,uint8_t *str)
 			if (i_temp >= 0 && i_temp <= 100)
 			{
 				Dac1_Set_Vol(33*i_temp);
-				dev_info.flash_setvalue.air_door_angle = i_temp;
+				dev_info.flash_setvalue.air_door_angle = i_temp;//???
 				argSetErrorIcon.air_angle_set_fail=HIDE;
-				dev_info.dev_status_changed_flag = 1;
+				//dev_info.dev_status_changed_flag = 1;
 			}
 			else
 			{
@@ -817,9 +811,11 @@ void endtimecalcu(RtcTime starttime,float testtime)
 
 
 
-uint32_t diff_time(RtcTime starttime,RtcTime endtime)
+int32_t diff_time(RtcTime starttime,RtcTime endtime)
 {
-	return (to_day(endtime) - to_day(starttime));
+	int32_t diff=0;
+	diff=to_day(endtime)-to_day(starttime);
+	return diff;
 }
 
 
@@ -935,6 +931,7 @@ uint8_t getChangeAirTimes(int changeTimes)
 	{
 		if(changeTimes == dev_info.change_air_time[i])
 		{
+			//dev_info.airdooropenangle=165*i;
 			Dac1_Set_Vol(165*i);
 			return i;
 		}

@@ -6,9 +6,6 @@
 #define FALSE 0
 
 
-
-
-
 void pidScreenButton(uint16_t screen_id, uint16_t control_id, uint8_t  state);
 void menuScreenButton(uint16_t screen_id, uint16_t control_id, uint8_t  state);
 void mainShowScreenButton(uint16_t screen_id, uint16_t control_id, uint8_t  state);
@@ -35,7 +32,7 @@ void start_endtime_set(void);
 void lefttimecalculate(void);
 void addup_testtime(void);
 float myabs(float a,float b);
-uint32_t diff_time(RtcTime starttime,RtcTime endtime);
+int32_t diff_time(RtcTime starttime,RtcTime endtime);
 void endtimecalcu(RtcTime starttime,float testtime);
 void endtimecalcu(RtcTime starttime,float testtime);
 uint32_t to_day(RtcTime time);

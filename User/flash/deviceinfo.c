@@ -305,9 +305,9 @@ void autogeneratepassword(void)
 //		sprintf(demobuff,"%d",hexdata); 
 //		strncpy(dev_info.autonopowerpassword,demobuff,PASSWORDLENGTH);
 //		printf("destbuff is %6s \n",dev_info.autonopowerpassword);
-		sprintf(dev_info.autonopowerpassword,"%06d",111111);
-		sprintf(dev_info.flash_setvalue.menu_password,"%06d",666666);
-		sprintf(dev_info.flash_setvalue.protect_password,"%06d",888888);
+//		sprintf(dev_info.autonopowerpassword,"%06d",111111);
+		//sprintf(dev_info.flash_setvalue.menu_password,"%06d",666666);
+		//sprintf(dev_info.flash_setvalue.protect_password,"%06d",888888);
 		printf("\r\n*************************************************************** :\r\n");
 	}
 

@@ -100,7 +100,7 @@ void dev2mainScreen(void)
 	mainPageText.currentTempLo=(int32_t)(dev_info.currentTemp*10)%10;
 	mainPageText.test_time=dev_info.testTime;
 	mainPageText.addup_testtime=dev_info.addup_testtime/60;
-	mainPageText.open_angle=open_angle[dev_info.airdooropenangle];
+	mainPageText.open_angle=open_angle[dev_info.airdooropenangle];//???
 	mainPageText.change_air_time=dev_info.flash_setvalue.change_air_time;
 	
 }
@@ -132,6 +132,7 @@ void IOstatus2mainIcon()
 	mainIcon.fan_operation=!IOStatus.blower;
 	mainIcon.fr_work_status=!mainIcon.fan_operation;
 	mainIcon.heat_switch=!IOStatus.heat_switch;
+	mainIcon.heat_output=!IOStatus.heat_output;
 	if(dev_info.runstatus>2)
 	{
 		mainIcon.pid_run=SHOW;
@@ -142,7 +143,7 @@ void IOstatus2mainIcon()
 	mainIcon.ar1_work_status=!mainIcon.temp_warnning1;
 	mainIcon.temp_warnning2=!IOStatus.temp_warnning2;
 	mainIcon.ar2_work_status=!mainIcon.temp_warnning2;
-	
+	mainIcon.rs485_comm = dev_info.Rs485Status;
 	
 }
 void dev2modBus(void)

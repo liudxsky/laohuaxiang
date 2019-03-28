@@ -264,10 +264,6 @@ void System_Init(void)
 
 
 
-
-
-
-
 #if 1
 //input register deal with function
 eMBErrorCode
