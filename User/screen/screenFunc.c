@@ -533,7 +533,7 @@ void menuSettingScreen(uint16_t control_id, uint8_t *str)
 			{
 				argSetErrorIcon.change_air_set_fail=HIDE;
 				dev_info.flash_setvalue.change_air_time = i_temp;
-				dev_info.airdooropenangle = getChangeAirTimes(i_temp);
+				dev_info.airdooropenangle = 5*getChangeAirTimes(i_temp);
 				dev_info.dev_status_changed_flag = 1;
 			}
 			else
@@ -659,8 +659,7 @@ void adjustScreenSetting(uint16_t control_id,uint8_t *str)
 			i_temp = atoi(textvalue.airdoor_value);
 			if (i_temp >= 0 && i_temp <= 100)
 			{
-				Dac1_Set_Vol(33*i_temp);
-				dev_info.flash_setvalue.air_door_angle = i_temp;//???
+				dev_info.airdooropenangle = i_temp;
 				argSetErrorIcon.air_angle_set_fail=HIDE;
 				//dev_info.dev_status_changed_flag = 1;
 			}
@@ -931,8 +930,8 @@ uint8_t getChangeAirTimes(int changeTimes)
 	{
 		if(changeTimes == dev_info.change_air_time[i])
 		{
-			//dev_info.airdooropenangle=165*i;
-			Dac1_Set_Vol(165*i);
+			
+			//Dac1_Set_Vol(165*i);
 			return i;
 		}
 	}

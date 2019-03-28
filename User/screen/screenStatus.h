@@ -67,7 +67,9 @@ typedef struct{
 	uint16_t change_air_time;						//换气次数
 	uint16_t change_max_time;						//换气次数最大值
 	uint8_t screen_light_value;						//屏幕亮度调节
-	uint8_t air_door_angle;							//风门角度
+	//uint8_t air_door_angle;							//adj screen 风门角度 % 
+	//pass to dev_info.airdooropenangle=air_door_angle*33
+	//use Dac1_Set_Vol(dev_info.airdooropenangle) to set output
 	uint8_t modbus_address;							//modbus节点地址
 	uint8_t modbus_tran_rate;						//modbus通信速率
 	uint8_t menu_language;							//菜单语言

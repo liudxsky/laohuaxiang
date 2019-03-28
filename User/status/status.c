@@ -100,9 +100,9 @@ void check_screen_connect(void)
 
 void check_nopowertime(void)
 {
-	//after this day, it will work
-	int32_t closetime=0;
-	closetime=diff_time(dev_info.timenow,dev_info.autonopowertime);
+
+	int32_t closetime=2;
+	//closetime=diff_time(dev_info.timenow,dev_info.autonopowertime);
 	if(closetime<=1)
 	{
 		MySetScreen(biglanguage_screen.BIG_AUTO_NOPOWER_RECOVER);

@@ -93,14 +93,14 @@ void updater_IOStatus(void)
 }
 void dev2mainScreen(void)
 {
-	const static uint8_t open_angle[CHANGE_AIR_SIZE] = {0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100};
+	//const static uint8_t open_angle[CHANGE_AIR_SIZE] = {0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100};
 	mainPageText.setTempHi=dev_info.setTemp/1;
 	mainPageText.setTempLo=(int32_t)(dev_info.setTemp*10)%10;
 	mainPageText.currentTempHi=dev_info.currentTemp/1;
 	mainPageText.currentTempLo=(int32_t)(dev_info.currentTemp*10)%10;
 	mainPageText.test_time=dev_info.testTime;
 	mainPageText.addup_testtime=dev_info.addup_testtime/60;
-	mainPageText.open_angle=open_angle[dev_info.airdooropenangle];//???
+	mainPageText.open_angle=dev_info.airdooropenangle;//???
 	mainPageText.change_air_time=dev_info.flash_setvalue.change_air_time;
 	
 }
@@ -124,6 +124,7 @@ void dev2IOstatus()
 	{
 		IOStatus.heat_switch=0;
 	}
+	Dac1_Set_Vol(33*dev_info.airdooropenangle);
 }
 void IOstatus2mainIcon()
 {
@@ -254,7 +255,7 @@ void updater_adjScreen(uint16_t screen_id)
 {
 	SetTextValue(screen_id,BIG_ADJUST_PASSWORD1,"");
 	SetTextValue(screen_id,BIG_ADJUST_PASSWORD2,"");
-	SetTextValueInt32(screen_id,BIG_AIR_DOOR_ANGLE_SET,dev_info.flash_setvalue.air_door_angle);
+	SetTextValueInt32(screen_id,BIG_AIR_DOOR_ANGLE_SET,dev_info.airdooropenangle);
 	SetTextValueFloat(screen_id,BIG_TEMP_VALUE_REVUSE_SET,dev_info.flash_adjusttemp);
 	SetTextValueInt32(screen_id,BIG_YEAR_SET,dev_info.autonopowertime.Year+2000);
 	SetTextValueInt32(screen_id,BIG_MONTH_SET,dev_info.autonopowertime.Mon);

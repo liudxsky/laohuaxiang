@@ -23,7 +23,6 @@ void DeviceInfo_Init(void)
 		dev_info.valid_flag = 1;
 		dev_info.pwmscope = 1000;
 		dev_info.pwmvalue = 0;
-		dev_info.flash_setvalue.air_door_angle = 0;
 		for (i = 0; i < 21; ++i)
 		{
 			dev_info.change_air_time[i] = 0;
@@ -39,14 +38,16 @@ void DeviceInfo_Init(void)
 		dev_info.addup_testtime = 0;
 		dev_info.Rs485Status = 2;
 		dev_info.thermocouple_flag=0;
+		dev_info.runstatus=0;
 		dev_info.autonopowertime.Year = 30;  // Prevent direct access to the recovery interface
+		
 //		autogeneratepassword();
 		/*赋初值*/
 		FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
 		/*串口打印信息*/
 		printf("\r\n device curren pwm scope is %d \r\n",dev_info.pwmscope);
 		printf("\r\n device current pwm value is %d \r\n",dev_info.pwmvalue);
-		printf("\r\n device current air valve angle value is %d \r\n",dev_info.flash_setvalue.air_door_angle);
+		printf("\r\n device current air valve angle value is %d \r\n",dev_info.airdooropenangle);
 		printf("\r\n device current set modbus address is :%d\r\n",dev_info.Modbus_address);
 		
 	}
@@ -57,7 +58,7 @@ void DeviceInfo_Init(void)
 		/*串口打印信息	*/
 		printf("\r\n device curren pwm scope is %d \r\n",dev_info.pwmscope);
 		printf("\r\n device current pwm value is %d \r\n",dev_info.pwmvalue);
-		printf("\r\n device current air valve angle value is %d \r\n",dev_info.flash_setvalue.air_door_angle);
+		printf("\r\n device current air valve angle value is %d \r\n",dev_info.airdooropenangle);
 		printf("\r\n device current Pid value is : \r\nP :%f\r\nI :%f\r\n D : %f\r\n",dev_info.pidvalue.PID_P,dev_info.pidvalue.PID_I,dev_info.pidvalue.PID_D);
 		printf("\r\n device current change air times is :\r\n");
 		for (i = 0; i < CHANGE_AIR_SIZE; ++i)
@@ -67,6 +68,13 @@ void DeviceInfo_Init(void)
 		printf("\r\n device current set testtime is :%f\r\n",dev_info.testTime);
 		printf("\r\n device current set testtime is :%f\r\n",dev_info.testTime);		
 		printf("\r\n device current set modbus address is :%d\r\n",dev_info.Modbus_address);
+		dev_info.runstatus=0;
+		dev_info.temp_warnning1=0;
+		dev_info.temp_warnning2=0;
+		dev_info.dev_status_changed_flag=0;
+		dev_info.lefttimeflag=0;
+		dev_info.passwordwrongflag=0;
+		dev_info.thermocouple_flag=0;
 	}
 
 }

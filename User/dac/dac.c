@@ -1,6 +1,5 @@
 #include "./dac/dac.h"
 
-
 uint8_t dac_config_flag = 0;
 
 //DAC通道1输出初始化
@@ -71,6 +70,7 @@ void Dac_Select_Init(void)
 * 返回参数：无
 * 说    明：       
 ****************************************************************************/
+
 void Dac1_Set_Vol(double vol)
 {
 	double temp=vol;

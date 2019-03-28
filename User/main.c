@@ -81,10 +81,9 @@ int main( void )
 	volatile uint32_t t_thread1h=0;
 	uint32_t t_thread1min=0;
 	uint16_t Ktemperature = 0;
-  	eMBErrorCode    eStatus;
+  eMBErrorCode    eStatus;
 
 	qsize  size = 0;
-	 dev_info.runstatus=0;
 	System_Init();												//init
 	eStatus = eMBInit( MB_RTU, dev_info.Modbus_address, 0x01, dev_info.modbus_tran_rate, MB_PAR_NONE ); //Modbus Init
 	eStatus = eMBEnable();									//Free MODBUS enable
