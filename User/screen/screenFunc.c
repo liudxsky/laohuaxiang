@@ -370,6 +370,7 @@ void autoNoPowerScreen(uint16_t control_id,uint8_t *str)
 			//have power , control device work normal
 			MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);
 			dev_info.autonopowertime.Year += 100;
+			dev_info.autonopowertimeflag = 0;
 			dev_info.passwordwrongflag = 0;
 		}
 		else
@@ -773,6 +774,7 @@ uint32_t to_day(RtcTime time)
 	uint32_t hour = 0,minute = 0,seconds = 0;
 	uint16_t i;
 	time.Year = time.Year + 2000;
+//	printf("year is %d\n",time.Year);
 	for(i = 2000;i < time.Year; i++)
 	{
 		day += (i%4 == 0 && i%100 != 0 || i%400 == 0)? 366:365;
@@ -813,6 +815,8 @@ void endtimecalcu(RtcTime starttime,float testtime)
 int32_t diff_time(RtcTime starttime,RtcTime endtime)
 {
 	int32_t diff=0;
+//	printf("%4d/%2d/%2d,%2d:%2d:%2d",endtime.Year,endtime.Mon,endtime.Day,endtime.Hour,endtime.Min,endtime.Sec);
+//	printf("starttime is %x \nend time is   %x\n",to_day(starttime),to_day(endtime));
 	diff=to_day(endtime)-to_day(starttime);
 	return diff;
 }

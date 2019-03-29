@@ -39,8 +39,10 @@ void DeviceInfo_Init(void)
 		dev_info.Rs485Status = 2;
 		dev_info.thermocouple_flag=0;
 		dev_info.runstatus=0;
-		dev_info.autonopowertime.Year = 30;  // Prevent direct access to the recovery interface
-		
+		dev_info.autonopowertime.Year = 20;  // Prevent direct access to the recovery interface
+		dev_info.autonopowertime.Mon = 1;
+		dev_info.autonopowertime.Day = 1;
+		dev_info.autonopowertimeflag = 0;
 //		autogeneratepassword();
 		/*∏≥≥ı÷µ*/
 		FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
@@ -313,9 +315,9 @@ void autogeneratepassword(void)
 //		sprintf(demobuff,"%d",hexdata); 
 //		strncpy(dev_info.autonopowerpassword,demobuff,PASSWORDLENGTH);
 //		printf("destbuff is %6s \n",dev_info.autonopowerpassword);
-//		sprintf(dev_info.autonopowerpassword,"%06d",111111);
-		//sprintf(dev_info.flash_setvalue.menu_password,"%06d",666666);
-		//sprintf(dev_info.flash_setvalue.protect_password,"%06d",888888);
+		sprintf(dev_info.autonopowerpassword,"%06d",111111);
+		sprintf(dev_info.flash_setvalue.menu_password,"%06d",666666);
+		sprintf(dev_info.flash_setvalue.protect_password,"%06d",888888);
 		printf("\r\n*************************************************************** :\r\n");
 	}
 

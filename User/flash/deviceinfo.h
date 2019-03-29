@@ -40,7 +40,7 @@ typedef struct
 	CoilValue flash_setvalue;							//参数设置
 	RtcTime autonopowertime;							//自动断电时间
 	uint8_t  autonopowerpassword[PASSWORDLENGTH];			//自动断电密码
-	
+	uint8_t autonopowertimeflag;						//自动断电密码标志位
 	RtcTime start_time;
 	RtcTime end_time;
 

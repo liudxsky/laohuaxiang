@@ -11,7 +11,7 @@
 
 typedef struct
 {
-	uint8_t Year;
+	uint16_t Year;
 	uint8_t Mon;
 	uint8_t Day;
 	uint8_t Hour;
