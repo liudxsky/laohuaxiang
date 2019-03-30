@@ -45,16 +45,16 @@ void SetTextValueRTC(uint16_t screen_id, uint16_t control_id,RtcTime datetime)
 	char buff[17]={0};
 	buff[0]='2';
 	buff[1]='0';
-	sprintf(buff+2,"%02d",datetime.Year); 
+	sprintf(buff+2,"%02d",datetime.Year); //2,3
 	buff[4]='/';
-	sprintf(buff+5,"%02d",datetime.Mon);
+	sprintf(buff+5,"%02d",datetime.Mon);//5,6
 	buff[7]='/';
-	sprintf(buff+7,"%02d",datetime.Day);
+	sprintf(buff+8,"%02d",datetime.Day);//8,9
 	
 	buff[10] = ' ';
-		sprintf(buff+10,"%02d",datetime.Hour);
+	sprintf(buff+11,"%02d",datetime.Hour);//11,12
 	buff[13] = ':';
-	sprintf(buff+13,"%02d",datetime.Min);
+	sprintf(buff+14,"%02d",datetime.Min);//14,15
 	SetTextValue(screen_id,control_id,buff);
 }
 //convert  int to string

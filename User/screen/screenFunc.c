@@ -24,11 +24,11 @@ void pidScreenButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 	{
 		case BIG_SELF_ADJUST:							//self adjust
 			dev_info.runstatus=2;
+			MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);
 			break;
 		case BIG_PID_RETURN_BUTTON: 				
 			//this should be in dev_info or screen status
 			MySetScreen(biglanguage_screen.BIG_ADJUST_SCREEN);
-			//MySetScreen(biglanguage_screen.BIG_SCREAT_PROTECT_SCREEN);
 			break;
 	}
 }

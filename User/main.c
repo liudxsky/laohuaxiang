@@ -157,9 +157,16 @@ int main( void )
 						dev_info.pidvalue.PID_D=autoTuneParam.Kd_auto;
 						dev_info.dev_status_changed_flag=1;
 						FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));	
-						//updatePIDScreen(0);
+						
 						printf("Kp:%f,Ki:%f,Kd%f\n",PID.Kp,PID.Ki,PID.Kd);
-						dev_info.runstatus=1;
+						if(dev_info.testTime!=0)
+						{
+							dev_info.runstatus=1;
+						}
+						else
+						{
+							dev_info.runstatus=0;
+						}
 					}
 					else
 					{
@@ -195,7 +202,7 @@ int main( void )
 			//modebus register update;
 			//main text and icon update
 			//
-//			printf("%f,%f\n",temperFilter,showtextvalue.current_temp_vlaue);
+			printf("%f,%f\n",temperFilter,kalman_temp);
 		}
 		if(getMsCounter()-t_thread3s>3000)
 		{

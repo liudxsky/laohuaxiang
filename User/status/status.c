@@ -115,7 +115,7 @@ void check_nopowertime(void)
 		
 	}
 	
-	printf("close time%d\n",closetime);
+//	printf("close time%d\n",closetime);
 }
 
 
