@@ -45,10 +45,6 @@ typedef struct
 	RtcTime end_time;
 
 	int compensatetemp;									//²¹³¥ÎÂ¶È
-	//exame start time
-	//exame stop time
-	//f_fast_dev_status_chagned
-	//struct IOStatusStruct IOStatus;
 	int runstatus;
 	uint8_t temp_warnning1;
 	uint8_t temp_warnning2;

@@ -66,13 +66,12 @@ typedef struct{
 	uint8_t protect_secondtime_password[PASSWORDLENGTH];	//再输入一次保护密码
 	uint16_t change_air_time;						//换气次数
 	uint16_t change_max_time;						//换气次数最大值
-	uint8_t screen_light_value;						//屏幕亮度调节
-	//uint8_t air_door_angle;							//adj screen 风门角度 % 
-	//pass to dev_info.airdooropenangle=air_door_angle*33
-	//use Dac1_Set_Vol(dev_info.airdooropenangle) to set output
+	uint8_t screen_light_value;						//屏幕亮度调节 
 	uint8_t modbus_address;							//modbus节点地址
 	uint8_t modbus_tran_rate;						//modbus通信速率
 	uint8_t menu_language;							//菜单语言
+	uint32_t flash_this_address;
+	uint32_t flash_write_cnt;
 }CoilValue;					//保持寄存器存储值
 //主页面文本显示
 struct mainTextStruct

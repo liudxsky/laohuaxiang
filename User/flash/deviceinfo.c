@@ -16,9 +16,11 @@ dev_info_t dev_info;
 void DeviceInfo_Init(void)
 {
 	uint8_t i;
-	FLASH_Read_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info.valid_flag,4);
+	//????
+	int sf=scanFlash();
+	//FLASH_Read_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info.valid_flag,4);
 	//读取存储标志位
-	if(dev_info.valid_flag==INVALID_INFO)
+	if(!sf)
 	{
 		dev_info.valid_flag = 1;
 		dev_info.pwmscope = 1000;
@@ -45,7 +47,8 @@ void DeviceInfo_Init(void)
 		dev_info.autonopowertimeflag = 0;
 //		autogeneratepassword();
 		/*赋初值*/
-		FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
+		writeFlash();
+		//FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
 		/*串口打印信息*/
 		printf("\r\n device curren pwm scope is %d \r\n",dev_info.pwmscope);
 		printf("\r\n device current pwm value is %d \r\n",dev_info.pwmvalue);
@@ -56,7 +59,8 @@ void DeviceInfo_Init(void)
 	else
 	{
 		//todo
-		FLASH_Read_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
+		readFlash();
+		//FLASH_Read_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
 		/*串口打印信息	*/
 		printf("\r\n device curren pwm scope is %d \r\n",dev_info.pwmscope);
 		printf("\r\n device current pwm value is %d \r\n",dev_info.pwmvalue);

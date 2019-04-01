@@ -132,11 +132,6 @@ uint16_t pidCalc(float e)
 	{
 		errorSum=errorSum+errorNow;
 	}
-//	if(errorNow>0.5&&errorNow<1&&autoTuningParam.SetPoint<150)
-//	{
-//		f_errorreset=0;
-//		errorSum=-(10/PID.Ki);
-//	}
 	derror=errorNow-errorLast;
 	outKp=PID.Kp*errorNow;
 	outKi=PID.Ki*errorSum;
@@ -242,7 +237,7 @@ uint16_t autoTuning(float errornow,int * pwm_out,struct AutoTuningParamStruct* a
 		switchPoint=7;
 	}
 	
-	if(f_autoTuning&&errornow<switchPoint)
+	if(errornow<switchPoint)
 	{
 		if(errornow>0)
 		{
@@ -349,7 +344,7 @@ uint16_t autoTuning(float errornow,int * pwm_out,struct AutoTuningParamStruct* a
 			
 	}//if(f_autoTuning&&errornow<switchPoint)
 
-	 if(f_autoTuning&&errornow>=switchPoint)
+	 if(errornow>=switchPoint)
 	{
 		out=1000;
 		
@@ -370,8 +365,26 @@ uint16_t autoTuning(float errornow,int * pwm_out,struct AutoTuningParamStruct* a
 					AutoTuneOutput=300;
 			}
 		}
+	}
+	
+	//didn't reach 3rd hit point in 1 hour
+	//this situation exist in theory, but never tested
+	//1.check every hour, check tbuffidx==tbuffidx_last
+	//2.if true, add output
+	/*
+	autoTuningParam.timestamp=autoTuningParam.elapse_time;
+	if(autoTuningParam.timestamp>Hour1\
+		&&AutoTuneStatus==1\
+	&&(autoTuningParam.m_tbuffidx==tbuffidx))
+	{
+		autoTuningParam.timestamp=0;
+		autoTuningParam.m_tbuffidx=tbuffidx;
+		AutoTuneOutput=AutoTuneOutput+100;
+		AutoTuneStatus=-5;
 		
 	}
+	*/
+	
 	if(autoTuningParam.elapse_time>AUTOTUNE_TIMEOUT)
 	{//time out, 5 hours
 		AutoTuneStatus=-4;
@@ -379,6 +392,7 @@ uint16_t autoTuning(float errornow,int * pwm_out,struct AutoTuningParamStruct* a
 		autoTuningParam.f_autoTuning=0;
 		f_autoTuning=0;
 		printf("autotune -4\n");
+		autoTuningParam.elapse_time=0;
 		goto FINISH;
 	}
 	

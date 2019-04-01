@@ -111,7 +111,6 @@ void menuScreenButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 
 }
 
-
 void mainShowScreenButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 {
 	switch (control_id)
@@ -422,7 +421,6 @@ void menuSettingScreen(uint16_t control_id, uint8_t *str)
 			SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_TEST_TIME_VALUE,str_temp);
 			if(d_temp < 0.1 || d_temp >= 9999.9)
 			{
-//				dev_info.testTime = 0;
 				argSetErrorIcon.test_temp_set_fail=SHOW;
 				MySetScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN1);
 			}
@@ -440,7 +438,7 @@ void menuSettingScreen(uint16_t control_id, uint8_t *str)
 			memcpy(str_temp,str,sizeof(char)*COMMONSIZE);	
 			SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_TEST_TEMP_VALUE,str);			
 			d_temp = atof(str_temp);			
-			if(d_temp < 50 || d_temp >= 400)
+			if(0)//d_temp < 50 || d_temp >= 400)//debug
 			{
 //				dev_info.setTemp = 0;
 				argSetErrorIcon.test_temp_set_fail=SHOW;
@@ -496,7 +494,6 @@ void menuSettingScreen(uint16_t control_id, uint8_t *str)
 			d_temp = atof(str_temp);
 			if(d_temp < 0.1 || d_temp > 50)
 			{
-//				dev_info.flash_setvalue.warning2_up = 0;
 				argSetErrorIcon.temp_up2_set_fail=SHOW;
 				MySetScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN1);
 			}
@@ -699,14 +696,12 @@ void adjustScreenSetting(uint16_t control_id,uint8_t *str)
 			memset(textvalue.autotime.month,0,sizeof(char)*COMMONSIZE);
 			memcpy(textvalue.autotime.month,str,sizeof(char)*COMMONSIZE);
 			nopowertime.Mon = atoi(textvalue.autotime.month);
-//			nopowertime.Mon = DectoBCD(nopowertime.Mon);
 			break;	
 		case BIG_DAY_SET:
 			timeSetFlag++;
 			memset(textvalue.autotime.day,0,sizeof(char)*COMMONSIZE);
 			memcpy(textvalue.autotime.day,str,sizeof(char)*COMMONSIZE);
 			nopowertime.Day = atoi(textvalue.autotime.day);
-//			nopowertime.Day = DectoBCD(nopowertime.Day);
 			break;	
 	}
 	if(timeSetFlag)
@@ -728,41 +723,6 @@ void adjustScreenSetting(uint16_t control_id,uint8_t *str)
 	}
 	
 }
-
-
-
-//merge time str
-//void  mergetimechar(RtcTime datetime)
-//{
-//	uint8_t buff[2] = {0};
-//	textvalue.textvaluebuff.start_time[0] = '2';
-//	textvalue.textvaluebuff.start_time[1] = '0';
-//		
-//	sprintf(buff,"%02d",datetime.Year); 
-//	textvalue.textvaluebuff.start_time[2] = buff[0];
-//	textvalue.textvaluebuff.start_time[3] = buff[1];
-
-//	sprintf(buff,"%02d",datetime.Mon);
-//	textvalue.textvaluebuff.start_time[4] = '/';
-//	textvalue.textvaluebuff.start_time[5] = buff[0];
-//	textvalue.textvaluebuff.start_time[6] = buff[1];
-
-//	sprintf(buff,"%02d",datetime.Day);
-//	textvalue.textvaluebuff.start_time[7] = '/';
-//	textvalue.textvaluebuff.start_time[8] = buff[0];
-//	textvalue.textvaluebuff.start_time[9] = buff[1];
-//	
-//	textvalue.textvaluebuff.start_time[10] = ' ';
-
-//	sprintf(buff,"%02d",datetime.Hour);
-//	textvalue.textvaluebuff.start_time[11] = buff[0];
-//	textvalue.textvaluebuff.start_time[12] = buff[1];
-//	textvalue.textvaluebuff.start_time[13] = ':';
-
-//	sprintf(buff,"%02d",datetime.Min);
-//	textvalue.textvaluebuff.start_time[14] = buff[0];
-//	textvalue.textvaluebuff.start_time[15] = buff[1];
-//}
 
 
 
@@ -903,7 +863,7 @@ void start_endtime_set(void)
 	{
 		steadytempcount = 0;
 	}
-	if((dev_info.runstatus)&&(dev_info.setTemp != 0)&&(dev_info.lefttimeflag == 0)&&(steadytempcount>=120))
+	if((dev_info.runstatus==1)&&(dev_info.setTemp != 0)&&(dev_info.lefttimeflag == 0)&&(steadytempcount>=120))
 	{	
 		dev_info.lefttimeflag = 1;
 		dev_info.start_time=dev_info.timenow;
@@ -934,8 +894,7 @@ uint8_t getChangeAirTimes(int changeTimes)
 	{
 		if(changeTimes == dev_info.change_air_time[i])
 		{
-			
-			//Dac1_Set_Vol(165*i);
+		
 			return i;
 		}
 	}

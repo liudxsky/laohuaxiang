@@ -210,13 +210,16 @@ void RS232_USART_IRQHandler(void)
 	char floatbuff[32];
 	uint8_t i = 0;
 	uint8_t index = 0;
-	if(USART_GetITStatus(RS232_USART, USART_FLAG_ORE)!=RESET)
-	{
-		USART_ClearITPendingBit(RS232_USART, USART_FLAG_ORE);
-	}
+//	if(USART_GetITStatus(RS232_USART, USART_FLAG_ORE)!=RESET)
+//	{
+//		USART_ClearITPendingBit(RS232_USART, USART_FLAG_ORE);
+//	}
 	
 	if(USART_GetITStatus(RS232_USART, USART_IT_RXNE) != RESET)  //接收中断
+	//if (USART_GetFlagStatus(RS232_USART, USART_FLAG_ORE) != RESET)
 	{
+			USART_ClearITPendingBit(RS232_USART, USART_IT_RXNE);   //清除中断标志位
+		USART_ClearITPendingBit(RS232_USART, USART_FLAG_ORE);
 		RxBuffer[RxCounter] =USART_ReceiveData(RS232_USART);	 //读取收到的数据
 		//回显
 		//printf("%c",RxBuffer[RxCounter]);
@@ -231,7 +234,7 @@ void RS232_USART_IRQHandler(void)
 				dev_info.valid_flag = true;
 				SetPwmScope(atoi(dst_vale));
 				//dev_info.pwmscope = atoi(dst_vale);
-				FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
+				
 				//TIM_PWMOUTPUT_Config();
 				printf("\r\ncurrent PWM Scope is  0 -- %d \r\n",dev_info.pwmscope);
 			}
@@ -243,8 +246,6 @@ void RS232_USART_IRQHandler(void)
 				dev_info.valid_flag = true;
 				SetPwmValue(atoi(dst_vale));
 				//dev_info.pwmvalue = atoi(dst_vale);
-//				FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));			
-				//TIM_PWMOUTPUT_Config();
 				printf("\r\n\r\npwmvalue is set: \r\n------dec: %d\r\n------hex: 0x%x\r\n",dev_info.pwmvalue,dev_info.pwmvalue);
 				printf("\r\n\r\ncurrent temperature is : %.2lf\r\n",dev_info.currentTemp);
 			}
@@ -255,13 +256,12 @@ void RS232_USART_IRQHandler(void)
 				strncpy(dst_vale,(char *)&RxBuffer[index],RxCounter-index);
 				dev_info.valid_flag = true;
 				dev_info.airdooropenangle = atoi(dst_vale);
-//				FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));		
+	
 				printf("\r\n\r\nair valve angle value is set: \r\n------dec: %d\r\n------hex: 0x%x\r\n",dev_info.airdooropenangle,dev_info.airdooropenangle);
 				printf("\r\n\r\nback value  is : %04x  %d\r\n",dev_info.airdooropenangle,dev_info.airdooropenangle);
 			}	
 			else if(strstr((char *)RxBuffer,uart_cmd[SHOWVALUE].cmd))			//显示当前设备存储值
 			{		
-//				FLASH_Read_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
 				printf("\r\n***********device info*********\r\n");
 				printf("\r\ncurrent PWM Scope is  0 -- %d \r\n",dev_info.pwmscope);
 				printf("\r\ncurrent PWM Value is %d \r\n",dev_info.pwmvalue);	
@@ -333,7 +333,7 @@ void RS232_USART_IRQHandler(void)
 			  RxCounter++;
 		}  
 	}
-	USART_ClearITPendingBit(RS232_USART, USART_IT_RXNE);   //清除中断标志位
+
 }
 
 
@@ -393,19 +393,16 @@ void SCREEN_USART_IRQHandler(void)
 		USART_ClearITPendingBit(SCREEN_USART, USART_FLAG_ORE);
 	}
  if (USART_GetITStatus(SCREEN_USART, USART_IT_RXNE) != RESET)
+//	if(USART_GetITStatus(SCREEN_USART, USART_FLAG_ORE)!=RESET)
     {
+			 USART_ClearITPendingBit(SCREEN_USART, USART_IT_RXNE);   //清除中断标志位
+		USART_ClearITPendingBit(SCREEN_USART, USART_FLAG_ORE);
         uint8_t data = USART_ReceiveData(SCREEN_USART);
         queue_push(data);
-			screen_flag = 1;
+				screen_flag = 1;
     }  
- USART_ClearITPendingBit(SCREEN_USART, USART_IT_RXNE);   //清除中断标志位
+
 }
-
-
-
-
-
-
 
 /**
   * @}

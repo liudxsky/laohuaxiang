@@ -134,9 +134,13 @@ void IOstatus2mainIcon()
 	mainIcon.fr_work_status=!mainIcon.fan_operation;
 	mainIcon.heat_switch=!IOStatus.heat_switch;
 	mainIcon.heat_output=!IOStatus.heat_output;
-	if(dev_info.runstatus>2)
+	if(dev_info.runstatus>=2)
 	{
 		mainIcon.pid_run=SHOW;
+	}
+	else
+	{
+		mainIcon.pid_run=HIDE;
 	}
 	mainIcon.sample_frame=!IOStatus.sample_frame;
 	mainIcon.rr_work_status=!mainIcon.sample_frame;

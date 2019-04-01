@@ -13,7 +13,7 @@
 #define CycleLimit 3 //each period should be larger than 5 mins
 #define Ts 0.5 //sample time
 #define AUTOTUNE_TIMEOUT (5*60*60*2)
-
+#define Hour1  (60*60*2)
 	
 struct AutoTuningParamStruct
 {
@@ -37,8 +37,10 @@ struct AutoTuningParamStruct
 	int f_autoTuning;
 	int SetPoint;
 	unsigned long elapse_time;
+	unsigned long timestamp;
 	int AutoTuneStatus;
 	int AutoTuneOutput;
+	int m_tbuffidx;
 };
 void pidSPinit();
 int PIDInit(float kp,float ki, float kd,float sp);

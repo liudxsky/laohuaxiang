@@ -1,10 +1,63 @@
 #include "stm32f4xx.h"
 #include "./flash/flash.h"  
 #include "stdio.h"
-
+#include "./flash/deviceinfo.h"
+extern dev_info_t dev_info;
 volatile FLASH_Status FLASHStatus = FLASH_COMPLETE;      //Flash²Ù×÷×´Ì¬±äÁ¿
 static uint32_t GetSector(uint32_t Address);
-
+int scanFlash()
+{
+	uint32_t readaddr=FLASH_START_ADDR;
+	uint32_t tempcnt=0;
+	uint32_t validaddress=0;
+	while(readaddr!=FLASH_END_ADDR)
+	{
+		FLASH_Read_Nbytes((uint8_t *)readaddr,(uint8_t *)&dev_info,sizeof(dev_info_t));
+		if(dev_info.flash_setvalue.flash_write_cnt>tempcnt)
+		{
+			tempcnt=dev_info.flash_setvalue.flash_write_cnt;
+			validaddress=readaddr;
+		}
+		
+		readaddr=readaddr+FLASH_BLOCK_SIZE;
+	}
+	if(validaddress>FLASH_START_ADDR&&validaddress<FLASH_END_ADDR)
+	{
+		__disable_irq(); 
+		FLASH_Read_Nbytes((uint8_t *)validaddress,(uint8_t *)&dev_info,sizeof(dev_info_t));
+		__enable_irq();
+		printf("valid addr:%d, got addr:%d\n", validaddress,dev_info.flash_setvalue.flash_this_address);
+		return 1;
+	}
+	else 
+	{
+		  
+		return -1;
+	}
+}
+void readFlash()
+{
+	
+	__disable_irq(); 
+	FLASH_Read_Nbytes((uint8_t *)dev_info.flash_setvalue.flash_this_address,(uint8_t *)&dev_info,sizeof(dev_info_t));
+	__enable_irq();  
+}
+void writeFlash()
+{
+	__disable_irq(); 
+	if(dev_info.flash_setvalue.flash_this_address==FLASH_END_ADDR)
+	{
+		dev_info.flash_setvalue.flash_this_address=FLASH_START_ADDR;
+	}
+	else
+	{
+		dev_info.flash_setvalue.flash_this_address=dev_info.flash_setvalue.flash_this_address+FLASH_BLOCK_SIZE;
+		dev_info.flash_setvalue.flash_write_cnt++;
+	}
+	
+	FLASH_Write_Nbytes((uint8_t *)dev_info.flash_setvalue.flash_this_address,(uint8_t *)&dev_info,sizeof(dev_info_t));	
+	__enable_irq();  
+}
 void FLASH_Read_Nbytes(uint8_t *ReadAddress, uint8_t *ReadBuf, uint16_t Len) 
 {
 	uint16_t i = 0;

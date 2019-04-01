@@ -130,10 +130,14 @@
 
 #define  _TXT_DIS__S_PASSWORD_TEXT_DISPLAY1                                    2
 
+#define  _BTN_S_PASSWORD_BUTTON1                                               3
+
 //画面S_password2中图片Image1使用的图片
 #define  _IMG_S_PASSWORD2_IMAGE1                                               2
 
 #define  _TXT_DIS__S_PASSWORD2_TEXT_DISPLAY1                                   2
+
+#define  _BTN_S_PASSWORD2_BUTTON1                                              3
 
 //画面S_PID中图片Image1使用的图片
 #define  _IMG_S_PID_IMAGE1                                                     3

@@ -156,7 +156,6 @@ int main( void )
 						dev_info.pidvalue.PID_I=autoTuneParam.Ki_auto;
 						dev_info.pidvalue.PID_D=autoTuneParam.Kd_auto;
 						dev_info.dev_status_changed_flag=1;
-						FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));	
 						
 						printf("Kp:%f,Ki:%f,Kd%f\n",PID.Kp,PID.Ki,PID.Kd);
 						if(dev_info.testTime!=0)
@@ -218,7 +217,7 @@ int main( void )
 			if(dev_info.dev_status_changed_flag==1)//fast write
 			{
 				dev_info.dev_status_changed_flag=0;
-				FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));	
+				writeFlash();
 			}
 		}
 		if(getMsCounter() - t_thread1h > 60000)
@@ -230,8 +229,10 @@ int main( void )
 			{
 				dev_info.dev_status_changed_flag=0;
 				SetPoint=dev_info.setTemp;
-				FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));	
-				
+				writeFlash();
+//				__disable_irq(); 
+//				FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));	
+//				__enable_irq(); 
 			}
 
 		}

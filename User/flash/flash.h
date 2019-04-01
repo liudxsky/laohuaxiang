@@ -34,6 +34,13 @@
 #define FLASH_USER_START_ADDR 			ADDR_FLASH_SECTOR_8
 #define FLASH_USER_END_ADDR 			ADDR_FLASH_SECTOR_9
 
+#define FLASH_START_ADDR 			ADDR_FLASH_SECTOR_8
+#define FLASH_END_ADDR 				ADDR_FLASH_SECTOR_12
+#define FLASH_BLOCK_SIZE 			0x4000
+
+int scanFlash();
+void readFlash();
+void writeFlash();
 int8_t FLASH_Write_Nbytes(uint8_t *WriteAddress,uint8_t *WriteBuf,uint16_t Len);
 void FLASH_Read_Nbytes(uint8_t *ReadAddress, uint8_t *ReadBuf, uint16_t Len);
 
