@@ -224,7 +224,6 @@ void temp_detection(float dispTemper)
 
 void Check_All_Status(void)
 {
-
 	check_powertime();
 	check_screen_connect();
 	check_nopowertime();

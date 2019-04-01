@@ -243,7 +243,7 @@ void updater_menuParam(uint16_t screen_id)
 	if (dev_info.biglanguagestatus)
 	{
 		AnimationPlayFrame(screen_id,BIG_ENGLISH_LANGUAGE,HIDE);
-		AnimationPlayFrame(screen_id,BIG_CHINESE_LANGUAGE,SHOW);	
+		AnimationPlayFrame(screen_id,BIG_CHINESE_LANGUAGE,SHOW);
 	}
 	else
 	{
