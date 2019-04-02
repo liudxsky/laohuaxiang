@@ -20,7 +20,7 @@ void DeviceInfo_Init(void)
 	int sf=scanFlash();
 	//FLASH_Read_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info.valid_flag,4);
 	//读取存储标志位
-	if(!sf)
+	if(sf<0)
 	{
 		dev_info.valid_flag = 1;
 		dev_info.pwmscope = 1000;
@@ -29,6 +29,7 @@ void DeviceInfo_Init(void)
 		{
 			dev_info.change_air_time[i] = 0;
 		}
+		memset(&dev_info,0,sizeof(dev_info_t));
 		dev_info.flash_setvalue.warning1_up = 50;
 		dev_info.flash_setvalue.warning2_up = 50;
 		dev_info.flash_setvalue.screen_light_value = 100;
@@ -38,6 +39,8 @@ void DeviceInfo_Init(void)
 		dev_info.flash_adjusttemp = 0;
 		dev_info.compensatetemp = 0;
 		dev_info.addup_testtime = 0;
+		dev_info.testTime=0;
+		dev_info.flash_setvalue.change_air_time=0;
 		dev_info.Rs485Status = 2;
 		dev_info.thermocouple_flag=0;
 		dev_info.runstatus=0;
@@ -45,6 +48,12 @@ void DeviceInfo_Init(void)
 		dev_info.autonopowertime.Mon = 1;
 		dev_info.autonopowertime.Day = 1;
 		dev_info.autonopowertimeflag = 0;
+		dev_info.flash_setvalue.flash_this_address=FLASH_START_ADDR;
+		dev_info.flash_setvalue.flash_write_cnt=0;
+		dev_info.pidvalue.PID_P=0;
+		dev_info.pidvalue.PID_I=0;
+		dev_info.pidvalue.PID_D=0;
+		dev_info.setTemp=0;
 //		autogeneratepassword();
 		/*赋初值*/
 		writeFlash();

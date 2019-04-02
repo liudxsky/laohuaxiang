@@ -16,6 +16,7 @@
 #define ADDR_FLASH_SECTOR_10 ((uint32_t)0x080C0000)
 #define ADDR_FLASH_SECTOR_11 ((uint32_t)0x080E0000)
 #define ADDR_FLASH_SECTOR_12 ((uint32_t)0x08100000)
+
 #define ADDR_FLASH_SECTOR_13 ((uint32_t)0x08104000)
 #define ADDR_FLASH_SECTOR_14 ((uint32_t)0x08108000)
 #define ADDR_FLASH_SECTOR_15 ((uint32_t)0x0810C000)
@@ -31,17 +32,17 @@
 
 //16K
 
-#define FLASH_USER_START_ADDR 			ADDR_FLASH_SECTOR_8
-#define FLASH_USER_END_ADDR 			ADDR_FLASH_SECTOR_9
+//#define FLASH_USER_START_ADDR 			ADDR_FLASH_SECTOR_8
+//#define FLASH_USER_END_ADDR 			ADDR_FLASH_SECTOR_9
 
 #define FLASH_START_ADDR 			ADDR_FLASH_SECTOR_8
-#define FLASH_END_ADDR 				ADDR_FLASH_SECTOR_12
-#define FLASH_BLOCK_SIZE 			0x4000
+#define FLASH_END_ADDR 				ADDR_FLASH_SECTOR_11
+#define FLASH_BLOCK_SIZE 			0x20000
 
 int scanFlash();
 void readFlash();
 void writeFlash();
-int8_t FLASH_Write_Nbytes(uint8_t *WriteAddress,uint8_t *WriteBuf,uint16_t Len);
+int8_t FLASH_Write_Nbytes(uint32_t WriteAddress,uint8_t *WriteBuf,uint16_t Len);
 void FLASH_Read_Nbytes(uint8_t *ReadAddress, uint8_t *ReadBuf, uint16_t Len);
 
                            

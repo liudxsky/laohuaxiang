@@ -166,14 +166,10 @@
 
 #define  _TXT_DIS__S_PASSWORD_TEXT_DISPLAY1                                    2
 
-#define  _BTN_S_PASSWORD_BUTTON1                                               3
-
 //画面S_password2中图片Image1使用的图片
 #define  _IMG_S_PASSWORD2_IMAGE1                                               2
 
 #define  _TXT_DIS__S_PASSWORD2_TEXT_DISPLAY1                                   2
-
-#define  _BTN_S_PASSWORD2_BUTTON1                                              3
 
 //画面S_PID中图片Image1使用的图片
 #define  _IMG_S_PID_IMAGE1                                                     3
@@ -555,17 +551,17 @@
 #define  _BTN_E_GATE_EDITING_BUTTON1                                          23
 
 //画面E_password中图片Image1使用的图片
-#define  _IMG_E_PASSWORD_IMAGE1                                               35
+#define  _IMG_E_PASSWORD_IMAGE1                                                2
 
 #define  _TXT_DIS__E_PASSWORD_TEXT_DISPLAY1                                    2
 
 //画面E_password2中图片Image1使用的图片
-#define  _IMG_E_PASSWORD2_IMAGE1                                              35
+#define  _IMG_E_PASSWORD2_IMAGE1                                               2
 
 #define  _TXT_DIS__E_PASSWORD2_TEXT_DISPLAY1                                   2
 
 //画面E_PID中图片Image1使用的图片
-#define  _IMG_E_PID_IMAGE1                                                    36
+#define  _IMG_E_PID_IMAGE1                                                    35
 
 #define  _BTN_E_PID_BUTTON1                                                    2
 
@@ -578,7 +574,7 @@
 #define  _TXT_DIS__E_PID_TEXT_DISPLAY3                                         6
 
 //画面E_Menu中图片Image1使用的图片
-#define  _IMG_E_MENU_IMAGE1                                                   37
+#define  _IMG_E_MENU_IMAGE1                                                   36
 
 #define  _BTN_E_MENU_BUTTON1                                                   2
 
@@ -656,7 +652,7 @@
 #define  _TXT_DIS__E_RECOVERPASSWORD_TEXT_DISPLAY1                             2
 
 //画面E_door_open中图片Image1使用的图片
-#define  _IMG_E_DOOR_OPEN_IMAGE1                                              38
+#define  _IMG_E_DOOR_OPEN_IMAGE1                                              37
 
 #define  _RECORD_E_DOOR_OPEN_RECORD1                                           2
 
@@ -680,12 +676,12 @@
 #define  _BTN_E_TIME_BUTTON1                                                   8
 
 //画面E_wrong_password中图片Image1使用的图片
-#define  _IMG_E_WRONG_PASSWORD_IMAGE1                                         39
+#define  _IMG_E_WRONG_PASSWORD_IMAGE1                                         38
 
 #define  _BTN_E_WRONG_PASSWORD_BUTTON1                                         2
 
 //画面E_invalid_setting中图片Image1使用的图片
-#define  _IMG_E_INVALID_SETTING_IMAGE1                                        40
+#define  _IMG_E_INVALID_SETTING_IMAGE1                                        39
 
 //画面E_invalid_setting中动画控件Icon1使用的图片
 #define  _IMG_E_INVALID_SETTING_ICON1                                         16
@@ -730,7 +726,7 @@
 #define  _BTN_E_INVALID_SETTING_BUTTON1                                       10
 
 //画面E_invalid_setting2中图片Image1使用的图片
-#define  _IMG_E_INVALID_SETTING2_IMAGE1                                       41
+#define  _IMG_E_INVALID_SETTING2_IMAGE1                                       40
 
 //画面E_invalid_setting2中动画控件Icon1使用的图片
 #define  _IMG_E_INVALID_SETTING2_ICON1                                        16
@@ -755,7 +751,7 @@
 #define  _BTN_E_INVALID_SETTING2_BUTTON1                                       6
 
 //画面E_Main中图片Image1使用的图片
-#define  _IMG_E_MAIN_IMAGE1                                                   42
+#define  _IMG_E_MAIN_IMAGE1                                                   41
 
 //画面E_Main中动画控件Icon1使用的图片
 #define  _IMG_E_MAIN_ICON1                                                    19
@@ -793,7 +789,7 @@
 #define  _ANIMATION_E_MAIN_ICON7                                               8
 
 //画面E_Main中动画控件Icon8使用的图片
-#define  _IMG_E_MAIN_ICON8                                                    43
+#define  _IMG_E_MAIN_ICON8                                                    42
 
 #define  _ANIMATION_E_MAIN_ICON8                                               9
 
@@ -803,7 +799,7 @@
 #define  _ANIMATION_E_MAIN_ICON9                                              10
 
 //画面E_Main中动画控件Icon10使用的图片
-#define  _IMG_E_MAIN_ICON10                                                   44
+#define  _IMG_E_MAIN_ICON10                                                   43
 
 #define  _ANIMATION_E_MAIN_ICON10                                             11
 
@@ -823,7 +819,7 @@
 #define  _ANIMATION_E_MAIN_ICON13                                             14
 
 //画面E_Main中动画控件Icon14使用的图片
-#define  _IMG_E_MAIN_ICON14                                                   45
+#define  _IMG_E_MAIN_ICON14                                                   44
 
 #define  _ANIMATION_E_MAIN_ICON14                                             15
 
@@ -871,7 +867,7 @@
 #define  _RTC_E_MAIN_RTC1                                                     35
 
 //画面E_adjust中图片Image1使用的图片
-#define  _IMG_E_ADJUST_IMAGE1                                                 46
+#define  _IMG_E_ADJUST_IMAGE1                                                 45
 
 #define  _TXT_DIS__E_ADJUST_TEXT_DISPLAY1                                      2
 

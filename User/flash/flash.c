@@ -10,10 +10,10 @@ int scanFlash()
 	uint32_t readaddr=FLASH_START_ADDR;
 	uint32_t tempcnt=0;
 	uint32_t validaddress=0;
-	while(readaddr!=FLASH_END_ADDR)
+	while(readaddr!=(FLASH_END_ADDR))
 	{
 		FLASH_Read_Nbytes((uint8_t *)readaddr,(uint8_t *)&dev_info,sizeof(dev_info_t));
-		if(dev_info.flash_setvalue.flash_write_cnt>tempcnt)
+		if(dev_info.flash_setvalue.flash_write_cnt!=0xFFFFFFFF&&dev_info.flash_setvalue.flash_write_cnt>tempcnt)
 		{
 			tempcnt=dev_info.flash_setvalue.flash_write_cnt;
 			validaddress=readaddr;
@@ -21,12 +21,13 @@ int scanFlash()
 		
 		readaddr=readaddr+FLASH_BLOCK_SIZE;
 	}
-	if(validaddress>FLASH_START_ADDR&&validaddress<FLASH_END_ADDR)
+	if(validaddress>=FLASH_START_ADDR&&validaddress<FLASH_END_ADDR)
 	{
 		__disable_irq(); 
 		FLASH_Read_Nbytes((uint8_t *)validaddress,(uint8_t *)&dev_info,sizeof(dev_info_t));
 		__enable_irq();
-		printf("valid addr:%d, got addr:%d\n", validaddress,dev_info.flash_setvalue.flash_this_address);
+		delay_ms(1000);
+		printf("valid addr:%x, got addr:%x\n", validaddress,dev_info.flash_setvalue.flash_this_address);
 		return 1;
 	}
 	else 
@@ -44,6 +45,14 @@ void readFlash()
 }
 void writeFlash()
 {
+	if(dev_info.flash_setvalue.flash_this_address>FLASH_END_ADDR||dev_info.flash_setvalue.flash_this_address<FLASH_START_ADDR)
+	{
+		if(scanFlash()<0)
+		{//all flash corrupted
+			dev_info.flash_setvalue.flash_this_address=FLASH_START_ADDR;
+			dev_info.flash_setvalue.flash_write_cnt=0;
+		}
+	}
 	__disable_irq(); 
 	if(dev_info.flash_setvalue.flash_this_address==FLASH_END_ADDR)
 	{
@@ -55,7 +64,8 @@ void writeFlash()
 		dev_info.flash_setvalue.flash_write_cnt++;
 	}
 	
-	FLASH_Write_Nbytes((uint8_t *)dev_info.flash_setvalue.flash_this_address,(uint8_t *)&dev_info,sizeof(dev_info_t));	
+	FLASH_Write_Nbytes(dev_info.flash_setvalue.flash_this_address,(uint8_t *)&dev_info,sizeof(dev_info_t));	
+	printf("write flash %x\n",dev_info.flash_setvalue.flash_this_address);
 	__enable_irq();  
 }
 void FLASH_Read_Nbytes(uint8_t *ReadAddress, uint8_t *ReadBuf, uint16_t Len) 
@@ -69,7 +79,7 @@ void FLASH_Read_Nbytes(uint8_t *ReadAddress, uint8_t *ReadBuf, uint16_t Len)
 	}
 }
 
-int8_t FLASH_Write_Nbytes(uint8_t *WriteAddress,uint8_t *WriteBuf,uint16_t Len)
+int8_t FLASH_Write_Nbytes(uint32_t WriteAddress,uint8_t *WriteBuf,uint16_t Len)
 {
 	uint16_t i = 0;
 	
@@ -80,7 +90,9 @@ int8_t FLASH_Write_Nbytes(uint8_t *WriteAddress,uint8_t *WriteBuf,uint16_t Len)
 
 	__IO uint32_t uwData32 = 0;
 	__IO uint32_t uwMemoryProgramStatus = 0;
-
+	
+	uint32_t FLASH_USER_START_ADDR=WriteAddress;
+	uint32_t FLASH_USER_END_ADDR=WriteAddress+FLASH_BLOCK_SIZE;
 
 	FLASH_Unlock();	
 	FLASH_ClearFlag(FLASH_FLAG_EOP | FLASH_FLAG_OPERR | FLASH_FLAG_WRPERR |
@@ -126,7 +138,7 @@ int8_t FLASH_Write_Nbytes(uint8_t *WriteAddress,uint8_t *WriteBuf,uint16_t Len)
 	/* 从FLASH中读取出数据进行校验***************************************/
 	  /*  MemoryProgramStatus = 0: 写入的数据正确
 		  MemoryProgramStatus != 0: 写入的数据错误，其值为错误的个数 */
-	  uwAddress = FLASH_USER_START_ADDR;
+	  uwAddress = FLASH_START_ADDR;
 	  uwMemoryProgramStatus = 0;
 	  
 	  while (uwAddress < FLASH_USER_END_ADDR)
