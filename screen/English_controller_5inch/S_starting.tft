@@ -1,1 +1,0 @@
-<DrawPage name="S_starting" bk_transparent="0" bk_color="0;0;255" bk_image=""><item name="Image1" id="1" type="image" url="Images\controller_starting_AB.png" transparency="0" crop="0" xOffset="0" yOffset="0" width="800" height="480" filter="0" clr_low="0;0;0" control_enable="0" clock="0" angle="0" rotate_x_offset="0" rotate_y_offset="0"/></DrawPage>
