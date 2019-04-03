@@ -9,7 +9,7 @@ extern dev_info_t dev_info;
 extern TextValueTab  textvalue;			//text control_id buff 
 extern BIG_SCREEN_ID_TAB biglanguage_screen;
 uint8_t global_str_temp[COMMONSIZE];
-RtcTime  nopowertime = {2028,12,12,0,0,0};				
+RtcTime  nopowertime = {28,12,12,0,0,0};				
 
 extern struct mainIconStruct mainIcon;
 extern struct mainTextStruct mainPageText;
@@ -372,7 +372,7 @@ void autoNoPowerScreen(uint16_t control_id,uint8_t *str)
 		{
 			//have power , control device work normal
 			MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);
-			dev_info.autonopowertime.Year += 100;
+			dev_info.autonopowertime.Year = 50;
 			dev_info.autonopowertimeflag = 0;
 			dev_info.passwordwrongflag = 0;
 		}
@@ -630,7 +630,6 @@ void adjustScreenSetting(uint16_t control_id,uint8_t *str)
 	uint8_t str_temp[COMMONSIZE];
 	int i_temp;
 	float  data_temp = 0;	
-	uint8_t timeSetFlag = 0;
 	switch (control_id)
 	{
 		case BIG_ADJUST_PASSWORD1:
@@ -688,42 +687,33 @@ void adjustScreenSetting(uint16_t control_id,uint8_t *str)
 			}
 			break;
 		case BIG_YEAR_SET://bug here, but I don't understand
-			timeSetFlag++;
 			memset(textvalue.autotime.year,0,sizeof(char)*COMMONSIZE);
 			memcpy(textvalue.autotime.year,str+2,sizeof(char)*COMMONSIZE);
 			nopowertime.Year = atoi(textvalue.autotime.year);
-//			nopowertime.Year = DectoBCD(nopowertime.Year);
-			 
 			break;
 		case BIG_MONTH_SET:
-			timeSetFlag++;
 			memset(textvalue.autotime.month,0,sizeof(char)*COMMONSIZE);
 			memcpy(textvalue.autotime.month,str,sizeof(char)*COMMONSIZE);
 			nopowertime.Mon = atoi(textvalue.autotime.month);
 			break;	
 		case BIG_DAY_SET:
-			timeSetFlag++;
 			memset(textvalue.autotime.day,0,sizeof(char)*COMMONSIZE);
 			memcpy(textvalue.autotime.day,str,sizeof(char)*COMMONSIZE);
 			nopowertime.Day = atoi(textvalue.autotime.day);
 			break;	
 	}
-	if(timeSetFlag)
+	if(diff_time(dev_info.timenow, nopowertime) > 0)
 	{
-		if(diff_time(dev_info.timenow, nopowertime))
-		{
-			timeSetFlag = 0;
-			dev_info.autonopowertime.Year = nopowertime.Year;
-			dev_info.autonopowertime.Mon = nopowertime.Mon;
-			dev_info.autonopowertime.Day = nopowertime.Day;
-			dev_info.dev_status_changed_flag = 1;
-			argSetErrorIcon.auto_no_power_set_fail=HIDE;
-		}
-		else
-		{
-			argSetErrorIcon.auto_no_power_set_fail=SHOW;
-			MySetScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN2);
-		}
+		dev_info.autonopowertime.Year = nopowertime.Year;
+		dev_info.autonopowertime.Mon = nopowertime.Mon;
+		dev_info.autonopowertime.Day = nopowertime.Day;
+		dev_info.dev_status_changed_flag = 1;
+		argSetErrorIcon.auto_no_power_set_fail=HIDE;
+	}
+	else
+	{
+		argSetErrorIcon.auto_no_power_set_fail=SHOW;
+		MySetScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN2);
 	}
 	
 }
@@ -780,8 +770,9 @@ int32_t diff_time(RtcTime starttime,RtcTime endtime)
 {
 	int32_t diff=0;
 //	printf("%4d/%2d/%2d,%2d:%2d:%2d",endtime.Year,endtime.Mon,endtime.Day,endtime.Hour,endtime.Min,endtime.Sec);
-//	printf("starttime is %x \nend time is   %x\n",to_day(starttime),to_day(endtime));
+//	printf("starttime is %x \n  end time is   %x\n",to_day(starttime),to_day(endtime));
 	diff=to_day(endtime)-to_day(starttime);
+//	printf("diff is %.8x \n",diff);
 	return diff;
 }
 

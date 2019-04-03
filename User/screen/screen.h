@@ -82,11 +82,14 @@ typedef struct
 //menu password input screen
 /*--------------------------------------------------------------------------*/
 #define  BIG_PASSWORD_PROTECT_INPUT				2		//menu password input
+#define  BIG_PASSWORD1_RETURN_BUTTON   			3  		//return button 
 /*--------------------------------------------------------------------------*/
 
 //adjust password input screen 
 /*--------------------------------------------------------------------------*/
-#define  BIG_PASSWORD2_INPUT				2		//menu password input
+#define  BIG_PASSWORD2_INPUT					2		//menu password input
+#define  BIG_PASSWORD2_RETURN_BUTTON   			3  		//return button 
+
 /*--------------------------------------------------------------------------*/
 
 

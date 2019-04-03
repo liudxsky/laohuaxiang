@@ -156,8 +156,7 @@ void read_Holdingregister(void)
 	usRegHoldingBuf[3] = dev_info.flash_setvalue.warning1_up*10;
 	usRegHoldingBuf[4] = dev_info.flash_setvalue.warning2_up*10;
 	usRegHoldingBuf[5] = dev_info.flash_setvalue.temp_backdiff*10;
-	usRegHoldingBuf[6] = atoi(dev_info.flash_setvalue.menu_password)>>16;
-
+//	usRegHoldingBuf[6] = atoi(dev_info.flash_setvalue.menu_password)>>16;
 //	usRegHoldingBuf[7] = atoi(dev_info.flash_setvalue.menu_password)&0x0000ffff;
 //	usRegHoldingBuf[8] = atoi(dev_info.flash_setvalue.secondtime_password)>>16;
 //	usRegHoldingBuf[9] = atoi(dev_info.flash_setvalue.secondtime_password)&0x0000ffff;   //不赞成用modbus改密码

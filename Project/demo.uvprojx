@@ -838,11 +838,6 @@
               <FilePath>..\User\pwm\pwm.c</FilePath>
             </File>
             <File>
-              <FileName>queue.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\User\queue\queue.c</FilePath>
-            </File>
-            <File>
               <FileName>screen.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\User\screen\screen.c</FilePath>

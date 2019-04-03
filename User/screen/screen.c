@@ -216,6 +216,16 @@ void NotifyButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 	{
 		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);
 	}
+	//menu password input return button
+	if(screen_id == bigchinese_screen.BIG_SCREAT_PROTECT_SCREEN)
+	{
+		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);
+	}
+	//adjust password input return button
+	if(screen_id == bigchinese_screen.BIG_ADJUST_PROTECT_SCREEN)
+	{
+		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);
+	}
 	//password input error
 	if(screen_id == biglanguage_screen.BIG_PASSWORD_ERROR_SCREEN)
 	{		

@@ -97,23 +97,25 @@ void check_screen_connect(void)
 	}
 }
 
-volatile  int32_t closetime=200;
+volatile  int32_t closetime=0;
+
 
 void check_nopowertime(void)
 {
-	closetime=diff_time(dev_info.timenow,dev_info.autonopowertime)/60;    //hour
-	if(closetime<=60)
-	{
-		dev_info.autonopowertimeflag = 1;
-		dev_info.runstatus=0;
-	}
 	if(dev_info.autonopowertimeflag)
 	{
 		MySetScreen(biglanguage_screen.BIG_AUTO_NOPOWER_RECOVER);
 		
 //		RCC_AHB1PeriphClockCmd(DRIVER_GPIO_CLK|BACK_GPIO_CLK|BOX_DOOR_GPIO_CLK, DISABLE);
-		
 	}
+	closetime=diff_time(dev_info.timenow,dev_info.autonopowertime)/60;    //hour
+	
+	if(closetime<=600)
+	{
+		dev_info.autonopowertimeflag = 1;
+		dev_info.runstatus=0;
+	}
+	
 	
 //	printf("close time%d\n",closetime);
 }

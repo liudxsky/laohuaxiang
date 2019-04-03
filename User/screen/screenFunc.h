@@ -43,3 +43,4 @@ void mergehour_min(uint16_t hour,uint16_t min);
 
 void my_itoa(long i,char *string, uint8_t num);
 #endif
+
