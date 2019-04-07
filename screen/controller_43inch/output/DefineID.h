@@ -392,17 +392,17 @@
 #define  _BTN_S_ADJUSTMENU_BUTTON1                                            11
 
 //画面E_password1中图片Image1使用的图片
-#define  _IMG_E_PASSWORD1_IMAGE1                                               1
+#define  _IMG_E_PASSWORD1_IMAGE1                                              22
 
 #define  _TXT_DIS__E_PASSWORD1_TEXT_DISPLAY1                                   2
 
 //画面E_password2中图片Image1使用的图片
-#define  _IMG_E_PASSWORD2_IMAGE1                                               1
+#define  _IMG_E_PASSWORD2_IMAGE1                                              22
 
 #define  _TXT_DIS__E_PASSWORD2_TEXT_DISPLAY1                                   2
 
 //画面E_PID中图片Image1使用的图片
-#define  _IMG_E_PID_IMAGE1                                                    22
+#define  _IMG_E_PID_IMAGE1                                                    23
 
 #define  _TXT_DIS__E_PID_TEXT_DISPLAY1                                         4
 
@@ -415,7 +415,7 @@
 #define  _BTN_E_PID_BUTTON2                                                    3
 
 //画面E_menu中图片Image1使用的图片
-#define  _IMG_E_MENU_IMAGE1                                                   23
+#define  _IMG_E_MENU_IMAGE1                                                   24
 
 #define  _BTN_E_MENU_BUTTON1                                                   2
 
@@ -453,7 +453,7 @@
 #define  _ANIMATION_E_MENU_ICON3                                              14
 
 //画面E_menu中动画控件Icon4使用的图片
-#define  _IMG_E_MENU_ICON4                                                    24
+#define  _IMG_E_MENU_ICON4                                                    25
 
 #define  _ANIMATION_E_MENU_ICON4                                              15
 
@@ -480,12 +480,12 @@
 #define  _BTN_E_MENU_BUTTON8                                                  27
 
 //画面E_shutoff_recovery中图片Image1使用的图片
-#define  _IMG_E_SHUTOFF_RECOVERY_IMAGE1                                        5
+#define  _IMG_E_SHUTOFF_RECOVERY_IMAGE1                                       26
 
 #define  _TXT_DIS__E_SHUTOFF_RECOVERY_TEXT_DISPLAY1                            2
 
 //画面E_time中图片Image1使用的图片
-#define  _IMG_E_TIME_IMAGE1                                                    6
+#define  _IMG_E_TIME_IMAGE1                                                   27
 
 #define  _TXT_DIS__E_TIME_TEXT_DISPLAY1                                        2
 
@@ -502,12 +502,12 @@
 #define  _BTN_E_TIME_BUTTON1                                                   8
 
 //画面E_wrong_password中图片Image1使用的图片
-#define  _IMG_E_WRONG_PASSWORD_IMAGE1                                         25
+#define  _IMG_E_WRONG_PASSWORD_IMAGE1                                         28
 
 #define  _BTN_E_WRONG_PASSWORD_BUTTON1                                         2
 
 //画面E_wrong_setting中图片Image1使用的图片
-#define  _IMG_E_WRONG_SETTING_IMAGE1                                          26
+#define  _IMG_E_WRONG_SETTING_IMAGE1                                          29
 
 //画面E_wrong_setting中动画控件Icon1使用的图片
 #define  _IMG_E_WRONG_SETTING_ICON1                                            9
@@ -547,7 +547,7 @@
 #define  _BTN_E_WRONG_SETTING_BUTTON1                                         10
 
 //画面E_wrong_setting2中图片Image1使用的图片
-#define  _IMG_E_WRONG_SETTING2_IMAGE1                                         27
+#define  _IMG_E_WRONG_SETTING2_IMAGE1                                         30
 
 //画面E_wrong_setting2中动画控件Icon7使用的图片
 #define  _IMG_E_WRONG_SETTING2_ICON7                                           9
@@ -567,7 +567,7 @@
 #define  _BTN_E_WRONG_SETTING2_BUTTON1                                         6
 
 //画面E_main中图片Image1使用的图片
-#define  _IMG_E_MAIN_IMAGE1                                                   28
+#define  _IMG_E_MAIN_IMAGE1                                                   31
 
 //画面E_main中动画控件Icon1使用的图片
 #define  _IMG_E_MAIN_ICON1                                                    12
@@ -650,7 +650,7 @@
 #define  _ANIMATION_E_MAIN_ICON10                                            330
 
 //画面E_adjustmenu中图片Image1使用的图片
-#define  _IMG_E_ADJUSTMENU_IMAGE1                                             29
+#define  _IMG_E_ADJUSTMENU_IMAGE1                                             32
 
 #define  _TXT_DIS__E_ADJUSTMENU_TEXT_DISPLAY1                                  2
 
