@@ -101,6 +101,7 @@ void screen_init(void)
 	argSetErrorIcon.air_angle_set_fail = HIDE;
 	argSetErrorIcon.temp_adjust_fail = HIDE;
 	argSetErrorIcon.auto_no_power_set_fail = HIDE;
+	
 	updater_mainScreen();
 	updater_argSetErrorScreen1();
 	updater_argSetErrorScreen2();

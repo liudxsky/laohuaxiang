@@ -34,9 +34,9 @@ void DeviceInfo_Init(void)
 		dev_info.flash_setvalue.warning1_up = 50;
 		dev_info.flash_setvalue.warning2_up = 50;
 		dev_info.flash_setvalue.screen_light_value = 100;
-		dev_info.Modbus_address = 1;					
+		dev_info.flash_setvalue.modbus_address = 1;					
 		dev_info.biglanguagestatus = 1;
-		dev_info.modbus_tran_rate = 9600;
+		dev_info.flash_setvalue.modbus_tran_rate = 9600;
 		dev_info.flash_adjusttemp = 0;
 		dev_info.compensatetemp = 0;
 		dev_info.addup_testtime = 0;
@@ -63,7 +63,7 @@ void DeviceInfo_Init(void)
 		printf("\r\n device curren pwm scope is %d \r\n",dev_info.pwmscope);
 		printf("\r\n device current pwm value is %d \r\n",dev_info.pwmvalue);
 		printf("\r\n device current air valve angle value is %d \r\n",dev_info.airdooropenangle);
-		printf("\r\n device current set modbus address is :%d\r\n",dev_info.Modbus_address);
+		printf("\r\n device current set modbus address is :%d\r\n",dev_info.flash_setvalue.modbus_address);
 		
 	}
 	else
@@ -72,6 +72,8 @@ void DeviceInfo_Init(void)
 		readFlash();
 		//FLASH_Read_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
 		/*串口打印信息	*/
+				dev_info.pwmscope = 1000;
+		dev_info.pwmvalue = 0;
 		printf("\r\n device curren pwm scope is %d \r\n",dev_info.pwmscope);
 		printf("\r\n device current pwm value is %d \r\n",dev_info.pwmvalue);
 		printf("\r\n device current air valve angle value is %d \r\n",dev_info.airdooropenangle);
@@ -83,7 +85,7 @@ void DeviceInfo_Init(void)
 		}
 		printf("\r\n device current set testtime is :%f\r\n",dev_info.testTime);
 		printf("\r\n device current set testtime is :%f\r\n",dev_info.testTime);		
-		printf("\r\n device current set modbus address is :%d\r\n",dev_info.Modbus_address);
+		printf("\r\n device current set modbus address is :%d\r\n",dev_info.flash_setvalue.modbus_address);
 
 		dev_info.temp_warnning1=50;
 		dev_info.temp_warnning2=50;
@@ -334,10 +336,10 @@ void autogeneratepassword(void)
 			hexdata += MAC[i]*(pow(256,(MACLength -i-1)));
 			printf("hexdata is %6x\n",hexdata);
 		} 
-		sprintf(demobuff,"%d",hexdata); 
-		strncpy(dev_info.autonopowerpassword,demobuff,PASSWORDLENGTH);
-		printf("destbuff is %6s \n",dev_info.autonopowerpassword);
-//		sprintf(dev_info.autonopowerpassword,"%06d",111111);
+//		sprintf(demobuff,"%d",hexdata); 
+//		strncpy(dev_info.autonopowerpassword,demobuff,PASSWORDLENGTH);
+//		printf("destbuff is %6s \n",dev_info.autonopowerpassword);
+		sprintf(dev_info.autonopowerpassword,"%06d",111111);
 		sprintf(dev_info.flash_setvalue.menu_password,"%06d",666666);
 		sprintf(dev_info.flash_setvalue.protect_password,"%06d",888888);
 		printf("\r\n*************************************************************** :\r\n");

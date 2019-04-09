@@ -46,45 +46,45 @@ void menuScreenButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 			case BIG_BPS_1200_BUTTON:
 				if(!state)
 				{
-					dev_info.modbus_tran_rate = 1200;
+					dev_info.flash_setvalue.modbus_address = 1200;
 					AnimationPlayFrame(screen_id,BIG_BPS_1200,SHOW);
 					AnimationPlayFrame(screen_id,BIG_BPS_2400,HIDE);
 					AnimationPlayFrame(screen_id,BIG_BPS_4800,HIDE);
 					AnimationPlayFrame(screen_id,BIG_BPS_9600,HIDE);
-					eMBInit( MB_RTU, dev_info.Modbus_address, 0x01, dev_info.modbus_tran_rate, MB_PAR_NONE ); //Modbus Init
+					eMBInit( MB_RTU, dev_info.flash_setvalue.modbus_address, 0x01, dev_info.flash_setvalue.modbus_tran_rate, MB_PAR_NONE ); //Modbus Init
 				}
 				break;
 			case BIG_BPS_2400_BUTTON:
 				if(!state)
 				{
-					dev_info.modbus_tran_rate = 2400;
+					dev_info.flash_setvalue.modbus_tran_rate = 2400;
 					AnimationPlayFrame(screen_id,BIG_BPS_2400,SHOW);
 					AnimationPlayFrame(screen_id,BIG_BPS_1200,HIDE);
 					AnimationPlayFrame(screen_id,BIG_BPS_4800,HIDE);
 					AnimationPlayFrame(screen_id,BIG_BPS_9600,HIDE);
-					eMBInit( MB_RTU, dev_info.Modbus_address, 0x01, dev_info.modbus_tran_rate, MB_PAR_NONE ); //Modbus Init
+					eMBInit( MB_RTU, dev_info.flash_setvalue.modbus_address, 0x01, dev_info.flash_setvalue.modbus_tran_rate, MB_PAR_NONE ); //Modbus Init
 				}
 				break;
 			case BIG_BPS_4800_BUTTON:
 				if(!state)
 				{
-					dev_info.modbus_tran_rate = 4800;
+					dev_info.flash_setvalue.modbus_tran_rate = 4800;
 					AnimationPlayFrame(screen_id,BIG_BPS_2400,HIDE);
 					AnimationPlayFrame(screen_id,BIG_BPS_1200,HIDE);
 					AnimationPlayFrame(screen_id,BIG_BPS_4800,SHOW);
 					AnimationPlayFrame(screen_id,BIG_BPS_9600,HIDE);
-					eMBInit( MB_RTU, dev_info.Modbus_address, 0x01, dev_info.modbus_tran_rate, MB_PAR_NONE ); //Modbus Init
+					eMBInit( MB_RTU, dev_info.flash_setvalue.modbus_address, 0x01, dev_info.flash_setvalue.modbus_tran_rate, MB_PAR_NONE ); //Modbus Init
 				}
 				break;
 			case BIG_BPS_9600_BUTTON:
 				if(!state)
 				{
-					dev_info.modbus_tran_rate = 9600;
+					dev_info.flash_setvalue.modbus_tran_rate = 9600;
 					AnimationPlayFrame(screen_id,BIG_BPS_9600,SHOW);
 					AnimationPlayFrame(screen_id,BIG_BPS_2400,HIDE);
 					AnimationPlayFrame(screen_id,BIG_BPS_4800,HIDE);
 					AnimationPlayFrame(screen_id,BIG_BPS_1200,HIDE);
-					eMBInit( MB_RTU, dev_info.Modbus_address, 0x01, dev_info.modbus_tran_rate, MB_PAR_NONE ); //Modbus Init
+					eMBInit( MB_RTU, dev_info.flash_setvalue.modbus_address, 0x01, dev_info.flash_setvalue.modbus_tran_rate, MB_PAR_NONE ); //Modbus Init
 				}
 				break;
 			case BIG_CHINESE_LANGUAGE_BUTTON:
@@ -108,7 +108,7 @@ void menuScreenButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 				MySetScreen(biglanguage_screen.BIG_PARAM_SET_SCREEN);
 				break;
 			default:
-				dev_info.modbus_tran_rate = 9600;
+				dev_info.flash_setvalue.modbus_tran_rate = 9600;
 				dev_info.biglanguagestatus = 1;
 		}
 		dev_info.dev_status_changed_flag = 1;

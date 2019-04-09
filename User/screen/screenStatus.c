@@ -222,11 +222,11 @@ void updater_menuParam(uint16_t screen_id)
 
 	SetTextValueInt32(screen_id,BIG_CHANGE_AIR_MAX_SET,dev_info.flash_setvalue.change_max_time);
 
-	SetTextValueInt32(screen_id,BIG_MODBUS_NODE_ADDRESS,dev_info.Modbus_address);
+	SetTextValueInt32(screen_id,BIG_MODBUS_NODE_ADDRESS,dev_info.flash_setvalue.modbus_address);
 	
 	SetTextValueInt32(screen_id,BIG_SCREEN_BRIGHT_ADJUST,dev_info.flash_setvalue.screen_light_value);
 	
-	switch (dev_info.modbus_tran_rate)
+	switch (dev_info.flash_setvalue.modbus_tran_rate)
 	{
 		case 1200:
 			AnimationPlayFrame(screen_id,BIG_BPS_1200,SHOW);

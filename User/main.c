@@ -85,7 +85,7 @@ int main( void )
 
 	qsize  size = 0;
 	System_Init();												//init
-	eStatus = eMBInit( MB_RTU, dev_info.Modbus_address, 0x01, dev_info.modbus_tran_rate, MB_PAR_NONE ); //Modbus Init
+	eStatus = eMBInit( MB_RTU, dev_info.flash_setvalue.modbus_address, 0x01, dev_info.flash_setvalue.modbus_tran_rate, MB_PAR_NONE ); //Modbus Init
 	eStatus = eMBEnable();									//Free MODBUS enable
 	delay_s(1);
 	STM32_Read_ID();

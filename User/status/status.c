@@ -138,23 +138,23 @@ void Check_Rs485(void)
 	{
 		dev_info.Rs485Status = 2;
 	}
-//	switch (dev_info.Rs485Status)
-//	{
-//		case 0:
-//			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_RS485_COMMU_ID,0);
-//			break;
-//		case 1:
-//			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_RS485_COMMU_ID,1);
-//			delay_ms(300);
-//			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_RS485_COMMU_ID,0);
-//			delay_ms(300);
-//			break;
-//		case 2:
-//			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_RS485_COMMU_ID,2);
-//			break;
-//		default:
-//			break;
-//	}
+	switch (dev_info.Rs485Status)
+	{
+		case 0:
+			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_RS485_COMMU_ID,0);
+			break;
+		case 1:
+			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_RS485_COMMU_ID,1);
+			delay_ms(300);
+			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_RS485_COMMU_ID,0);
+			delay_ms(300);
+			break;
+		case 2:
+			AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_RS485_COMMU_ID,2);
+			break;
+		default:
+			break;
+	}
 }
 
 
@@ -328,7 +328,8 @@ void door_open_status(void)
 
 void control_mode_select(void)
 {	
-	uint8_t controlflag = GPIO_ReadInputDataBit(DAC_SELECT_GPIO_PORT,DAC_SELECT2_GPIO_PIN);	;
+	uint8_t controlflag = GPIO_ReadInputDataBit(DAC_SELECT_GPIO_PORT,DAC_SELECT2_GPIO_PIN);	
+	delay_s(1);
 	if(controlflag)
 	{
 		SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_ANALOG_OUTPUT,control_mode[0]);
