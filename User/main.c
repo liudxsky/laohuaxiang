@@ -266,7 +266,7 @@ void System_Init(void)
 	screen_init();			//screen data init						
 	modbus_register_init();
 	ReadRtcTime();
-	autogeneratepassword();
+//	autogeneratepassword();
 }
 
 

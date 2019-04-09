@@ -7,11 +7,12 @@
 #include "./usart/usart.h"
 #include "crypto.h"
 #include "math.h"
-
+#include "./screen/screen.h"
 uint8_t ChipUniqueID[12] = {0};
 uint32_t * const  p = (uint32_t *)(0x08070000); 
 #define INVALID_INFO		0xFFFF
 dev_info_t dev_info;
+extern BIG_SCREEN_ID_TAB biglanguage_screen;
 
 void DeviceInfo_Init(void)
 {
@@ -54,7 +55,7 @@ void DeviceInfo_Init(void)
 		dev_info.pidvalue.PID_I=0;
 		dev_info.pidvalue.PID_D=0;
 		dev_info.setTemp=0;
-//		autogeneratepassword();
+		autogeneratepassword();
 		/*¸³³õÖµ*/
 		writeFlash();
 		//FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
@@ -83,13 +84,21 @@ void DeviceInfo_Init(void)
 		printf("\r\n device current set testtime is :%f\r\n",dev_info.testTime);
 		printf("\r\n device current set testtime is :%f\r\n",dev_info.testTime);		
 		printf("\r\n device current set modbus address is :%d\r\n",dev_info.Modbus_address);
-		dev_info.runstatus=0;
-		dev_info.temp_warnning1=0;
-		dev_info.temp_warnning2=0;
+
+		dev_info.temp_warnning1=50;
+		dev_info.temp_warnning2=50;
 		dev_info.dev_status_changed_flag=0;
 		dev_info.lefttimeflag=0;
 		dev_info.passwordwrongflag=0;
 		dev_info.thermocouple_flag=0;
+
+		if(dev_info.runstatus>0)
+		{
+			//pop up abnormal power down screen
+			check_language_select();
+			SetTextValueRTC(biglanguage_screen.BIG_ABNORMAL_POWEROFF,BIG_ABNORMAL_TIME,dev_info.timenow);
+		}
+		dev_info.runstatus=0;
 	}
 
 }
@@ -325,10 +334,10 @@ void autogeneratepassword(void)
 			hexdata += MAC[i]*(pow(256,(MACLength -i-1)));
 			printf("hexdata is %6x\n",hexdata);
 		} 
-//		sprintf(demobuff,"%d",hexdata); 
-//		strncpy(dev_info.autonopowerpassword,demobuff,PASSWORDLENGTH);
-//		printf("destbuff is %6s \n",dev_info.autonopowerpassword);
-		sprintf(dev_info.autonopowerpassword,"%06d",111111);
+		sprintf(demobuff,"%d",hexdata); 
+		strncpy(dev_info.autonopowerpassword,demobuff,PASSWORDLENGTH);
+		printf("destbuff is %6s \n",dev_info.autonopowerpassword);
+//		sprintf(dev_info.autonopowerpassword,"%06d",111111);
 		sprintf(dev_info.flash_setvalue.menu_password,"%06d",666666);
 		sprintf(dev_info.flash_setvalue.protect_password,"%06d",888888);
 		printf("\r\n*************************************************************** :\r\n");

@@ -83,7 +83,7 @@ const float32_t firCoeffs32[NUM_TAPS] = {
 	autoTuningParam.SetPoint=sp;
 	if(sp<120)
 	{
-		autoTuningParam.kpadj=0.4;
+		autoTuningParam.kpadj=0.5;
 	}
 	else if(sp>=120&&sp<220)
 	{

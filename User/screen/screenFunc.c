@@ -442,7 +442,7 @@ void menuSettingScreen(uint16_t control_id, uint8_t *str)
 			memcpy(str_temp,str,sizeof(char)*COMMONSIZE);	
 			SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_TEST_TEMP_VALUE,str);			
 			d_temp = atof(str_temp);			
-			if(0)//d_temp < 50 || d_temp >= 400)//debug
+			if(d_temp < 50 || d_temp >= 400)//debug
 			{
 //				dev_info.setTemp = 0;
 				argSetErrorIcon.test_temp_set_fail=SHOW;
@@ -866,6 +866,7 @@ void start_endtime_set(void)
 		if(!dev_info.testTime)
 		{
 			SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_END_TIME_ID,"......");
+//			dev_info.end_time.Year=0;
 		}
 		else
 		{

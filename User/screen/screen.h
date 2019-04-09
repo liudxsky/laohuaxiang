@@ -32,6 +32,7 @@ typedef struct
 	uint8_t BIG_ARGUEMENT_SET_ERROR_SCREEN2;			//param setting wrong screen2
 	uint8_t BIG_MAIN_SHOW_SCREEN;		 	 			//main show screen
 	uint8_t BIG_ADJUST_SCREEN;							//hide adjust screen  
+	uint8_t BIG_ABNORMAL_POWEROFF;						//nopower sudden
 }BIG_SCREEN_ID_TAB;
 
 
@@ -234,6 +235,9 @@ typedef struct
 #define	 BIG_FAIL_RETURN_BUTTON2				6		//return button
 /*--------------------------------------------------------------------------*/
 
+//abnormal power off screen
+#define BIG_ABNORMAL_RETURN_BUTTON 2
+#define BIG_ABNORMAL_TIME 3
 
 
 //password input wrong screen

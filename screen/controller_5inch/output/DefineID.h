@@ -40,44 +40,50 @@
 //创建画面S_Adjust的命令索引ID
 #define  _SCREEN_S_ADJUST                                                     13
 
+//创建画面S_ErrorTime的命令索引ID
+#define  _SCREEN_S_ERRORTIME                                                  14
+
 //创建画面E_gate_editing的命令索引ID
-#define  _SCREEN_E_GATE_EDITING                                               14
+#define  _SCREEN_E_GATE_EDITING                                               15
 
 //创建画面E_password的命令索引ID
-#define  _SCREEN_E_PASSWORD                                                   15
+#define  _SCREEN_E_PASSWORD                                                   16
 
 //创建画面E_password2的命令索引ID
-#define  _SCREEN_E_PASSWORD2                                                  16
+#define  _SCREEN_E_PASSWORD2                                                  17
 
 //创建画面E_PID的命令索引ID
-#define  _SCREEN_E_PID                                                        17
+#define  _SCREEN_E_PID                                                        18
 
 //创建画面E_Menu的命令索引ID
-#define  _SCREEN_E_MENU                                                       18
+#define  _SCREEN_E_MENU                                                       19
 
 //创建画面E_recoverpassword的命令索引ID
-#define  _SCREEN_E_RECOVERPASSWORD                                            19
+#define  _SCREEN_E_RECOVERPASSWORD                                            20
 
 //创建画面E_door_open的命令索引ID
-#define  _SCREEN_E_DOOR_OPEN                                                  20
+#define  _SCREEN_E_DOOR_OPEN                                                  21
 
 //创建画面E_time的命令索引ID
-#define  _SCREEN_E_TIME                                                       21
+#define  _SCREEN_E_TIME                                                       22
 
 //创建画面E_wrong_password的命令索引ID
-#define  _SCREEN_E_WRONG_PASSWORD                                             22
+#define  _SCREEN_E_WRONG_PASSWORD                                             23
 
 //创建画面E_invalid_setting的命令索引ID
-#define  _SCREEN_E_INVALID_SETTING                                            23
+#define  _SCREEN_E_INVALID_SETTING                                            24
 
 //创建画面E_invalid_setting2的命令索引ID
-#define  _SCREEN_E_INVALID_SETTING2                                           24
+#define  _SCREEN_E_INVALID_SETTING2                                           25
 
 //创建画面E_Main的命令索引ID
-#define  _SCREEN_E_MAIN                                                       25
+#define  _SCREEN_E_MAIN                                                       26
 
 //创建画面E_adjust的命令索引ID
-#define  _SCREEN_E_ADJUST                                                     26
+#define  _SCREEN_E_ADJUST                                                     27
+
+//创建画面E_ErrorTime的命令索引ID
+#define  _SCREEN_E_ERRORTIME                                                  28
 
 //画面keyboard中图片Image1使用的图片
 #define  _IMG_KEYBOARD_IMAGE1                                                  0
@@ -503,8 +509,15 @@
 
 #define  _BTN_S_ADJUST_BUTTON3                                                11
 
+//画面S_ErrorTime中图片Image1使用的图片
+#define  _IMG_S_ERRORTIME_IMAGE1                                              34
+
+#define  _BTN_S_ERRORTIME_BUTTON1                                              2
+
+#define  _TXT_DIS__S_ERRORTIME_TEXT_DISPLAY1                                   3
+
 //画面E_gate_editing中图片Image1使用的图片
-#define  _IMG_E_GATE_EDITING_IMAGE1                                           34
+#define  _IMG_E_GATE_EDITING_IMAGE1                                           35
 
 #define  _TXT_DIS__E_GATE_EDITING_TEXT_DISPLAY1                                2
 
@@ -551,17 +564,17 @@
 #define  _BTN_E_GATE_EDITING_BUTTON1                                          23
 
 //画面E_password中图片Image1使用的图片
-#define  _IMG_E_PASSWORD_IMAGE1                                               35
+#define  _IMG_E_PASSWORD_IMAGE1                                               36
 
 #define  _TXT_DIS__E_PASSWORD_TEXT_DISPLAY1                                    2
 
 //画面E_password2中图片Image1使用的图片
-#define  _IMG_E_PASSWORD2_IMAGE1                                              35
+#define  _IMG_E_PASSWORD2_IMAGE1                                              36
 
 #define  _TXT_DIS__E_PASSWORD2_TEXT_DISPLAY1                                   2
 
 //画面E_PID中图片Image1使用的图片
-#define  _IMG_E_PID_IMAGE1                                                    36
+#define  _IMG_E_PID_IMAGE1                                                    37
 
 #define  _BTN_E_PID_BUTTON1                                                    2
 
@@ -574,7 +587,7 @@
 #define  _TXT_DIS__E_PID_TEXT_DISPLAY3                                         6
 
 //画面E_Menu中图片Image1使用的图片
-#define  _IMG_E_MENU_IMAGE1                                                   37
+#define  _IMG_E_MENU_IMAGE1                                                   38
 
 #define  _BTN_E_MENU_BUTTON1                                                   2
 
@@ -647,19 +660,19 @@
 #define  _BTN_E_MENU_BUTTON8                                                  27
 
 //画面E_recoverpassword中图片Image1使用的图片
-#define  _IMG_E_RECOVERPASSWORD_IMAGE1                                        38
+#define  _IMG_E_RECOVERPASSWORD_IMAGE1                                        39
 
 #define  _TXT_DIS__E_RECOVERPASSWORD_TEXT_DISPLAY1                             2
 
 //画面E_door_open中图片Image1使用的图片
-#define  _IMG_E_DOOR_OPEN_IMAGE1                                              39
+#define  _IMG_E_DOOR_OPEN_IMAGE1                                              40
 
 #define  _RECORD_E_DOOR_OPEN_RECORD1                                           2
 
 #define  _BTN_E_DOOR_OPEN_BUTTON1                                              3
 
 //画面E_time中图片Image1使用的图片
-#define  _IMG_E_TIME_IMAGE1                                                   40
+#define  _IMG_E_TIME_IMAGE1                                                   41
 
 #define  _TXT_DIS__E_TIME_TEXT_DISPLAY1                                        2
 
@@ -676,12 +689,12 @@
 #define  _BTN_E_TIME_BUTTON1                                                   8
 
 //画面E_wrong_password中图片Image1使用的图片
-#define  _IMG_E_WRONG_PASSWORD_IMAGE1                                         41
+#define  _IMG_E_WRONG_PASSWORD_IMAGE1                                         42
 
 #define  _BTN_E_WRONG_PASSWORD_BUTTON1                                         2
 
 //画面E_invalid_setting中图片Image1使用的图片
-#define  _IMG_E_INVALID_SETTING_IMAGE1                                        42
+#define  _IMG_E_INVALID_SETTING_IMAGE1                                        43
 
 //画面E_invalid_setting中动画控件Icon1使用的图片
 #define  _IMG_E_INVALID_SETTING_ICON1                                         16
@@ -726,7 +739,7 @@
 #define  _BTN_E_INVALID_SETTING_BUTTON1                                       10
 
 //画面E_invalid_setting2中图片Image1使用的图片
-#define  _IMG_E_INVALID_SETTING2_IMAGE1                                       43
+#define  _IMG_E_INVALID_SETTING2_IMAGE1                                       44
 
 //画面E_invalid_setting2中动画控件Icon1使用的图片
 #define  _IMG_E_INVALID_SETTING2_ICON1                                        16
@@ -751,7 +764,7 @@
 #define  _BTN_E_INVALID_SETTING2_BUTTON1                                       6
 
 //画面E_Main中图片Image1使用的图片
-#define  _IMG_E_MAIN_IMAGE1                                                   44
+#define  _IMG_E_MAIN_IMAGE1                                                   45
 
 //画面E_Main中动画控件Icon1使用的图片
 #define  _IMG_E_MAIN_ICON1                                                    19
@@ -789,7 +802,7 @@
 #define  _ANIMATION_E_MAIN_ICON7                                               8
 
 //画面E_Main中动画控件Icon8使用的图片
-#define  _IMG_E_MAIN_ICON8                                                    45
+#define  _IMG_E_MAIN_ICON8                                                    46
 
 #define  _ANIMATION_E_MAIN_ICON8                                               9
 
@@ -799,7 +812,7 @@
 #define  _ANIMATION_E_MAIN_ICON9                                              10
 
 //画面E_Main中动画控件Icon10使用的图片
-#define  _IMG_E_MAIN_ICON10                                                   46
+#define  _IMG_E_MAIN_ICON10                                                   47
 
 #define  _ANIMATION_E_MAIN_ICON10                                             11
 
@@ -819,7 +832,7 @@
 #define  _ANIMATION_E_MAIN_ICON13                                             14
 
 //画面E_Main中动画控件Icon14使用的图片
-#define  _IMG_E_MAIN_ICON14                                                   47
+#define  _IMG_E_MAIN_ICON14                                                   48
 
 #define  _ANIMATION_E_MAIN_ICON14                                             15
 
@@ -867,7 +880,7 @@
 #define  _RTC_E_MAIN_RTC1                                                     35
 
 //画面E_adjust中图片Image1使用的图片
-#define  _IMG_E_ADJUST_IMAGE1                                                 48
+#define  _IMG_E_ADJUST_IMAGE1                                                 49
 
 #define  _TXT_DIS__E_ADJUST_TEXT_DISPLAY1                                      2
 
@@ -888,4 +901,11 @@
 #define  _BTN_E_ADJUST_BUTTON2                                                10
 
 #define  _BTN_E_ADJUST_BUTTON3                                                11
+
+//画面E_ErrorTime中图片Image1使用的图片
+#define  _IMG_E_ERRORTIME_IMAGE1                                              50
+
+#define  _BTN_E_ERRORTIME_BUTTON1                                              2
+
+#define  _TXT_DIS__E_ERRORTIME_TEXT_DISPLAY1                                   3
 
