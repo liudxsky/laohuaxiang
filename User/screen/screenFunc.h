@@ -28,6 +28,11 @@ void menuPassword(uint16_t control_id, uint8_t *str);
 uint8_t judge_changeair_time(uint16_t change_time);
 uint8_t max_change_air(uint8_t *buff);
 uint8_t getChangeAirTimes(int changeTimes);
+uint16_t select_suitable_airtimes(uint16_t settimes);
+
+
+
+
 void start_endtime_set(void);
 void lefttimecalculate(void);
 void addup_testtime(void);

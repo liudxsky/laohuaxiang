@@ -23,6 +23,7 @@ void DeviceInfo_Init(void)
 	//读取存储标志位
 	if(sf<0)
 	{
+		memset(&dev_info,0,sizeof(dev_info_t));
 		dev_info.valid_flag = 1;
 		dev_info.pwmscope = 1000;
 		dev_info.pwmvalue = 0;
@@ -30,7 +31,6 @@ void DeviceInfo_Init(void)
 		{
 			dev_info.change_air_time[i] = 0;
 		}
-		memset(&dev_info,0,sizeof(dev_info_t));
 		dev_info.flash_setvalue.warning1_up = 50;
 		dev_info.flash_setvalue.warning2_up = 50;
 		dev_info.flash_setvalue.screen_light_value = 100;
@@ -72,8 +72,6 @@ void DeviceInfo_Init(void)
 		readFlash();
 		//FLASH_Read_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
 		/*串口打印信息	*/
-				dev_info.pwmscope = 1000;
-		dev_info.pwmvalue = 0;
 		printf("\r\n device curren pwm scope is %d \r\n",dev_info.pwmscope);
 		printf("\r\n device current pwm value is %d \r\n",dev_info.pwmvalue);
 		printf("\r\n device current air valve angle value is %d \r\n",dev_info.airdooropenangle);

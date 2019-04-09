@@ -534,7 +534,7 @@ void menuSettingScreen(uint16_t control_id, uint8_t *str)
 			if(judge_changeair_time(i_temp))
 			{
 				argSetErrorIcon.change_air_set_fail=HIDE;
-				dev_info.flash_setvalue.change_air_time = i_temp;
+				dev_info.flash_setvalue.change_air_time = dev_info.change_air_time[select_suitable_airtimes(i_temp)];
 				dev_info.airdooropenangle = 5*getChangeAirTimes(i_temp);
 				dev_info.dev_status_changed_flag = 1;
 			}
@@ -881,6 +881,36 @@ void start_endtime_set(void)
 	}
 }
 
+//return min subscript  返回最小值的下标
+uint16_t my_min(uint16_t *buff,uint8_t len)
+{
+	uint8_t i = 0,tempi = 0;
+	uint16_t temp = buff[0];
+	for(i = 1;i<len;i++)
+	{
+		if(buff[i] < temp)
+		{
+			temp = buff[i];
+			tempi = i;
+		}
+	}
+	return tempi;
+}
+
+
+uint16_t select_suitable_airtimes(uint16_t settimes)
+{
+	uint8_t i = 0;
+	uint16_t airTimesAbsBuf[CHANGE_AIR_SIZE] = 0,suitable_airtime = 0;
+	for(i = 0;i < CHANGE_AIR_SIZE;i++)
+	{
+		airTimesAbsBuf[i] =  myabs(settimes,dev_info.change_air_time[i]);
+	}
+	suitable_airtime = my_min(airTimesAbsBuf,CHANGE_AIR_SIZE);
+	return suitable_airtime;
+}
+
+
 
 //find which change air time is selected, will push to main screen
 uint8_t getChangeAirTimes(int changeTimes)
@@ -889,8 +919,7 @@ uint8_t getChangeAirTimes(int changeTimes)
 	for(i = 0;i < CHANGE_AIR_SIZE;i++)
 	{
 		if(changeTimes == dev_info.change_air_time[i])
-		{
-		
+		{	
 			return i;
 		}
 	}
@@ -913,16 +942,14 @@ uint8_t max_change_air(uint8_t *buff)
 
 uint8_t judge_changeair_time(uint16_t change_time)
 {
-	uint8_t i;
-	for (i = 0; i < CHANGE_AIR_SIZE; ++i)
-	{
-		if(dev_info.change_air_time[i] == change_time)
-		{
-			return TRUE;
-		}
-	}
-	return FALSE;
+	if(change_time > dev_info.flash_setvalue.change_max_time)
+		return FALSE;
+	else
+		return TRUE;
 }
+
+
+
 
 //int to str
 void my_itoa(long i, char *string, uint8_t num)
