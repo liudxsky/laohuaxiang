@@ -44,7 +44,6 @@ void DeviceInfo_Init(void)
 		dev_info.flash_setvalue.change_air_time=0;
 		dev_info.Rs485Status = 2;
 		dev_info.thermocouple_flag=0;
-		dev_info.runstatus=0;
 		dev_info.autonopowertime.Year = 20;  // Prevent direct access to the recovery interface
 		dev_info.autonopowertime.Mon = 1;
 		dev_info.autonopowertime.Day = 1;
@@ -96,6 +95,7 @@ void DeviceInfo_Init(void)
 		{
 			//pop up abnormal power down screen
 			check_language_select();
+			MySetScreen(biglanguage_screen.BIG_ABNORMAL_POWEROFF);
 			SetTextValueRTC(biglanguage_screen.BIG_ABNORMAL_POWEROFF,BIG_ABNORMAL_TIME,dev_info.timenow);
 		}
 		dev_info.runstatus=0;

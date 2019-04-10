@@ -96,7 +96,7 @@ int main( void )
 
 	while(1)
     {
-      eMBPoll(  );											//analyze Modbus data 
+      eMBPoll();											//analyze Modbus data 
       size = queue_find_cmd(cmd_buffer,CMD_MAX_SIZE); 		//get one screen   command     
 		if(size>0)												//received valid instructions
 		{

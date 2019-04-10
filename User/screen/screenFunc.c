@@ -535,7 +535,7 @@ void menuSettingScreen(uint16_t control_id, uint8_t *str)
 			{
 				argSetErrorIcon.change_air_set_fail=HIDE;
 				dev_info.flash_setvalue.change_air_time = dev_info.change_air_time[select_suitable_airtimes(i_temp)];
-				dev_info.airdooropenangle = 5*getChangeAirTimes(i_temp);
+				dev_info.airdooropenangle = 5*getChangeAirTimes(dev_info.flash_setvalue.change_air_time);
 				dev_info.dev_status_changed_flag = 1;
 			}
 			else
