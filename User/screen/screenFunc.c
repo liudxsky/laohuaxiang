@@ -95,6 +95,7 @@ void menuScreenButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 					AnimationPlayFrame(screen_id,BIG_CHINESE_LANGUAGE,SHOW);
 				}
 				check_language_select();
+				dev_info.dev_status_changed_flag=1;
 				MySetScreen(biglanguage_screen.BIG_PARAM_SET_SCREEN);
 				break;
 			case BIG_ENGLISH_LANGUAGE_BUTTON:
@@ -105,6 +106,7 @@ void menuScreenButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 					AnimationPlayFrame(screen_id,BIG_CHINESE_LANGUAGE,HIDE);
 				}
 				check_language_select();
+				dev_info.dev_status_changed_flag=1;
 				MySetScreen(biglanguage_screen.BIG_PARAM_SET_SCREEN);
 				break;
 			default:
@@ -901,7 +903,7 @@ uint16_t my_min(uint16_t *buff,uint8_t len)
 uint16_t select_suitable_airtimes(uint16_t settimes)
 {
 	uint8_t i = 0;
-	uint16_t airTimesAbsBuf[CHANGE_AIR_SIZE] = 0,suitable_airtime = 0;
+	uint16_t airTimesAbsBuf[CHANGE_AIR_SIZE] = {0},suitable_airtime = 0;
 	for(i = 0;i < CHANGE_AIR_SIZE;i++)
 	{
 		airTimesAbsBuf[i] =  myabs(settimes,dev_info.change_air_time[i]);

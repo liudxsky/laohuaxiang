@@ -51,6 +51,7 @@ typedef struct
 	RtcTime timenow;//system time now
 	uint8_t lefttimeflag;
 	uint8_t passwordwrongflag;
+	int runtomainscreenflag;
 }dev_info_t;
 
 

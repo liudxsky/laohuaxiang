@@ -54,6 +54,7 @@ void DeviceInfo_Init(void)
 		dev_info.pidvalue.PID_I=0;
 		dev_info.pidvalue.PID_D=0;
 		dev_info.setTemp=0;
+		dev_info.runtomainscreenflag=1;
 		autogeneratepassword();
 		/*¸³³õÖµ*/
 		writeFlash();
@@ -90,6 +91,7 @@ void DeviceInfo_Init(void)
 		dev_info.lefttimeflag=0;
 		dev_info.passwordwrongflag=0;
 		dev_info.thermocouple_flag=0;
+		dev_info.runtomainscreenflag=1;
 
 		if(dev_info.runstatus>0)
 		{
@@ -97,6 +99,7 @@ void DeviceInfo_Init(void)
 			check_language_select();
 			MySetScreen(biglanguage_screen.BIG_ABNORMAL_POWEROFF);
 			SetTextValueRTC(biglanguage_screen.BIG_ABNORMAL_POWEROFF,BIG_ABNORMAL_TIME,dev_info.timenow);
+			dev_info.runtomainscreenflag=0;
 		}
 		dev_info.runstatus=0;
 	}

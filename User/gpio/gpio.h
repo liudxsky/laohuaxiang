@@ -104,7 +104,7 @@ void driver_gpio_init(void);
 void door_gpio_init(void);
 void Gpio_Init(void);
 
-void ledBlinkThread();
+void ledBlinkThread(void);
 void led_blink(uint8_t num);
 
 void test(void);

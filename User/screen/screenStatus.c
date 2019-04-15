@@ -23,8 +23,9 @@ void startscreen(void)
 {	
 	uint8_t strtemp[ADDTESTTIMESIZE] = "Ver:1.0";
 	printf("%s\r\n",strtemp);				
-  	memcpy(mainPageText.softversion,strtemp,ADDTESTTIMESIZE);
-//	MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);							
+  memcpy(mainPageText.softversion,strtemp,ADDTESTTIMESIZE);
+	if(dev_info.runtomainscreenflag)
+	MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);							
 }
 
 
