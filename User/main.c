@@ -201,6 +201,7 @@ int main( void )
 			}
 			else
 			{
+				adj_display(temperFilter);
 				kalman_temp=temperFilter;
 			}
 			temp_detection(kalman_temp);						//temp detection

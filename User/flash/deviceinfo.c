@@ -92,6 +92,7 @@ void DeviceInfo_Init(void)
 		dev_info.passwordwrongflag=0;
 		dev_info.thermocouple_flag=0;
 		dev_info.runtomainscreenflag=1;
+		
 
 		if(dev_info.runstatus>0)
 		{
@@ -101,6 +102,7 @@ void DeviceInfo_Init(void)
 			SetTextValueRTC(biglanguage_screen.BIG_ABNORMAL_POWEROFF,BIG_ABNORMAL_TIME,dev_info.timenow);
 			dev_info.runtomainscreenflag=0;
 		}
+		dev_info.pwmscope=1000;
 		dev_info.runstatus=0;
 		dev_info.useKalman=1;
 	}
