@@ -350,6 +350,8 @@ void menuPassword(uint16_t control_id, uint8_t *str)
 		MySetScreen(biglanguage_screen.BIG_PASSWORD_ERROR_SCREEN);
 		dev_info.passwordwrongflag = 1;	
 	}
+
+	SetTextValue(control_id,BIG_PASSWORD_PROTECT_INPUT,"");
 }
 void adjustProtectPassword(uint16_t control_id,uint8_t *str)
 {
@@ -365,6 +367,7 @@ void adjustProtectPassword(uint16_t control_id,uint8_t *str)
 		MySetScreen(biglanguage_screen.BIG_PASSWORD_ERROR_SCREEN);
 		dev_info.passwordwrongflag = 2;	
 	}
+	SetTextValue(control_id,BIG_PASSWORD2_INPUT,"");
 }
 void autoNoPowerScreen(uint16_t control_id,uint8_t *str)
 {
@@ -384,6 +387,7 @@ void autoNoPowerScreen(uint16_t control_id,uint8_t *str)
 			MySetScreen(biglanguage_screen.BIG_PASSWORD_ERROR_SCREEN);
 			dev_info.passwordwrongflag = 3;
 		}
+		SetTextValue(control_id,BIG_AUTO_NO_POWER_PASSWOORD_INPUT,"");
 }
 void pidSettingScreen(uint16_t control_id,uint8_t *str)
 {

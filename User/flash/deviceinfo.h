@@ -52,6 +52,7 @@ typedef struct
 	uint8_t lefttimeflag;
 	uint8_t passwordwrongflag;
 	int runtomainscreenflag;
+	int useKalman;
 }dev_info_t;
 
 

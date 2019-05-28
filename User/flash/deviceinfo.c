@@ -102,6 +102,7 @@ void DeviceInfo_Init(void)
 			dev_info.runtomainscreenflag=0;
 		}
 		dev_info.runstatus=0;
+		dev_info.useKalman=1;
 	}
 
 }

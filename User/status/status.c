@@ -281,8 +281,21 @@ void door_open_status(void)
 {
 	uint8_t doorflag = 0;
 	doorflag = GPIO_ReadInputDataBit(BOX_DOOR_GPIO_PORT,BOX_DOOR_PIN);
-	if(doorflag)			
+	//***** dev_info.useKalman update logic****//
+	//door close(1)=>door open(2)=>door close(3)=> 15min(+++)=> (1)
+	if(dev_info.useKalman>2)
+		{
+			dev_info.useKalman++;
+		}
+		if(dev_info.useKalman>=54000)//15min*60*60, this is in 1s thread
+		{
+			dev_info.useKalman=1;
+		}
+		
+		
+	if(doorflag)
 	{
+		dev_info.useKalman=2;
 		door_openstatus++;
 		mainIcon.door_open = SHOW;
 		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_DOOR_OPEN_ID,mainIcon.door_open);
@@ -301,6 +314,8 @@ void door_open_status(void)
 		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_DOOR_OPEN_ID,mainIcon.door_open);
 		if(door_closestatus  == 1)
 		{
+			dev_info.useKalman=3;
+			
 			door_openstatus = 0;
 			heattime_log.closedoor_time = dev_info.timenow;
 			heattime_log.close_temp = dev_info.currentTemp;

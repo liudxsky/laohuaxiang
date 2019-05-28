@@ -153,7 +153,7 @@ void NotifyScreen(uint16_t screen_id)
 	}
 	else if(screen_id == biglanguage_screen.BIG_AUTO_NOPOWER_RECOVER)	//auto no power recover password
 	{
-		SetTextValue(screen_id,BIG_PASSWORD_PROTECT_INPUT,"");
+		SetTextValue(screen_id,BIG_AUTO_NO_POWER_PASSWOORD_INPUT,"");
 	}
 	else if(screen_id == biglanguage_screen.BIG_TIME_RECORD_SCREEN)	//time record
 	{
@@ -220,6 +220,7 @@ void NotifyButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 	//menu password input return button
 	if(screen_id == bigchinese_screen.BIG_SCREAT_PROTECT_SCREEN)
 	{
+	
 		MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);
 	}
 	//adjust password input return button

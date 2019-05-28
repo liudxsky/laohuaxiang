@@ -194,8 +194,16 @@ int main( void )
 			timer_tick_count = getMsCounter();
 			ReadRtcTime();										//read current RTC time
 			start_endtime_set();								//start and end time setting
-			kalman_temp=adj_display(temperFilter);
-			temp_detection(kalman_temp);						//temp detection						
+			
+			if(dev_info.useKalman==1)
+			{
+				kalman_temp=adj_display(temperFilter);
+			}
+			else
+			{
+				kalman_temp=temperFilter;
+			}
+			temp_detection(kalman_temp);						//temp detection
 			Check_All_Status();	
 			update_dev_status();
 			//modebus register update;

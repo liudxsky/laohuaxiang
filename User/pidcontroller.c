@@ -194,6 +194,7 @@ float Q=0.00001;
 float adj_display(float in_temp)
 {
 	//time update
+
 	if(xhat<-1)
 	{
 		xhat=in_temp;
