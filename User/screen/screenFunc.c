@@ -46,12 +46,13 @@ void menuScreenButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 			case BIG_BPS_1200_BUTTON:
 				if(!state)
 				{
-					dev_info.flash_setvalue.modbus_address = 1200;
+					dev_info.flash_setvalue.modbus_tran_rate = 1200;
 					AnimationPlayFrame(screen_id,BIG_BPS_1200,SHOW);
 					AnimationPlayFrame(screen_id,BIG_BPS_2400,HIDE);
 					AnimationPlayFrame(screen_id,BIG_BPS_4800,HIDE);
 					AnimationPlayFrame(screen_id,BIG_BPS_9600,HIDE);
 					eMBInit( MB_RTU, dev_info.flash_setvalue.modbus_address, 0x01, dev_info.flash_setvalue.modbus_tran_rate, MB_PAR_NONE ); //Modbus Init
+					eMBEnable();
 				}
 				break;
 			case BIG_BPS_2400_BUTTON:
@@ -63,6 +64,7 @@ void menuScreenButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 					AnimationPlayFrame(screen_id,BIG_BPS_4800,HIDE);
 					AnimationPlayFrame(screen_id,BIG_BPS_9600,HIDE);
 					eMBInit( MB_RTU, dev_info.flash_setvalue.modbus_address, 0x01, dev_info.flash_setvalue.modbus_tran_rate, MB_PAR_NONE ); //Modbus Init
+					eMBEnable();
 				}
 				break;
 			case BIG_BPS_4800_BUTTON:
@@ -74,6 +76,7 @@ void menuScreenButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 					AnimationPlayFrame(screen_id,BIG_BPS_4800,SHOW);
 					AnimationPlayFrame(screen_id,BIG_BPS_9600,HIDE);
 					eMBInit( MB_RTU, dev_info.flash_setvalue.modbus_address, 0x01, dev_info.flash_setvalue.modbus_tran_rate, MB_PAR_NONE ); //Modbus Init
+					eMBEnable();
 				}
 				break;
 			case BIG_BPS_9600_BUTTON:
@@ -85,6 +88,7 @@ void menuScreenButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 					AnimationPlayFrame(screen_id,BIG_BPS_4800,HIDE);
 					AnimationPlayFrame(screen_id,BIG_BPS_1200,HIDE);
 					eMBInit( MB_RTU, dev_info.flash_setvalue.modbus_address, 0x01, dev_info.flash_setvalue.modbus_tran_rate, MB_PAR_NONE ); //Modbus Init
+					eMBEnable();
 				}
 				break;
 			case BIG_CHINESE_LANGUAGE_BUTTON:
@@ -583,7 +587,10 @@ void menuSettingScreen(uint16_t control_id, uint8_t *str)
 				dev_info.flash_setvalue.modbus_address = i_temp;
 				argSetErrorIcon.modebus_addr_set_fail=HIDE;
 				dev_info.dev_status_changed_flag = 1;
+				eMBInit( MB_RTU, dev_info.flash_setvalue.modbus_address, 0x01, dev_info.flash_setvalue.modbus_tran_rate, MB_PAR_NONE ); //Modbus Init
+				eMBEnable();
 			}
+			
 			break;
 			
 	}
