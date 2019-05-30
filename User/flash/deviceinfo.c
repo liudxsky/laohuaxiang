@@ -44,7 +44,7 @@ void DeviceInfo_Init(void)
 		dev_info.flash_setvalue.change_air_time=0;
 		dev_info.Rs485Status = 2;
 		dev_info.thermocouple_flag=0;
-		dev_info.autonopowertime.Year = 20;  // Prevent direct access to the recovery interface
+		dev_info.autonopowertime.Year = 50;  // Prevent direct access to the recovery interface
 		dev_info.autonopowertime.Mon = 1;
 		dev_info.autonopowertime.Day = 1;
 		dev_info.autonopowertimeflag = 0;

@@ -99,25 +99,36 @@ void check_screen_connect(void)
 
 volatile  int32_t closetime=0;
 
+void check_powertime(void)
+{
+
+	if(0)
+	{
+		dev_info.autonopowertimeflag=2;
+		
+	}		
+	
+}
 
 void check_nopowertime(void)
 {
-	if(dev_info.autonopowertimeflag)
+	
+	if(dev_info.timenow.Year == 58)
 	{
-		MySetScreen(biglanguage_screen.BIG_AUTO_NOPOWER_RECOVER);
-		
-//		RCC_AHB1PeriphClockCmd(DRIVER_GPIO_CLK|BACK_GPIO_CLK|BOX_DOOR_GPIO_CLK, DISABLE);
+		dev_info.autonopowertimeflag = 0;
+		MySetScreen(biglanguage_screen.BIG_CONTROL_TIME_SET);
 	}
-	closetime=diff_time(dev_info.timenow,dev_info.autonopowertime)/60;    //hour
-	
-	if(closetime<=600)
+	else
 	{
-		dev_info.autonopowertimeflag = 1;
-		dev_info.runstatus=0;
+		closetime=diff_time(dev_info.timenow,dev_info.autonopowertime)/60;    //hour	
+		if(closetime<=600)
+		{
+			dev_info.autonopowertimeflag = 1;
+			dev_info.runstatus=0;
+			MySetScreen(biglanguage_screen.BIG_AUTO_NOPOWER_RECOVER);
+		}
 	}
 	
-	
-//	printf("close time%d\n",closetime);
 }
 
 
@@ -158,13 +169,7 @@ void Check_Rs485(void)
 }
 
 
-void check_powertime(void)
-{
-	if(dev_info.timenow.Year == 0)
-	{
-		MySetScreen(biglanguage_screen.BIG_CONTROL_TIME_SET);
-	}		
-}
+
 
 void check_language_select(void)
 {

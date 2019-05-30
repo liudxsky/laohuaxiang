@@ -381,7 +381,7 @@ void autoNoPowerScreen(uint16_t control_id,uint8_t *str)
 		{
 			//have power , control device work normal
 			MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);
-			dev_info.autonopowertime.Year = 50;
+			dev_info.autonopowertime.Year = dev_info.timenow.Year+ 50;
 			dev_info.autonopowertimeflag = 0;
 			dev_info.passwordwrongflag = 0;
 		}
@@ -597,46 +597,53 @@ void menuSettingScreen(uint16_t control_id, uint8_t *str)
 }
 void deviceTimeSet(uint16_t control_id,uint8_t *str)
 {
+	
 	switch (control_id)
 	{
 		case BIG_CONTROL_DATE_YEAR_SET:
 			memset(textvalue.device_time_setting.Year,0,sizeof(char)*COMMONSIZE);
-			memcpy(textvalue.device_time_setting.Year,str+2,sizeof(char)*COMMONSIZE);	
-			dev_info.timenow.Year = atoi(textvalue.device_time_setting.Year);
-			dev_info.timenow.Year = DectoBCD(dev_info.timenow.Year);
+			memcpy(textvalue.device_time_setting.Year,str,sizeof(char)*COMMONSIZE);	
+			//dev_info.timenow.Year = atoi(textvalue.device_time_setting.Year);
+			//dev_info.timenow.Year = DectoBCD(dev_info.timenow.Year);
+			textvalue.device_time_setting.Year[0] = atoi(textvalue.device_time_setting.Year);
+			textvalue.device_time_setting.Year[0] = DectoBCD(textvalue.device_time_setting.Year[0]);
 			break;
 		case BIG_CONTROL_DATE_MONTH_SET:
 			memset(textvalue.device_time_setting.Mon,0,sizeof(char)*COMMONSIZE);
 			memcpy(textvalue.device_time_setting.Mon,str,sizeof(char)*COMMONSIZE);
-			dev_info.timenow.Mon = atoi(textvalue.device_time_setting.Mon);
-			dev_info.timenow.Mon = DectoBCD(dev_info.timenow.Mon);
+			textvalue.device_time_setting.Mon[0] = atoi(textvalue.device_time_setting.Mon);
+			textvalue.device_time_setting.Mon[0]= DectoBCD(textvalue.device_time_setting.Mon[0]);
 			break;	
 		case BIG_CONTROL_DATE_DAY_SET:
 			memset(textvalue.device_time_setting.Day,0,sizeof(char)*COMMONSIZE);
 			memcpy(textvalue.device_time_setting.Day,str,sizeof(char)*COMMONSIZE);
-			dev_info.timenow.Day = atoi(textvalue.device_time_setting.Day);
-			dev_info.timenow.Day = DectoBCD(dev_info.timenow.Day);
+			textvalue.device_time_setting.Day[0] = atoi(textvalue.device_time_setting.Day);
+			textvalue.device_time_setting.Day[0] = DectoBCD(textvalue.device_time_setting.Day[0]);
 			break;	
 		case BIG_CONTROL_TIME_HOUR_SET:
 			memset(textvalue.device_time_setting.Hour,0,sizeof(char)*COMMONSIZE);
 			memcpy(textvalue.device_time_setting.Hour,str,sizeof(char)*COMMONSIZE);
-			dev_info.timenow.Hour = atoi(textvalue.device_time_setting.Hour);
-			dev_info.timenow.Hour = DectoBCD(dev_info.timenow.Hour);
+			textvalue.device_time_setting.Hour[0] = atoi(textvalue.device_time_setting.Hour);
+			textvalue.device_time_setting.Hour[0] = DectoBCD(textvalue.device_time_setting.Hour[0]);
 			break;
 		case BIG_CONTROL_TIME_MINUTE_SET:
 			memset(textvalue.device_time_setting.Min,0,sizeof(char)*COMMONSIZE);
 			memcpy(textvalue.device_time_setting.Min,str,sizeof(char)*COMMONSIZE);
-			dev_info.timenow.Min = atoi(textvalue.device_time_setting.Min);
-			dev_info.timenow.Min = DectoBCD(dev_info.timenow.Min);
+			textvalue.device_time_setting.Min[0] = atoi(textvalue.device_time_setting.Min);
+			textvalue.device_time_setting.Min[0] = DectoBCD(textvalue.device_time_setting.Min[0]);
+			
+			
+			
 			break;	
 		case BIG_CONTROL_TIME_SECOND_SET:
 			memset(textvalue.device_time_setting.Sec,0,sizeof(char)*COMMONSIZE);
 			memcpy(textvalue.device_time_setting.Sec,str,sizeof(char)*COMMONSIZE);
-			dev_info.timenow.Sec = atoi(textvalue.device_time_setting.Sec);
-			dev_info.timenow.Sec = DectoBCD(dev_info.timenow.Sec);
+			textvalue.device_time_setting.Sec[0] = atoi(textvalue.device_time_setting.Sec);
+			textvalue.device_time_setting.Sec[0] = DectoBCD(textvalue.device_time_setting.Sec[0]);
+			SetRtcTime(textvalue.device_time_setting.Sec[0],textvalue.device_time_setting.Min[0],	textvalue.device_time_setting.Hour[0],textvalue.device_time_setting.Day[0],'0',textvalue.device_time_setting.Mon[0],textvalue.device_time_setting.Year[0]);
 			break;	
 	}
-	SetRtcTime(dev_info.timenow.Sec,dev_info.timenow.Min,dev_info.timenow.Hour,dev_info.timenow.Day,0,dev_info.timenow.Mon,dev_info.timenow.Year);
+	
 }
 void adjustScreenSetting(uint16_t control_id,uint8_t *str)
 {
