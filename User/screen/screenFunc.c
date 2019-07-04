@@ -870,7 +870,7 @@ void lefttimecalculate(void)
 uint8_t steadytempcount = 0;	
 void start_endtime_set(void)
 {
-	if(myabs(dev_info.setTemp,dev_info.currentTemp)<=3)
+	if(myabs(dev_info.setTemp,dev_info.currentTemp)<=1)
 	{
 		steadytempcount++;
 	}

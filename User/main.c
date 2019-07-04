@@ -34,7 +34,7 @@ extern uint8_t press_flag;
 int runstatus_last=0;
 int debuginfo=0;
 extern arm_pid_instance_f32 PID;
-float kalman_temp=0;
+
 
 
 /* ----------------------- Defines ------------------------------------------*/
@@ -66,7 +66,7 @@ float temper_usart;
 /* ----------------------- Start implementation -----------------------------*/
 int main( void )
 {
-	
+	float disp_temp=0;
 	float temperFilter=0;
 	float temperRaw=0;
 	float SetPoint=100;
@@ -121,7 +121,14 @@ int main( void )
 			Ktemperature=Max6675_Read_Tem()+ dev_info.compensatetemp;
 			temperRaw=Ktemperature*0.25-7;
 			//SetPoint=100;
-			temperFilter=getFilterTemper(temperRaw);
+			if(dev_info.useKalman==1)
+			{
+				temperFilter=getFilterTemper(temperRaw);
+			}
+			else
+			{
+				temperFilter=temperRaw;
+			}
 //			printf("%f\n",temperFilter);
 			//temperFilter=temper_usart;
 			error=SetPoint-temperFilter;
@@ -194,23 +201,15 @@ int main( void )
 			timer_tick_count = getMsCounter();
 			ReadRtcTime();										//read current RTC time
 			start_endtime_set();								//start and end time setting
+			dev_info.currentTemp=adj_display(temperFilter);
 			
-			if(dev_info.useKalman==1)
-			{
-				kalman_temp=adj_display(temperFilter);
-			}
-			else
-			{
-				adj_display(temperFilter);
-				kalman_temp=temperFilter;
-			}
-			temp_detection(kalman_temp);						//temp detection
+			display_temper(dev_info.currentTemp);
 			Check_All_Status();	
 			update_dev_status();
 			//modebus register update;
 			//main text and icon update
 			//
-			printf("%f,%f\n",temperFilter,kalman_temp);
+			
 		}
 		if(getMsCounter()-t_thread3s>3000)
 		{

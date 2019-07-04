@@ -1,6 +1,7 @@
 #include "pidcontroller.h"
+#include "./flash/deviceinfo.h"
 
-
+extern dev_info_t dev_info;
 int AutoTuneStatus=0;
 unsigned long cyclecnt=0;
 int tbuffidx=0;
@@ -24,7 +25,7 @@ arm_fir_instance_f32 S;
 static	float32_t firStateF32[BLOCK_SIZE + NUM_TAPS - 1];
 struct AutoTuningParamStruct pidSP[3];
 int  AutoTuneOutput=500;
-
+int f_ReachedSP=0;
 //64 params
 //const float32_t firCoeffs32[NUM_TAPS] = {
 //	-0.000197,-0.000358,-0.000552,-0.000796,
@@ -155,6 +156,7 @@ uint16_t pidCalc(float e)
 	
 	return (uint16_t)duty;
 }
+
 float getFilterTemper(float in)
 {
 	int i;
@@ -189,12 +191,36 @@ float xhat=-2,xhat_last=0;
 float P=0.00031,P_last=0;
 float	K=0;
 float R=0.1;
-float Q=0.00001;
-
-float adj_display(float in_temp)
+float Q=0.001;
+float getSuprsTemper(float in)
 {
-	//time update
-
+	float out=in;
+	float error=dev_info.setTemp-in;
+	if(error<0&&f_ReachedSP==0)
+	{
+		f_ReachedSP=1;
+	}
+	if(f_ReachedSP==1)
+	{
+		if(error>-1&&error<1)
+		{
+			error=error*0.4;
+			out=dev_info.setTemp-error;
+		}
+		else
+		{
+			out=in;
+			f_ReachedSP=0;
+		}
+	}
+	else
+	{
+		out=in;
+	}
+	return out;
+}
+float kalmanFilter(float in_temp)
+{
 	if(xhat<-1)
 	{
 		xhat=in_temp;
@@ -209,8 +235,27 @@ float adj_display(float in_temp)
 	//params update;
 	xhat_last=xhat;
 	P_last=P;
-	
 	return xhat;
+}
+float adj_display(float in_temp)
+{
+	//time update
+	float out;
+	float surptemp;
+	float kalmantemp;
+	if(dev_info.useKalman==1)
+	{
+		kalmantemp=kalmanFilter(in_temp);
+	}
+	else
+	{
+		kalmanFilter(in_temp);
+		kalmantemp=in_temp;
+	}
+	surptemp=getSuprsTemper(kalmantemp);
+	out=dev_info.flash_adjusttemp+surptemp;
+	printf("%f,%f,%f,%f\n",in_temp,surptemp,kalmantemp,out);
+	return out;
 }
 
 uint16_t autoTuning(float errornow,int * pwm_out,struct AutoTuningParamStruct* ats)

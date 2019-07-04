@@ -212,9 +212,10 @@ void check_warning(void)
 }
 
  
-void temp_detection(float dispTemper)
+void display_temper(float dispTemper)
 {
-	dev_info.currentTemp = dev_info.flash_adjusttemp + dispTemper+0.4;
+
+	
 	if(dev_info.thermocouple_flag)
 	{
 		SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_CURRENT_TEMP_ID, 999);
@@ -292,7 +293,7 @@ void door_open_status(void)
 		{
 			dev_info.useKalman++;
 		}
-		if(dev_info.useKalman>=54000)//15min*60*60, this is in 1s thread
+		if(dev_info.useKalman>=10800)//15min*60*60, this is in 1s thread
 		{
 			dev_info.useKalman=1;
 		}

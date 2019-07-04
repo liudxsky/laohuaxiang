@@ -59,7 +59,7 @@ void check_heat_switch_icon(void);
 
 void check_icon(void);
 
-void temp_detection(float dispTemper);
+void display_temper(float dispTemper);
 
 void control_mode_select(void);
 
