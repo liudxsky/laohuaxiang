@@ -1,5 +1,6 @@
 #include "stm32f4xx.h"
 #include "stdio.h"
+
 #include "string.h"
 #include "main.h"
 #include "./tim/tim.h"
@@ -28,7 +29,7 @@ extern uint16_t ADC_ConvertedValue[ADC_NOFCHANEL];
 extern uint8_t writecoilflag,readcoilflag,readholdingflag,writeholdingflag,readinputflag;
 
 extern dev_info_t dev_info;
-extern uint8_t cmd_buffer[CMD_MAX_SIZE];		//ָInstruction cache
+extern uint8_t cmd_buffer[CMD_MAX_SIZE];		//?Instruction cache
 extern uint8_t press_flag;
 
 int runstatus_last=0;
@@ -100,7 +101,7 @@ int main( void )
       size = queue_find_cmd(cmd_buffer,CMD_MAX_SIZE); 		//get one screen   command     
 		if(size>0)												//received valid instructions
 		{
-			ProcessMessage((PCTRL_MSG)cmd_buffer, size);//ָinstruction deal
+			ProcessMessage((PCTRL_MSG)cmd_buffer, size);//?instruction deal
 		}
 		#if 1
 		if(getMsCounter()-t_thread100>200)
@@ -127,6 +128,7 @@ int main( void )
 			}
 			else
 			{
+				getFilterTemper(temperRaw);
 				temperFilter=temperRaw;
 			}
 //			printf("%f\n",temperFilter);
@@ -144,6 +146,7 @@ int main( void )
 				autoTuneParam.f_autoTuning=1;
 				autoTuneParam.SetPoint=SetPoint;
 				dev_info.runstatus=3;
+				autoTuneParam.f_autoTuningDone=0;
 			}
 			if(autoTuneParam.f_autoTuning)
 			{

@@ -20,7 +20,7 @@ void DeviceInfo_Init(void)
 	//????
 	int sf=scanFlash();
 	//FLASH_Read_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info.valid_flag,4);
-	//读取存储标志位
+	//露脕脠隆麓忙麓垄卤锚脰戮脦禄
 	if(sf<0)
 	{
 		memset(&dev_info,0,sizeof(dev_info_t));
@@ -56,10 +56,10 @@ void DeviceInfo_Init(void)
 		dev_info.setTemp=0;
 		dev_info.runtomainscreenflag=1;
 		autogeneratepassword();
-		/*赋初值*/
+		/*赂鲁鲁玫脰碌*/
 		writeFlash();
 		//FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
-		/*串口打印信息*/
+		/*麓庐驴脷麓貌脫隆脨脜脧垄*/
 		printf("\r\n device curren pwm scope is %d \r\n",dev_info.pwmscope);
 		printf("\r\n device current pwm value is %d \r\n",dev_info.pwmvalue);
 		printf("\r\n device current air valve angle value is %d \r\n",dev_info.airdooropenangle);
@@ -71,7 +71,7 @@ void DeviceInfo_Init(void)
 		//todo
 		readFlash();
 		//FLASH_Read_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
-		/*串口打印信息	*/
+		/*麓庐驴脷麓貌脫隆脨脜脧垄	*/
 		printf("\r\n device curren pwm scope is %d \r\n",dev_info.pwmscope);
 		printf("\r\n device current pwm value is %d \r\n",dev_info.pwmvalue);
 		printf("\r\n device current air valve angle value is %d \r\n",dev_info.airdooropenangle);
@@ -112,11 +112,11 @@ void DeviceInfo_Init(void)
 
 
 
-void STM32_Read_ID(void)					//小端模式
+void STM32_Read_ID(void)					//脨隆露脣脛拢脢陆
 {	
-//     地址从小到大,先放低字节，再放高字节：小端模式
-//     地址从小到大,先放高字节，再放低字节：大端模式
-	ChipUniqueID[11] = *(__IO u32*)(0X1FFF7A10);  // 低字节
+//     碌脴脰路麓脫脨隆碌陆麓贸,脧脠路脜碌脥脳脰陆脷拢卢脭脵路脜赂脽脳脰陆脷拢潞脨隆露脣脛拢脢陆
+//     碌脴脰路麓脫脨隆碌陆麓贸,脧脠路脜赂脽脳脰陆脷拢卢脭脵路脜碌脥脳脰陆脷拢潞麓贸露脣脛拢脢陆
+	ChipUniqueID[11] = *(__IO u32*)(0X1FFF7A10);  // 碌脥脳脰陆脷
 	ChipUniqueID[10] = *(__IO u32 *)(0X1FFF7A11); // 
 	ChipUniqueID[9] = *(__IO u32 *)(0X1FFF7A12); // 
 	ChipUniqueID[8] = *(__IO u32 *)(0X1FFF7A13); // 
@@ -127,8 +127,8 @@ void STM32_Read_ID(void)					//小端模式
 	ChipUniqueID[3] = *(__IO u32 *)(0X1FFF7A18); // 
 	ChipUniqueID[3] = *(__IO u32 *)(0X1FFF7A19); // 
 	ChipUniqueID[1] = *(__IO u32 *)(0X1FFF7A1A); // 
-	ChipUniqueID[0] = *(__IO u32 *)(0X1FFF7A1B); // 高字节
-	printf(" 芯片的唯一ID为: %.2x-%.2x-%.2x-%.2x-%.2x-%.2x-%.2x-%.2x-%.2x-%.2x-%.2x-%.2x \r\n",
+	ChipUniqueID[0] = *(__IO u32 *)(0X1FFF7A1B); // 赂脽脳脰陆脷
+	printf(" 脨戮脝卢碌脛脦篓脪禄ID脦陋: %.2x-%.2x-%.2x-%.2x-%.2x-%.2x-%.2x-%.2x-%.2x-%.2x-%.2x-%.2x \r\n",
 		ChipUniqueID[0],ChipUniqueID[1],
 		ChipUniqueID[2],ChipUniqueID[3],
 		ChipUniqueID[4],ChipUniqueID[5],
