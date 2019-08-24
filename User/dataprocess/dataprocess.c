@@ -7,14 +7,6 @@
 #include "./screen/screen.h"
 #include "./flash/deviceinfo.h"
 
-
-
-
-
-
-
-
-
 extern uint16_t     usRegInputBuf[REG_INPUT_NREGS];				//04
 extern uint16_t		usRegHoldingBuf[REG_HOLDING_NREGS];			//03,06,16
 extern uint16_t		ucRegCoilsBuf[REG_COILS_SIZE];				//01,05,15

@@ -6,10 +6,10 @@
 #define PIDKP 25//sp100->25
 #define PIDKI 0.0055//0.0055
 #define PIDKD 36809
-#define T_BUFFLEN 128
+#define T_BUFFLEN 64
 #define BLOCK_SIZE T_BUFFLEN
 #define PWMOUTLIMIT 1000
-#define NUM_TAPS      129
+#define NUM_TAPS      65
 #define CycleLimit 3 //each period should be larger than 5 mins
 #define Ts 0.5 //sample time
 #define AUTOTUNE_TIMEOUT (5*60*60*2)

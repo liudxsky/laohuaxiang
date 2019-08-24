@@ -113,6 +113,8 @@ void dev2mainScreen(void)
 	mainPageText.open_angle=dev_info.airdooropenangle;//???
 	mainPageText.change_air_time=dev_info.flash_setvalue.change_air_time;
 	
+	//printf("%d.%d\n",mainPageText.currentTempHi,mainPageText.currentTempLo);
+	
 }
 void dev2IOstatus()
 {

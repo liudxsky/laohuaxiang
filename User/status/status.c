@@ -212,10 +212,8 @@ void check_warning(void)
 }
 
  
-void display_temper(float dispTemper)
+void display_temper()
 {
-
-	
 	if(dev_info.thermocouple_flag)
 	{
 		SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_CURRENT_TEMP_ID, 999);
@@ -228,6 +226,7 @@ void display_temper(float dispTemper)
 		SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_CURRENT_TEMP_ID,mainPageText.currentTempHi);
 		SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_CURRENT_TEMP_DECIMAL_ID,mainPageText.currentTempLo);
 	}
+	
 }
 
 void Check_All_Status(void)
@@ -293,7 +292,7 @@ void door_open_status(void)
 		{
 			dev_info.useKalman++;
 		}
-		if(dev_info.useKalman>=20)// this is in 1s thread
+		if(dev_info.useKalman>=30)// this is in 1s thread
 		{
 			dev_info.useKalman=1;
 		}

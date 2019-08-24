@@ -917,6 +917,9 @@ uint16_t my_min(uint16_t *buff,uint8_t len)
 	return tempi;
 }
 
+//y=Ax+B
+//A=(b1-b2)/(a1-a2)
+//B=(a2*b1+a1*b2)/(a2-a1)
 
 uint16_t select_suitable_airtimes(uint16_t settimes)
 {

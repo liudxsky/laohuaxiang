@@ -27,7 +27,7 @@ int scanFlash()
 		FLASH_Read_Nbytes((uint8_t *)validaddress,(uint8_t *)&dev_info,sizeof(dev_info_t));
 		__enable_irq();
 		delay_ms(1000);
-		printf("valid addr:%x, got addr:%x\n", validaddress,dev_info.flash_setvalue.flash_this_address);
+		//printf("valid addr:%x, got addr:%x\n", validaddress,dev_info.flash_setvalue.flash_this_address);
 		return 1;
 	}
 	else 
@@ -65,7 +65,7 @@ void writeFlash()
 	}
 	
 	FLASH_Write_Nbytes(dev_info.flash_setvalue.flash_this_address,(uint8_t *)&dev_info,sizeof(dev_info_t));	
-	printf("write flash %x\n",dev_info.flash_setvalue.flash_this_address);
+	//printf("write flash %x\n",dev_info.flash_setvalue.flash_this_address);
 	__enable_irq();  
 }
 void FLASH_Read_Nbytes(uint8_t *ReadAddress, uint8_t *ReadBuf, uint16_t Len) 

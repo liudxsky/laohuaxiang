@@ -21,7 +21,7 @@
 #include "./status/status.h"
 #include "pidcontroller.h"
 #include "crypto.h"
-
+#include "wdt.h"
 uint16_t current_screen_id = 0;
 volatile uint32_t  timer_tick_count = 0; // tick timer
 
@@ -94,10 +94,20 @@ int main( void )
 
 	SetPoint=dev_info.setTemp;
 	PIDInit(dev_info.pidvalue.PID_P,dev_info.pidvalue.PID_I,dev_info.pidvalue.PID_D,SetPoint);//need to be reset after chage setpoint
-
+	TM_WATCHDOG_Reset();
+	if (TM_WATCHDOG_Init(TM_WATCHDOG_Timeout_8s)) {
+		/* System was reset by watchdog */
+		dev_info.runstatus=0;
+		SetPwmValue(0);
+		
+	} else {
+		/* System was not reset by watchdog */
+		
+	}
+	
 	while(1)
     {
-      eMBPoll();											//analyze Modbus data 
+			eMBPoll();											//analyze Modbus data 
       size = queue_find_cmd(cmd_buffer,CMD_MAX_SIZE); 		//get one screen   command     
 		if(size>0)												//received valid instructions
 		{
@@ -108,10 +118,12 @@ int main( void )
 		{
 			t_thread100=getMsCounter();
 			ledBlinkThread();
+
 		}
 		if(getMsCounter()-t_thread500>500)
 		{
 			t_thread500=getMsCounter();
+			
 			if(dev_info.runstatus>0&&runstatus_last==0)
 			{
 				SetPoint=dev_info.setTemp;
@@ -119,8 +131,8 @@ int main( void )
 			}
 			runstatus_last=dev_info.runstatus;
 		//	printf("global T:%d", t_thread500);
-			Ktemperature=Max6675_Read_Tem()+ dev_info.compensatetemp;
-			temperRaw=Ktemperature*0.25-7;
+			Ktemperature=Max6675_Read_Tem();
+			temperRaw=Ktemperature*0.25-7+dev_info.flash_adjusttemp;
 			//SetPoint=100;
 			if(dev_info.useKalman==1)
 			{
@@ -202,13 +214,14 @@ int main( void )
 		if(getMsCounter() - timer_tick_count > 1000)
 		{
 			timer_tick_count = getMsCounter();
+			
+
 			ReadRtcTime();										//read current RTC time
 			start_endtime_set();								//start and end time setting
 			dev_info.currentTemp=adj_display(temperFilter);
-			
-			display_temper(dev_info.currentTemp);
 			Check_All_Status();	
 			update_dev_status();
+			display_temper();
 			//modebus register update;
 			//main text and icon update
 			//
@@ -219,7 +232,7 @@ int main( void )
 			t_thread3s=getMsCounter();
 			//update dev_info into other text and icon
 			//
-	
+			TM_WATCHDOG_Reset();
 		}
 		if(getMsCounter()-t_thread30s>30000)
 		{

@@ -1,7 +1,7 @@
 #include "pidcontroller.h"
 #include "./flash/deviceinfo.h"
 #include "stdlib.h"
-#define MEDBUFFLEN 50
+#define MEDBUFFLEN 45//tested on 50, but freeze
 extern dev_info_t dev_info;
 int AutoTuneStatus=0;
 unsigned long cyclecnt=0;
@@ -190,6 +190,7 @@ float getFilterTemper(float in)
 	
 	memcpy(temperbuff,temperbuff+1,sizeof(float)*(T_BUFFLEN-1));
 	temperbuff[T_BUFFLEN-1]=in;
+
 	if(temperbuff[0]!=0)
 	{
 		arm_fir_f32(&S, temperbuff, outputF32 , T_BUFFLEN);
@@ -240,24 +241,7 @@ float getSuprsTemper(float in)
 	}
 	return out;
 }
-float kalmanFilter(float in_temp)
-{
-	if(xhat<-1)
-	{
-		xhat=in_temp;
-		xhat_last=xhat;
-		return xhat;
-	}
-	P_last=P_last+Q;
-	//measurement update
-	K=P_last/(P_last+R);
-	xhat=xhat_last+K*(in_temp-xhat_last);
-	P=(1-K)*P_last;
-	//params update;
-	xhat_last=xhat;
-	P_last=P;
-	return xhat;
-}
+
 float adj_display(float in_temp)
 {
 	//time update
@@ -274,7 +258,7 @@ float adj_display(float in_temp)
 //		kalmantemp=in_temp;
 //	}
 	surptemp=getSuprsTemper(in_temp);
-	out=dev_info.flash_adjusttemp+surptemp;
+	out=surptemp;
 	printf("%f,%f\n",in_temp,surptemp);//output 1s
 	return out;
 }
@@ -481,3 +465,21 @@ FINISH:
 	return 0;
 
 }
+//float kalmanFilter(float in_temp)
+//{
+//	if(xhat<-1)
+//	{
+//		xhat=in_temp;
+//		xhat_last=xhat;
+//		return xhat;
+//	}
+//	P_last=P_last+Q;
+//	//measurement update
+//	K=P_last/(P_last+R);
+//	xhat=xhat_last+K*(in_temp-xhat_last);
+//	P=(1-K)*P_last;
+//	//params update;
+//	xhat_last=xhat;
+//	P_last=P;
+//	return xhat;
+//}

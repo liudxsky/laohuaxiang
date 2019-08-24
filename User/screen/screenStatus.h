@@ -82,8 +82,8 @@ struct mainTextStruct
 	uint8_t  softversion[ADDTESTTIMESIZE];
 
 	float test_time;
-	uint16_t left_time_hour;
-	uint16_t left_time_min;
+	uint32_t left_time_hour;
+	uint32_t left_time_min;
 	int32_t setTempHi;
 	uint32_t setTempLo;
 	uint32_t currentTempHi;

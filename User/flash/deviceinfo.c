@@ -58,8 +58,7 @@ void DeviceInfo_Init(void)
 		autogeneratepassword();
 		/*¸³³õÖµ*/
 		writeFlash();
-		//FLASH_Write_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
-		/*´®¿Ú´òÓ¡ÐÅÏ¢*/
+
 		printf("\r\n device curren pwm scope is %d \r\n",dev_info.pwmscope);
 		printf("\r\n device current pwm value is %d \r\n",dev_info.pwmvalue);
 		printf("\r\n device current air valve angle value is %d \r\n",dev_info.airdooropenangle);
@@ -102,6 +101,7 @@ void DeviceInfo_Init(void)
 			SetTextValueRTC(biglanguage_screen.BIG_ABNORMAL_POWEROFF,BIG_ABNORMAL_TIME,dev_info.timenow);
 			dev_info.runtomainscreenflag=0;
 		}
+		//dev_info.flash_adjusttemp=0;
 		dev_info.pwmscope=1000;
 		dev_info.runstatus=0;
 		dev_info.useKalman=1;
