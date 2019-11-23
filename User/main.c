@@ -104,6 +104,7 @@ int main( void )
 	} else {
 		/* System was not reset by watchdog */
 		printf("normal init");
+		printf("Kp:%f,Ki:%f,Kd%f\n",dev_info.pidvalue.PID_P,dev_info.pidvalue.PID_I,dev_info.pidvalue.PID_D);
 	}
 	
 	while(1)
