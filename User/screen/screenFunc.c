@@ -384,6 +384,7 @@ void autoNoPowerScreen(uint16_t control_id,uint8_t *str)
 			dev_info.autonopowertime.Year = dev_info.timenow.Year+ 50;
 			dev_info.autonopowertimeflag = 0;
 			dev_info.passwordwrongflag = 0;
+			dev_info.dev_status_changed_flag = 1;
 		}
 		else
 		{

@@ -130,25 +130,9 @@ int main( void )
 				PIDInit(dev_info.pidvalue.PID_P,dev_info.pidvalue.PID_I,dev_info.pidvalue.PID_D,SetPoint);
 			}
 			runstatus_last=dev_info.runstatus;
-		//	printf("global T:%d", t_thread500);
 			Ktemperature=Max6675_Read_Tem();
-			temperRaw=Ktemperature*0.25-7+dev_info.flash_adjusttemp;
-			//SetPoint=100;
-			if(dev_info.useKalman==1)
-			{
-				temperFilter=getFilterTemper(temperRaw);
-			}
-			else
-			{
-				getFilterTemper(temperRaw);
-				temperFilter=temperRaw;
-			}
-//			printf("%f\n",temperFilter);
-			//temperFilter=temper_usart;
+			temperFilter=getFilterTemper(Ktemperature);
 			error=SetPoint-temperFilter;
-//			if(debuginfo)
-//			printf("Setpoint:%.2lf\n",SetPoint);
-			//use button to change status
 			if(dev_info.runstatus==1)
 			{
 				pwmOut=pidCalc(error);
