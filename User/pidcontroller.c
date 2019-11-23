@@ -1,7 +1,7 @@
 #include "pidcontroller.h"
 #include "./flash/deviceinfo.h"
 #include "stdlib.h"
-#define MEDBUFFLEN 45//tested on 50, but freeze
+#define MEDBUFFLEN 30//tested on 50, but freeze
 extern dev_info_t dev_info;
 int AutoTuneStatus=0;
 unsigned long cyclecnt=0;

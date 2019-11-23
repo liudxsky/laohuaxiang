@@ -99,10 +99,11 @@ int main( void )
 		/* System was reset by watchdog */
 		dev_info.runstatus=0;
 		SetPwmValue(0);
+		printf("WDT reset");
 		
 	} else {
 		/* System was not reset by watchdog */
-		
+		printf("normal init");
 	}
 	
 	while(1)
