@@ -182,15 +182,15 @@ uint16_t pidCalc(float e)
 
 float getFilterTemper(float in)
 {
-	
 	int i;
 	float outtemp1=0;
 	float outtemp2=0;
-	float ord2nd=0.00008;
-	float ord1st=0.9817;
+	float ord2nd=-0.00011;
+	float ord1st=0.0183;
 	
-	outtemp1=in*0.25-6;
-	in=outtemp1*outtemp1*ord2nd+outtemp1*ord1st+dev_info.flash_adjusttemp;
+	outtemp1=in*0.25-4;
+	outtemp2=outtemp1*outtemp1*ord2nd+outtemp1*ord1st+dev_info.flash_adjusttemp;
+	in=outtemp1-outtemp2;
 	
 	memcpy(temperbuff,temperbuff+1,sizeof(float)*(T_BUFFLEN-1));
 	temperbuff[T_BUFFLEN-1]=in;
@@ -221,11 +221,7 @@ float getFilterTemper(float in)
 	return outtemp2;
 }
 
-float xhat=-2,xhat_last=0;
-float P=0.00031,P_last=0;
-float	K=0;
-float R=0.1;
-float Q=0.001;
+
 float getSuprsTemper(float in)
 {
 	float out=in;
@@ -236,6 +232,20 @@ float getSuprsTemper(float in)
 	}
 	if(f_ReachedSP==1)
 	{
+		/*
+		if(error>-2&&error<2)
+		{
+			error=error*error*0.25;
+			if(error<0)
+			{
+				out=dev_info.setTemp-error;
+			}
+			else
+			{
+				out=dev_info.setTemp+error;
+			}
+		}
+		*/
 		if(error>-1.5&&error<1.5)
 		{
 			error=error*0.3;
@@ -477,6 +487,13 @@ FINISH:
 	return 0;
 
 }
+/*
+float xhat=-2,xhat_last=0;
+float P=0.00031,P_last=0;
+float	K=0;
+float R=0.1;
+float Q=0.001;
+*/
 //float kalmanFilter(float in_temp)
 //{
 //	if(xhat<-1)

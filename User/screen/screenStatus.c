@@ -292,6 +292,7 @@ void updater_argSetErrorScreen1(void)
 	AnimationPlayFrame(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN1,BIG_CHANGE_AIR_SET_FAIL1,argSetErrorIcon.change_air_set_fail);
 	AnimationPlayFrame(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN1,BIG_MODBUS_ADDRESS_SET_FAIL1,argSetErrorIcon.modebus_addr_set_fail);
 	AnimationPlayFrame(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN1,BIG_SCREEN_LIGHT_SET_FAIL1,argSetErrorIcon.light_set_fail);	
+	
 }
 
 void updater_argSetErrorScreen2(void)
