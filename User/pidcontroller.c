@@ -186,12 +186,12 @@ float getFilterTemper(float in)
 	int i;
 	float outtemp1=0;
 	float outtemp2=0;
-	float ord2nd=0.00008;
-	float ord1st=0.9817;
+	float ord2nd=-0.00028;
+	float ord1st=0.078;
 	
-	outtemp1=in*0.25-6;
-	in=outtemp1*outtemp1*ord2nd+outtemp1*ord1st+dev_info.flash_adjusttemp;
-	
+	outtemp1=in*0.25-4;
+	outtemp2=outtemp1*outtemp1*ord2nd+outtemp1*ord1st+dev_info.flash_adjusttemp;
+	in=outtemp1-outtemp2+4;
 	memcpy(temperbuff,temperbuff+1,sizeof(float)*(T_BUFFLEN-1));
 	temperbuff[T_BUFFLEN-1]=in;
 

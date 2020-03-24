@@ -95,17 +95,18 @@ int main( void )
 	SetPoint=dev_info.setTemp;
 	PIDInit(dev_info.pidvalue.PID_P,dev_info.pidvalue.PID_I,dev_info.pidvalue.PID_D,SetPoint);//need to be reset after chage setpoint
 	TM_WATCHDOG_Reset();
+	
 	if (TM_WATCHDOG_Init(TM_WATCHDOG_Timeout_8s)) {
-		/* System was reset by watchdog */
-		dev_info.runstatus=0;
+		// System was reset by watchdog
 		SetPwmValue(0);
 		printf("WDT reset");
 		
 	} else {
-		/* System was not reset by watchdog */
+		//System was not reset by watchdog 
 		printf("normal init");
 		printf("Kp:%f,Ki:%f,Kd%f\n",dev_info.pidvalue.PID_P,dev_info.pidvalue.PID_I,dev_info.pidvalue.PID_D);
 	}
+	dev_info.runstatus=0;
 	
 	while(1)
     {

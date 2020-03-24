@@ -479,7 +479,7 @@ void menuSettingScreen(uint16_t control_id, uint8_t *str)
 			}
 			else
 			{
-				dev_info.temp_backdiff = d_temp;
+				dev_info.flash_setvalue.temp_backdiff = d_temp;
 				argSetErrorIcon.return_diff_set_fail=HIDE;
 				dev_info.dev_status_changed_flag = 1;
 			}		
