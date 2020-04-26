@@ -262,11 +262,14 @@ void RS232_USART_IRQHandler(void)
 			}	
 			else if(strstr((char *)RxBuffer,uart_cmd[SHOWVALUE].cmd))			//显示当前设备存储值
 			{		
-				printf("\r\n***********device info*********\r\n");
-				printf("\r\ncurrent PWM Scope is  0 -- %d \r\n",dev_info.pwmscope);
-				printf("\r\ncurrent PWM Value is %d \r\n",dev_info.pwmvalue);	
-				printf("\r\n\r\ncurrent temperature is :%.2lf\r\n",dev_info.currentTemp);
-				printf("\r\n\r\ncurrent air valve angle value is set: \r\n------dec: %d\r\n------hex: 0x%x\r\n",dev_info.airdooropenangle,dev_info.airdooropenangle);
+				printf("**********device info*********\r\n");
+				printf("PWM Scope 0 -- %d \r\n",dev_info.pwmscope);
+				printf("PWM Value: %d \r\n",dev_info.pwmvalue);	
+				printf("SP:%f \r\n",dev_info.setTemp);
+				printf("PID:%f,%f,%f \r\n",dev_info.pidvalue.PID_P,dev_info.pidvalue.PID_I,dev_info.pidvalue.PID_D);
+				printf("runStatus:%d\r\n",dev_info.runstatus);
+				//printf("\r\n\r\ncurrent temperature is :%.2lf\r\n",dev_info.currentTemp);
+				//printf("\r\n\r\ncurrent air valve angle value is set: \r\n------dec: %d\r\n------hex: 0x%x\r\n",dev_info.airdooropenangle,dev_info.airdooropenangle);
 			}
 			else if(strstr((char *)RxBuffer,uart_cmd[HELP].cmd))				//帮助说明
 			{

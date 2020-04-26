@@ -96,7 +96,8 @@ int main( void )
 	PIDInit(dev_info.pidvalue.PID_P,dev_info.pidvalue.PID_I,dev_info.pidvalue.PID_D,SetPoint);//need to be reset after chage setpoint
 	TM_WATCHDOG_Reset();
 	
-	if (TM_WATCHDOG_Init(TM_WATCHDOG_Timeout_8s)) {
+	if (TM_WATCHDOG_Init(TM_WATCHDOG_Timeout_8s)) 
+		{
 		// System was reset by watchdog
 		SetPwmValue(0);
 		printf("WDT reset");

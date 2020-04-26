@@ -23,6 +23,7 @@ void DeviceInfo_Init(void)
 	//¶ÁÈ¡´æ´¢±êÖ¾Î»
 	if(sf<0)
 	{
+		printf("\r\n reInit flash");
 		memset(&dev_info,0,sizeof(dev_info_t));
 		dev_info.valid_flag = 1;
 		dev_info.pwmscope = 1000;
@@ -67,7 +68,8 @@ void DeviceInfo_Init(void)
 	}
 	else
 	{
-		//todo
+		printf("\r\n load flash");
+		
 		readFlash();
 		//FLASH_Read_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
 		/*´®¿Ú´òÓ¡ÐÅÏ¢	*/
