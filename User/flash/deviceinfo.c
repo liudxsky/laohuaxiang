@@ -20,7 +20,6 @@ void DeviceInfo_Init(void)
 	//????
 	int sf=scanFlash();
 	//FLASH_Read_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info.valid_flag,4);
-	//¶ÁÈ¡´æ´¢±êÖ¾Î»
 	if(sf<0)
 	{
 		printf("\r\n reInit flash");
@@ -57,7 +56,6 @@ void DeviceInfo_Init(void)
 		dev_info.setTemp=0;
 		dev_info.runtomainscreenflag=1;
 		autogeneratepassword();
-		/*¸³³õÖµ*/
 		writeFlash();
 
 		printf("\r\n device curren pwm scope is %d \r\n",dev_info.pwmscope);
@@ -72,7 +70,6 @@ void DeviceInfo_Init(void)
 		
 		readFlash();
 		//FLASH_Read_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
-		/*´®¿Ú´òÓ¡ÐÅÏ¢	*/
 		printf("\r\n device curren pwm scope is %d \r\n",dev_info.pwmscope);
 		printf("\r\n device current pwm value is %d \r\n",dev_info.pwmvalue);
 		printf("\r\n device current air valve angle value is %d \r\n",dev_info.airdooropenangle);
@@ -111,14 +108,9 @@ void DeviceInfo_Init(void)
 
 }
 
-
-
-
-void STM32_Read_ID(void)					//Ð¡¶ËÄ£Ê½
+void STM32_Read_ID(void)				
 {	
-//     µØÖ·´ÓÐ¡µ½´ó,ÏÈ·ÅµÍ×Ö½Ú£¬ÔÙ·Å¸ß×Ö½Ú£ºÐ¡¶ËÄ£Ê½
-//     µØÖ·´ÓÐ¡µ½´ó,ÏÈ·Å¸ß×Ö½Ú£¬ÔÙ·ÅµÍ×Ö½Ú£º´ó¶ËÄ£Ê½
-	ChipUniqueID[11] = *(__IO u32*)(0X1FFF7A10);  // µÍ×Ö½Ú
+	ChipUniqueID[11] = *(__IO u32*)(0X1FFF7A10);  //
 	ChipUniqueID[10] = *(__IO u32 *)(0X1FFF7A11); // 
 	ChipUniqueID[9] = *(__IO u32 *)(0X1FFF7A12); // 
 	ChipUniqueID[8] = *(__IO u32 *)(0X1FFF7A13); // 
@@ -129,8 +121,8 @@ void STM32_Read_ID(void)					//Ð¡¶ËÄ£Ê½
 	ChipUniqueID[3] = *(__IO u32 *)(0X1FFF7A18); // 
 	ChipUniqueID[3] = *(__IO u32 *)(0X1FFF7A19); // 
 	ChipUniqueID[1] = *(__IO u32 *)(0X1FFF7A1A); // 
-	ChipUniqueID[0] = *(__IO u32 *)(0X1FFF7A1B); // ¸ß×Ö½Ú
-	printf(" Ð¾Æ¬µÄÎ¨Ò»IDÎª: %.2x-%.2x-%.2x-%.2x-%.2x-%.2x-%.2x-%.2x-%.2x-%.2x-%.2x-%.2x \r\n",
+	ChipUniqueID[0] = *(__IO u32 *)(0X1FFF7A1B); // 
+	printf("Unique ID: %.2x-%.2x-%.2x-%.2x-%.2x-%.2x-%.2x-%.2x-%.2x-%.2x-%.2x-%.2x \r\n",
 		ChipUniqueID[0],ChipUniqueID[1],
 		ChipUniqueID[2],ChipUniqueID[3],
 		ChipUniqueID[4],ChipUniqueID[5],
@@ -138,12 +130,6 @@ void STM32_Read_ID(void)					//Ð¡¶ËÄ£Ê½
 		ChipUniqueID[8],ChipUniqueID[9],
 		ChipUniqueID[10],ChipUniqueID[11]);
 }
-
-
-
-
-
-
 
 
 uint8_t InputMessage[] =  "Huangloong";

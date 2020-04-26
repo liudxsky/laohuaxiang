@@ -179,6 +179,10 @@ void read_Holdingregister(void)
 //write Holding register
 void  write_Holdingregister(void)
 {
+	//////////////////////////////////////////////////////////////////////////////
+	//base address 0x100
+	//base address+usRegHoldingBuf[index]=modebus address
+	//////////////////////////////////////////////////////////////////////////////
 	if (!dev_info.runstatus)
 	{
 		dev_info.setTemp = (float)usRegHoldingBuf[512]/10;            										//0x300

@@ -75,6 +75,23 @@ void SetTextValueFloat(uint16_t screen_id, uint16_t control_id,float value)
 
 
 //screen init
+void hideAllErrorIcon()
+{
+		argSetErrorIcon.change_air_set_fail = HIDE;
+	argSetErrorIcon.modebus_addr_set_fail = HIDE;
+	argSetErrorIcon.test_temp_set_fail = HIDE;
+	argSetErrorIcon.test_time_set_fail = HIDE;
+	argSetErrorIcon.return_diff_set_fail = HIDE;
+	argSetErrorIcon.temp_up_set_fail = HIDE;
+	argSetErrorIcon.temp_up2_set_fail = HIDE;
+	argSetErrorIcon.light_set_fail = HIDE;
+	argSetErrorIcon.pass1_set_fail = HIDE;
+	
+	argSetErrorIcon.pass2_set_fail = HIDE;
+	argSetErrorIcon.air_angle_set_fail = HIDE;
+	argSetErrorIcon.temp_adjust_fail = HIDE;
+	argSetErrorIcon.auto_no_power_set_fail = HIDE;
+}
 void screen_init(void)
 {
 	RtcTime inittime = {0};
@@ -88,19 +105,7 @@ void screen_init(void)
 	mainPageText.left_time_hour=0;
 	mainPageText.left_time_min=0;
 	
-	argSetErrorIcon.change_air_set_fail = HIDE;
-	argSetErrorIcon.modebus_addr_set_fail = HIDE;
-	argSetErrorIcon.test_temp_set_fail = HIDE;
-	argSetErrorIcon.test_time_set_fail = HIDE;
-	argSetErrorIcon.return_diff_set_fail = HIDE;
-	argSetErrorIcon.temp_up_set_fail = HIDE;
-	argSetErrorIcon.temp_up2_set_fail = HIDE;
-	argSetErrorIcon.light_set_fail = HIDE;
-	argSetErrorIcon.pass1_set_fail = HIDE;
-	argSetErrorIcon.pass2_set_fail = HIDE;
-	argSetErrorIcon.air_angle_set_fail = HIDE;
-	argSetErrorIcon.temp_adjust_fail = HIDE;
-	argSetErrorIcon.auto_no_power_set_fail = HIDE;
+	hideAllErrorIcon();
 	
 	updater_mainScreen();
 	updater_argSetErrorScreen1();
@@ -170,10 +175,12 @@ void NotifyScreen(uint16_t screen_id)
 	else if(screen_id == biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN1)	//param setting no invalid1
 	{
 		updater_argSetErrorScreen1();
+		hideAllErrorIcon();
 	}
 	else if(screen_id == biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN2)	//param setting no invalid2
 	{
 		updater_argSetErrorScreen2();
+		hideAllErrorIcon();
 	}
 	else if(screen_id == biglanguage_screen.BIG_MAIN_SHOW_SCREEN)
 	{

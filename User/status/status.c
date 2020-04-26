@@ -97,8 +97,6 @@ void check_screen_connect(void)
 	}
 }
 
-volatile  int32_t closetime=0;
-
 void check_powertime(void)
 {
 
@@ -112,7 +110,7 @@ void check_powertime(void)
 
 void check_nopowertime(void)
 {
-	
+	int32_t closetime=0;
 	if(dev_info.timenow.Year == 58)
 	{
 		dev_info.autonopowertimeflag = 0;
@@ -233,7 +231,7 @@ void Check_All_Status(void)
 {
 	check_powertime();
 	check_screen_connect();
-	check_nopowertime();
+//	check_nopowertime();
 	check_warning();
 	Check_Rs485();
 	door_open_status();

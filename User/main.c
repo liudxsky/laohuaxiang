@@ -94,6 +94,7 @@ int main( void )
 
 	SetPoint=dev_info.setTemp;
 	PIDInit(dev_info.pidvalue.PID_P,dev_info.pidvalue.PID_I,dev_info.pidvalue.PID_D,SetPoint);//need to be reset after chage setpoint
+	
 	TM_WATCHDOG_Reset();
 	
 	if (TM_WATCHDOG_Init(TM_WATCHDOG_Timeout_8s)) 
@@ -203,7 +204,6 @@ int main( void )
 		{
 			timer_tick_count = getMsCounter();
 			
-
 			ReadRtcTime();										//read current RTC time
 			start_endtime_set();								//start and end time setting
 			dev_info.currentTemp=adj_display(temperFilter);
@@ -236,7 +236,7 @@ int main( void )
 		{
 			t_thread1h = getMsCounter();
 			//1h thread
-
+			check_nopowertime();
 			if(dev_info.dev_status_changed_flag > 1)//slow write
 			{
 				dev_info.dev_status_changed_flag=0;

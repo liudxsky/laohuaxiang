@@ -9,7 +9,7 @@ extern dev_info_t dev_info;
 extern TextValueTab  textvalue;			//text control_id buff 
 extern BIG_SCREEN_ID_TAB biglanguage_screen;
 uint8_t global_str_temp[COMMONSIZE];
-RtcTime  nopowertime = {28,12,12,0,0,0};				
+RtcTime  nopowertime = {78,12,12,0,0,0};				
 
 extern struct mainIconStruct mainIcon;
 extern struct mainTextStruct mainPageText;
@@ -53,6 +53,7 @@ void menuScreenButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 					AnimationPlayFrame(screen_id,BIG_BPS_9600,HIDE);
 					eMBInit( MB_RTU, dev_info.flash_setvalue.modbus_address, 0x01, dev_info.flash_setvalue.modbus_tran_rate, MB_PAR_NONE ); //Modbus Init
 					eMBEnable();
+					dev_info.dev_status_changed_flag = 1;
 				}
 				break;
 			case BIG_BPS_2400_BUTTON:
@@ -65,6 +66,7 @@ void menuScreenButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 					AnimationPlayFrame(screen_id,BIG_BPS_9600,HIDE);
 					eMBInit( MB_RTU, dev_info.flash_setvalue.modbus_address, 0x01, dev_info.flash_setvalue.modbus_tran_rate, MB_PAR_NONE ); //Modbus Init
 					eMBEnable();
+					dev_info.dev_status_changed_flag = 1;
 				}
 				break;
 			case BIG_BPS_4800_BUTTON:
@@ -77,6 +79,7 @@ void menuScreenButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 					AnimationPlayFrame(screen_id,BIG_BPS_9600,HIDE);
 					eMBInit( MB_RTU, dev_info.flash_setvalue.modbus_address, 0x01, dev_info.flash_setvalue.modbus_tran_rate, MB_PAR_NONE ); //Modbus Init
 					eMBEnable();
+					dev_info.dev_status_changed_flag = 1;
 				}
 				break;
 			case BIG_BPS_9600_BUTTON:
@@ -89,6 +92,7 @@ void menuScreenButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 					AnimationPlayFrame(screen_id,BIG_BPS_1200,HIDE);
 					eMBInit( MB_RTU, dev_info.flash_setvalue.modbus_address, 0x01, dev_info.flash_setvalue.modbus_tran_rate, MB_PAR_NONE ); //Modbus Init
 					eMBEnable();
+					dev_info.dev_status_changed_flag = 1;
 				}
 				break;
 			case BIG_CHINESE_LANGUAGE_BUTTON:
@@ -117,7 +121,7 @@ void menuScreenButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 				dev_info.flash_setvalue.modbus_tran_rate = 9600;
 				dev_info.biglanguagestatus = 1;
 		}
-		dev_info.dev_status_changed_flag = 1;
+		
 
 }
 
@@ -377,7 +381,7 @@ void autoNoPowerScreen(uint16_t control_id,uint8_t *str)
 {
 		memset(textvalue.autonopowerpassword,0,sizeof(char)*PASSWORDLENGTH);
 		memcpy(textvalue.autonopowerpassword,str,sizeof(char)*PASSWORDLENGTH);
-		if(!strncmp(str,dev_info.autonopowerpassword,PASSWORDLENGTH))	
+		if(!strncmp(textvalue.autonopowerpassword,dev_info.autonopowerpassword,PASSWORDLENGTH))	
 		{
 			//have power , control device work normal
 			MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);
@@ -509,13 +513,13 @@ void menuSettingScreen(uint16_t control_id, uint8_t *str)
 			d_temp = atof(str_temp);
 			if(d_temp < 0.1 || d_temp > 50)
 			{
-				argSetErrorIcon.temp_up2_set_fail=SHOW;
+				argSetErrorIcon.temp_up_set_fail=SHOW;
 				MySetScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN1);
 			}
 			else
 			{
 				dev_info.flash_setvalue.warning2_up = d_temp;
-				argSetErrorIcon.temp_up2_set_fail=HIDE;
+				argSetErrorIcon.temp_up_set_fail=HIDE;
 				dev_info.dev_status_changed_flag = 1;
 			}		
 			break;				
@@ -545,8 +549,11 @@ void menuSettingScreen(uint16_t control_id, uint8_t *str)
 			if(judge_changeair_time(i_temp))
 			{
 				argSetErrorIcon.change_air_set_fail=HIDE;
-				dev_info.flash_setvalue.change_air_time = dev_info.change_air_time[select_suitable_airtimes(i_temp)];
-				dev_info.airdooropenangle = 5*getChangeAirTimes(dev_info.flash_setvalue.change_air_time);
+				dev_info.flash_setvalue.change_air_time =i_temp;
+				dev_info.airdooropenangle=getChangeAirTimes(i_temp);
+				//dev_info.flash_setvalue.change_air_time = dev_info.change_air_time[select_suitable_airtimes(i_temp)];
+				
+				//dev_info.airdooropenangle = 5*getChangeAirTimes(dev_info.flash_setvalue.change_air_time);
 				dev_info.dev_status_changed_flag = 1;
 			}
 			else
@@ -566,12 +573,14 @@ void menuSettingScreen(uint16_t control_id, uint8_t *str)
 				dev_info.flash_setvalue.screen_light_value = i_temp;
 				SetBackLight(200 - i_temp*2);
 				argSetErrorIcon.light_set_fail=HIDE;
+				dev_info.dev_status_changed_flag = 1;
 			}
 			else
 			{
 				argSetErrorIcon.light_set_fail=SHOW;
+				MySetScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN1);
 			}
-			dev_info.dev_status_changed_flag = 1;
+			
 			break;
 		
 		case BIG_MODBUS_NODE_ADDRESS:
@@ -723,6 +732,7 @@ void adjustScreenSetting(uint16_t control_id,uint8_t *str)
 			nopowertime.Day = atoi(textvalue.autotime.day);
 			break;	
 	}
+	
 	if(diff_time(dev_info.timenow, nopowertime) > 0)
 	{
 		dev_info.autonopowertime.Year = nopowertime.Year;
@@ -790,10 +800,10 @@ void endtimecalcu(RtcTime starttime,float testtime)
 int32_t diff_time(RtcTime starttime,RtcTime endtime)
 {
 	int32_t diff=0;
-//	printf("%4d/%2d/%2d,%2d:%2d:%2d",endtime.Year,endtime.Mon,endtime.Day,endtime.Hour,endtime.Min,endtime.Sec);
-//	printf("starttime is %x \n  end time is   %x\n",to_day(starttime),to_day(endtime));
-	diff=to_day(endtime)-to_day(starttime);
-//	printf("diff is %.8x \n",diff);
+	diff=	to_day(endtime)-to_day(starttime);
+//printf("%4d/%2d/%2d,%2d:%2d:%2d\n",endtime.Year,endtime.Mon,endtime.Day,endtime.Hour,endtime.Min,endtime.Sec);
+	//printf("starttime is %d \n  end time is   %d\n",to_day(starttime),to_day(endtime));
+	//printf("diff is %d \n",diff);
 	return diff;
 }
 
@@ -918,9 +928,7 @@ uint16_t my_min(uint16_t *buff,uint8_t len)
 	return tempi;
 }
 
-//y=Ax+B
-//A=(b1-b2)/(a1-a2)
-//B=(a2*b1+a1*b2)/(a2-a1)
+
 
 uint16_t select_suitable_airtimes(uint16_t settimes)
 {
@@ -935,17 +943,44 @@ uint16_t select_suitable_airtimes(uint16_t settimes)
 }
 
 
+//y=Ax+B
+//A=(b1-b2)/(a1-a2)
+//B=(a2*b1+a1*b2)/(a2-a1)
 
 //find which change air time is selected, will push to main screen
 uint8_t getChangeAirTimes(int changeTimes)
 {
 	uint8_t i = 0;
+	float a1,a2,b1,b2,x;
+	float A,B,y;
+	int out;
+	x=changeTimes;
 	for(i = 0;i < CHANGE_AIR_SIZE;i++)
 	{
+		/*
 		if(changeTimes == dev_info.change_air_time[i])
 		{	
 			return i;
 		}
+		*/
+		if(changeTimes==dev_info.change_air_time[i])
+		{
+			return i*5;
+		}
+		else if(changeTimes>dev_info.change_air_time[i]&&changeTimes<dev_info.change_air_time[i+1])
+		{
+			b1=5*i;
+			b2=5*(i+1);
+			a1=dev_info.change_air_time[i];
+			a2=dev_info.change_air_time[i+1];
+			A=(b1-b2)/(a1-a2);
+			B=(a2*b1-a1*b2)/(a2-a1);
+			y=A*x+B;
+			out=(int)y;
+			//printf("i:%d,,a1:%f,,a2:%f,,b1:%f,,b2:%f,,A:%f,,B:%f,,y:%f,,x:%f,,out:%f,\n",i,a1,a2,b1,b2,A,B,y,x,out);
+			return out;
+		}
+		
 	}
 }
 
