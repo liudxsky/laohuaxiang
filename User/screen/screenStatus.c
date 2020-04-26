@@ -215,7 +215,7 @@ void updater_menuParam(uint16_t screen_id)
 
 	SetTextValueFloat(screen_id,BIG_WARNING2_UP_VALUE,dev_info.flash_setvalue.warning2_up);
 	
-	SetTextValueFloat(screen_id,BIG_TEMP_RETURN_DIFF,dev_info.temp_backdiff);
+	SetTextValueFloat(screen_id,BIG_TEMP_RETURN_DIFF,dev_info.flash_setvalue.temp_backdiff);
 	
 	SetTextValue(screen_id,BIG_NEW_PASSWORD,"");
 	

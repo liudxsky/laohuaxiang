@@ -195,7 +195,7 @@ void check_warning(void)
 	{
 		dev_info.temp_warnning1=1;
 	}
-	else if(dev_info.currentTemp < (dev_info.setTemp + dev_info.flash_setvalue.warning1_up - dev_info.temp_backdiff))
+	else if(dev_info.currentTemp < (dev_info.setTemp + dev_info.flash_setvalue.warning1_up - dev_info.flash_setvalue.temp_backdiff))
 	{
 		dev_info.temp_warnning1=0;	
 	}
@@ -203,7 +203,7 @@ void check_warning(void)
 	{
 			dev_info.temp_warnning2=1;
 	}
-	else if(dev_info.currentTemp < (dev_info.setTemp + dev_info.flash_setvalue.warning2_up - dev_info.temp_backdiff))
+	else if(dev_info.currentTemp < (dev_info.setTemp + dev_info.flash_setvalue.warning2_up - dev_info.flash_setvalue.temp_backdiff))
 	{
 		dev_info.temp_warnning2=0;
 	}
@@ -300,6 +300,7 @@ void door_open_status(void)
 	{
 		dev_info.useKalman=2;
 		door_openstatus++;
+		IOStatus.door_open=1;
 		mainIcon.door_open = SHOW;
 		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_DOOR_OPEN_ID,mainIcon.door_open);
 
@@ -313,6 +314,7 @@ void door_open_status(void)
 	else
 	{
 		door_closestatus++;
+		IOStatus.door_open=0;
 		mainIcon.door_open = HIDE;
 		AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_DOOR_OPEN_ID,mainIcon.door_open);
 		if(door_closestatus  == 1)

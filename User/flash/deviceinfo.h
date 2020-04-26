@@ -30,7 +30,7 @@ typedef struct
 	float testTime;										//实验时间
 	float setTemp;										//实验温度
 	float currentTemp;									//curent temp
-	float temp_backdiff;								//温度回差
+	//float temp_backdiff;								//温度回差
 	float flash_adjusttemp;								//调整温度值
 	uint8_t airdooropenangle;						//风门开启角度
 	uint32_t  addup_testtime;							//累计试验时间
@@ -44,7 +44,7 @@ typedef struct
 
 	int compensatetemp;									//补偿温度
 	int runstatus;
-	uint8_t temp_warnning1;
+	uint8_t temp_warnning1;//warning status
 	uint8_t temp_warnning2;
 	uint8_t Rs485Status;
 	uint8_t thermocouple_flag;//error flag

@@ -148,6 +148,14 @@ void read_Holdingregister(void)
 	usRegHoldingBuf[3] = dev_info.flash_setvalue.warning1_up*10;
 	usRegHoldingBuf[4] = dev_info.flash_setvalue.warning2_up*10;
 	usRegHoldingBuf[5] = dev_info.flash_setvalue.temp_backdiff*10;
+	usRegHoldingBuf[6]=IOStatus.blower;
+	usRegHoldingBuf[7]=IOStatus.door_open;
+	usRegHoldingBuf[8]=IOStatus.heat_output;
+	usRegHoldingBuf[9]=IOStatus.heat_switch;
+	usRegHoldingBuf[10]=IOStatus.sample_frame;
+	usRegHoldingBuf[11]=IOStatus.temp_warnning1;
+	usRegHoldingBuf[12]=IOStatus.temp_warnning2;
+	usRegHoldingBuf[13]=dev_info.runstatus;
 //	usRegHoldingBuf[6] = atoi(dev_info.flash_setvalue.menu_password)>>16;
 //	usRegHoldingBuf[7] = atoi(dev_info.flash_setvalue.menu_password)&0x0000ffff;
 //	usRegHoldingBuf[8] = atoi(dev_info.flash_setvalue.secondtime_password)>>16;
@@ -156,13 +164,14 @@ void read_Holdingregister(void)
 //	usRegHoldingBuf[11] = atoi(dev_info.flash_setvalue.protect_password)&0x0000ffff;
 //	usRegHoldingBuf[12] = atoi(dev_info.flash_setvalue.protect_secondtime_password)>>16;
 //	usRegHoldingBuf[13] = atoi(dev_info.flash_setvalue.protect_secondtime_password)&0x0000ffff;
+//	usRegHoldingBuf[6] = heattime_log.heattime.Year<<8|heattime_log.heattime.Mon;
+//	usRegHoldingBuf[7] = heattime_log.heattime.Day<<8|heattime_log.heattime.Hour;
+//	usRegHoldingBuf[8] = heattime_log.heattime.Min<<8|heattime_log.heattime.Sec;
 	for(i = 0;i < TIMERECORDNUM;i++)
 	{
 		memcpy(usRegHoldingBuf[19*i+14],savethermalbuff[i],sizeof(char)*38);
 	}
-	usRegHoldingBuf[205] = heattime_log.heattime.Year<<8|heattime_log.heattime.Mon;
-	usRegHoldingBuf[206] = heattime_log.heattime.Day<<8|heattime_log.heattime.Hour;
-	usRegHoldingBuf[207] = heattime_log.heattime.Min<<8|heattime_log.heattime.Sec;
+	
 	readholdingflag = 0;
 }
 
@@ -182,11 +191,15 @@ void  write_Holdingregister(void)
 		dev_info.flash_setvalue.warning1_up = (float)usRegHoldingBuf[514]/10;
 		dev_info.flash_setvalue.warning2_up = (float)usRegHoldingBuf[515]/10;
 		dev_info.flash_setvalue.temp_backdiff = (float)usRegHoldingBuf[516]/10;	
+	IOStatus.blower=	usRegHoldingBuf[517];
+	IOStatus.sample_frame=usRegHoldingBuf[518];
+	
 //		my_itoa((usRegHoldingBuf[517]<<16)|usRegHoldingBuf[518],dev_info.flash_setvalue.menu_password,PASSWORDLENGTH);
 //		my_itoa((usRegHoldingBuf[519]<<16)|usRegHoldingBuf[520],dev_info.flash_setvalue.secondtime_password,PASSWORDLENGTH);
 //		my_itoa((usRegHoldingBuf[521]<<16)|usRegHoldingBuf[522],dev_info.flash_setvalue.protect_password,PASSWORDLENGTH);
 //		my_itoa((usRegHoldingBuf[523]<<16)|usRegHoldingBuf[524],dev_info.flash_setvalue.protect_secondtime_password,PASSWORDLENGTH);
-		
+		dev_info.runstatus=(int)usRegHoldingBuf[519];
+	dev_info.dev_status_changed_flag=1;
 		writeholdingflag = 0;
 	
 }

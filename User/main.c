@@ -108,6 +108,7 @@ int main( void )
 		printf("normal init");
 		printf("Kp:%f,Ki:%f,Kd%f\n",dev_info.pidvalue.PID_P,dev_info.pidvalue.PID_I,dev_info.pidvalue.PID_D);
 	}
+	dev_info.runstatus=0;
 	
 	while(1)
     {

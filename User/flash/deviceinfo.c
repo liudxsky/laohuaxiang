@@ -22,6 +22,7 @@ void DeviceInfo_Init(void)
 	//FLASH_Read_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info.valid_flag,4);
 	if(sf<0)
 	{
+		printf("\r\n reInit flash");
 		memset(&dev_info,0,sizeof(dev_info_t));
 		dev_info.valid_flag = 1;
 		dev_info.pwmscope = 1000;
@@ -65,6 +66,8 @@ void DeviceInfo_Init(void)
 	}
 	else
 	{
+		printf("\r\n load flash");
+		
 		readFlash();
 		//FLASH_Read_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
 		printf("\r\n device curren pwm scope is %d \r\n",dev_info.pwmscope);
@@ -80,8 +83,8 @@ void DeviceInfo_Init(void)
 		printf("\r\n device current set testtime is :%f\r\n",dev_info.testTime);		
 		printf("\r\n device current set modbus address is :%d\r\n",dev_info.flash_setvalue.modbus_address);
 
-		dev_info.temp_warnning1=50;
-		dev_info.temp_warnning2=50;
+		dev_info.temp_warnning1=0;
+		dev_info.temp_warnning2=0;
 		dev_info.dev_status_changed_flag=0;
 		dev_info.lefttimeflag=0;
 		dev_info.passwordwrongflag=0;
