@@ -20,7 +20,7 @@ extern struct IOStatusStruct IOStatus;
 
 extern ThermalLag heattime_log;									
 extern RtcTime changetime;											
-
+extern struct mainTextStruct mainPageText;
 PCTRL_MSG tempmessage;
 
 uint8_t writecoilflag = 0,readcoilflag = 0,readholdingflag = 0,writeholdingflag = 0,readinputflag = 0;
@@ -141,6 +141,7 @@ extern uint8_t savethermalbuff[TIMERECORDNUM][38];
 //read Holding register
 void read_Holdingregister(void)
 {
+	int temp;
 	uint8_t i = 0;
 	usRegHoldingBuf[0] = dev_info.currentTemp*10;									//0x100
 	usRegHoldingBuf[1] = dev_info.setTemp*10;
@@ -156,21 +157,39 @@ void read_Holdingregister(void)
 	usRegHoldingBuf[11]=IOStatus.temp_warnning1;
 	usRegHoldingBuf[12]=IOStatus.temp_warnning2;
 	usRegHoldingBuf[13]=dev_info.runstatus;
-//	usRegHoldingBuf[6] = atoi(dev_info.flash_setvalue.menu_password)>>16;
-//	usRegHoldingBuf[7] = atoi(dev_info.flash_setvalue.menu_password)&0x0000ffff;
-//	usRegHoldingBuf[8] = atoi(dev_info.flash_setvalue.secondtime_password)>>16;
-//	usRegHoldingBuf[9] = atoi(dev_info.flash_setvalue.secondtime_password)&0x0000ffff;   //不赞成用modbus改密码
-//	usRegHoldingBuf[10] = atoi(dev_info.flash_setvalue.protect_password)>>16;
-//	usRegHoldingBuf[11] = atoi(dev_info.flash_setvalue.protect_password)&0x0000ffff;
-//	usRegHoldingBuf[12] = atoi(dev_info.flash_setvalue.protect_secondtime_password)>>16;
-//	usRegHoldingBuf[13] = atoi(dev_info.flash_setvalue.protect_secondtime_password)&0x0000ffff;
-//	usRegHoldingBuf[6] = heattime_log.heattime.Year<<8|heattime_log.heattime.Mon;
-//	usRegHoldingBuf[7] = heattime_log.heattime.Day<<8|heattime_log.heattime.Hour;
-//	usRegHoldingBuf[8] = heattime_log.heattime.Min<<8|heattime_log.heattime.Sec;
-	for(i = 0;i < TIMERECORDNUM;i++)
-	{
-		memcpy(usRegHoldingBuf[19*i+14],savethermalbuff[i],sizeof(char)*38);
-	}
+	usRegHoldingBuf[14]=dev_info.flash_adjusttemp*10;
+	
+	usRegHoldingBuf[15]=dev_info.pidvalue.PID_P*10;
+	usRegHoldingBuf[16]=dev_info.pidvalue.PID_I*10000;
+	temp=(int)dev_info.pidvalue.PID_D>>16;
+	usRegHoldingBuf[17]=temp;
+	temp=(int)dev_info.pidvalue.PID_D;
+	usRegHoldingBuf[18]=temp;
+	
+	i=19;
+	usRegHoldingBuf[i++]=((int)dev_info.addup_testtime)>>16&0xffff;
+	usRegHoldingBuf[i++]=((int)dev_info.addup_testtime)&0xffff;
+	
+	usRegHoldingBuf[i++]=dev_info.start_time.Year;
+	usRegHoldingBuf[i++]=dev_info.start_time.Mon;
+	usRegHoldingBuf[i++]=dev_info.start_time.Day;
+	usRegHoldingBuf[i++]=dev_info.start_time.Hour;
+	usRegHoldingBuf[i++]=dev_info.start_time.Min;
+	usRegHoldingBuf[i++]=dev_info.start_time.Sec;
+	
+	usRegHoldingBuf[i++]=dev_info.end_time.Year;
+	usRegHoldingBuf[i++]=dev_info.end_time.Mon;
+	usRegHoldingBuf[i++]=dev_info.end_time.Day;
+	usRegHoldingBuf[i++]=dev_info.end_time.Hour;
+	usRegHoldingBuf[i++]=dev_info.end_time.Min;
+	usRegHoldingBuf[i++]=dev_info.end_time.Sec;
+	
+	usRegHoldingBuf[i++]=mainPageText.left_time_hour;
+	usRegHoldingBuf[i++]=mainPageText.left_time_min;
+//	for(i = 0;i < TIMERECORDNUM;i++)
+//	{
+//		memcpy(usRegHoldingBuf[19*i+14],savethermalbuff[i],sizeof(char)*38);
+//	}
 	
 	readholdingflag = 0;
 }
@@ -179,27 +198,40 @@ void read_Holdingregister(void)
 //write Holding register
 void  write_Holdingregister(void)
 {
+	int idx=512;
 	//////////////////////////////////////////////////////////////////////////////
-	//base address 0x100
+	//base address 0x300
 	//base address+usRegHoldingBuf[index]=modebus address
 	//////////////////////////////////////////////////////////////////////////////
 	if (!dev_info.runstatus)
 	{
-		dev_info.setTemp = (float)usRegHoldingBuf[512]/10;            										//0x300
+		dev_info.setTemp = (float)usRegHoldingBuf[idx++]/10;            										//0x300
 	}
-		dev_info.testTime = (float)usRegHoldingBuf[513]/10;		
-		dev_info.flash_setvalue.warning1_up = (float)usRegHoldingBuf[514]/10;
-		dev_info.flash_setvalue.warning2_up = (float)usRegHoldingBuf[515]/10;
-		dev_info.flash_setvalue.temp_backdiff = (float)usRegHoldingBuf[516]/10;	
-	IOStatus.blower=	usRegHoldingBuf[517];
-	IOStatus.sample_frame=usRegHoldingBuf[518];
+		dev_info.testTime = (float)usRegHoldingBuf[idx++]/10;		//031
+		dev_info.flash_setvalue.warning1_up = (float)usRegHoldingBuf[idx++]/10;//302
+		dev_info.flash_setvalue.warning2_up = (float)usRegHoldingBuf[idx++]/10;//303
+		dev_info.flash_setvalue.temp_backdiff = (float)usRegHoldingBuf[idx++]/10;	//304
+		IOStatus.blower=	usRegHoldingBuf[idx++];//305
+		IOStatus.sample_frame=usRegHoldingBuf[idx++];//306
+		IOStatus.heat_switch=usRegHoldingBuf[idx++];//307
+
+		dev_info.runstatus=(int)usRegHoldingBuf[idx++];//308
 	
-//		my_itoa((usRegHoldingBuf[517]<<16)|usRegHoldingBuf[518],dev_info.flash_setvalue.menu_password,PASSWORDLENGTH);
-//		my_itoa((usRegHoldingBuf[519]<<16)|usRegHoldingBuf[520],dev_info.flash_setvalue.secondtime_password,PASSWORDLENGTH);
-//		my_itoa((usRegHoldingBuf[521]<<16)|usRegHoldingBuf[522],dev_info.flash_setvalue.protect_password,PASSWORDLENGTH);
-//		my_itoa((usRegHoldingBuf[523]<<16)|usRegHoldingBuf[524],dev_info.flash_setvalue.protect_secondtime_password,PASSWORDLENGTH);
-		dev_info.runstatus=(int)usRegHoldingBuf[519];
-	dev_info.dev_status_changed_flag=1;
+	uint8_t year=(uint8_t)usRegHoldingBuf[idx++];//
+	uint8_t month=(uint8_t)usRegHoldingBuf[idx++];//
+	uint8_t day=(uint8_t)usRegHoldingBuf[idx++];//
+	uint8_t hour=(uint8_t)usRegHoldingBuf[idx++];//
+	uint8_t minute=(uint8_t)usRegHoldingBuf[idx++];//
+	uint8_t second=(uint8_t)usRegHoldingBuf[idx++];//
+	
+	uint8_t f_set=(uint8_t)usRegHoldingBuf[idx++];//
+	if(f_set)
+	{
+		SetRtcTime(second,minute,hour,day,'0',month,year);//
+		f_set=0;
+	}
+		dev_info.dev_status_changed_flag=1;
+	
 		writeholdingflag = 0;
 	
 }
@@ -214,41 +246,24 @@ void modbus_register_init(void)
 {
 	uint8_t i = 0;
 	usRegHoldingBuf[0] = dev_info.setTemp * 10;
-	usRegHoldingBuf[1] = dev_info.testTime * 100;
+	usRegHoldingBuf[1] = dev_info.testTime * 10;
 	usRegHoldingBuf[2] = dev_info.flash_setvalue.warning1_up*10;
 	usRegHoldingBuf[3] = dev_info.flash_setvalue.warning2_up*10;
 	usRegHoldingBuf[4] = dev_info.flash_setvalue.temp_backdiff*10;
-
-//	usRegHoldingBuf[6] = atoi(dev_info.flash_setvalue.menu_password)>>16;
-//	usRegHoldingBuf[7] = atoi(dev_info.flash_setvalue.menu_password)&0xffff;
-//	usRegHoldingBuf[8] = atoi(dev_info.flash_setvalue.secondtime_password)>>16;
-//	usRegHoldingBuf[9] = atoi(dev_info.flash_setvalue.secondtime_password)&0xffff;
-//	usRegHoldingBuf[10] = atoi(dev_info.flash_setvalue.protect_password)>>16;
-//	usRegHoldingBuf[11] = atoi(dev_info.flash_setvalue.protect_password)&0xffff;
-//	usRegHoldingBuf[12] = atoi(dev_info.flash_setvalue.protect_secondtime_password)>>16;
-//	usRegHoldingBuf[13] = atoi(dev_info.flash_setvalue.protect_secondtime_password)&0xffff;
+	
 	for(i = 0;i < TIMERECORDNUM;i++)
 	{
 		memcpy(usRegHoldingBuf[19*i+14],savethermalbuff[i],sizeof(char)*38);
 	}
-	usRegHoldingBuf[205] = heattime_log.heattime.Year<<8|heattime_log.heattime.Mon;
-	usRegHoldingBuf[206] = heattime_log.heattime.Day<<8|heattime_log.heattime.Hour;
-	usRegHoldingBuf[207] = heattime_log.heattime.Min<<8|heattime_log.heattime.Sec;
-
 	usRegHoldingBuf[512] = dev_info.setTemp * 10;
-	usRegHoldingBuf[513] = dev_info.testTime * 100;
+	usRegHoldingBuf[513] = dev_info.testTime * 10;
 	usRegHoldingBuf[514] = dev_info.flash_setvalue.warning1_up*10;
 	usRegHoldingBuf[515] = dev_info.flash_setvalue.warning2_up*10;
 	usRegHoldingBuf[516] = dev_info.flash_setvalue.temp_backdiff*10;
+	usRegHoldingBuf[517] = IOStatus.blower;
+	usRegHoldingBuf[518] = IOStatus.sample_frame;
+	usRegHoldingBuf[519] = IOStatus.heat_switch;
 
-//	usRegHoldingBuf[517] = atoi(dev_info.flash_setvalue.menu_password)>>16;
-//	usRegHoldingBuf[518] = atoi(dev_info.flash_setvalue.menu_password)&0xffff;
-//	usRegHoldingBuf[519] = atoi(dev_info.flash_setvalue.secondtime_password)>>16;
-//	usRegHoldingBuf[520] = atoi(dev_info.flash_setvalue.secondtime_password)&0xffff;
-//	usRegHoldingBuf[521] = atoi(dev_info.flash_setvalue.protect_password)>>16;
-//	usRegHoldingBuf[522] = atoi(dev_info.flash_setvalue.protect_password)&0xffff;
-//	usRegHoldingBuf[523] = atoi(dev_info.flash_setvalue.protect_secondtime_password)>>16;
-//	usRegHoldingBuf[524] = atoi(dev_info.flash_setvalue.protect_secondtime_password)&0xffff;
 	for(i = 0;i < TIMERECORDNUM;i++)
 	{
 		memcpy(usRegHoldingBuf[19*i+525],savethermalbuff[i],sizeof(char)*38);

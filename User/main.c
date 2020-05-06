@@ -60,7 +60,6 @@ uint16_t	ucRegDiscreteBuf[REG_DISCRETE_SIZE] = {0};
 
 extern  uint32_t password1;
 extern uint32_t password2;
-float temper_usart;
 
 
 
@@ -97,7 +96,8 @@ int main( void )
 	
 	TM_WATCHDOG_Reset();
 	
-	if (TM_WATCHDOG_Init(TM_WATCHDOG_Timeout_8s)) {
+	if (TM_WATCHDOG_Init(TM_WATCHDOG_Timeout_8s)) 
+	{
 		// System was reset by watchdog 
 		dev_info.runstatus=0;
 		SetPwmValue(0);
@@ -206,13 +206,10 @@ int main( void )
 			
 			ReadRtcTime();										//read current RTC time
 			start_endtime_set();								//start and end time setting
-			dev_info.currentTemp=adj_display(temperFilter);
+			//dev_info.currentTemp=adj_display(temperFilter);
 			Check_All_Status();	
 			update_dev_status();
 			display_temper();
-			//modebus register update;
-			//main text and icon update
-			//
 			
 		}
 		if(getMsCounter()-t_thread3s>3000)

@@ -194,7 +194,7 @@ float getFilterTemper(float in)
 	if(in>205)
 		in=in-1;
 	if(in>235)
-		in=in-2;
+		in=in-1;
 	memcpy(temperbuff,temperbuff+1,sizeof(float)*(T_BUFFLEN-1));
 	temperbuff[T_BUFFLEN-1]=in;
 

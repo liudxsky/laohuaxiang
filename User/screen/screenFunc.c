@@ -788,11 +788,18 @@ void endtimecalcu(RtcTime starttime,float testtime)
 	
 	char timebuff[25] = {0};
 	time_t currenttime = 946684800;
-	
-	currenttime += to_day(starttime) + testtime*3600;
+	struct tm *timeinfo;
+	currenttime += to_day(starttime) + testtime*3600-120;
 	strftime(timebuff,20,"%Y/%m/%d %H:%M:%S",localtime(&currenttime));
+	timeinfo=localtime(&currenttime);
+	dev_info.end_time.Year=timeinfo->tm_year-100;
+	dev_info.end_time.Mon=timeinfo->tm_mon+1;
+	dev_info.end_time.Day=timeinfo->tm_mday;
+	dev_info.end_time.Hour=timeinfo->tm_hour;
+	dev_info.end_time.Min=timeinfo->tm_min;
+	dev_info.end_time.Sec=timeinfo->tm_sec;
 	memcpy(mainPageText.warmend_time,timebuff,16);
-	SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_END_TIME_ID,mainPageText.warmend_time);		
+	SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_END_TIME_ID,mainPageText.warmend_time);
 }
 
 
@@ -831,7 +838,7 @@ void addup_testtime(void)
 			
 		}
 		nowtimediff_addup=diff_time(starttime_addup, dev_info.timenow)/60;
-		if(nowtimediff_addup - lasttimediff_addup)
+		if(nowtimediff_addup - lasttimediff_addup)//every min
 		{
 			dev_info.addup_testtime += 1;
 			writeflashcount++;

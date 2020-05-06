@@ -185,7 +185,6 @@ uint8_t RxBuffer[RxBufferSize];
 __IO uint8_t RxCounter = 0x00;
 extern dev_info_t dev_info;
 extern int debuginfo;
-extern float temper_usart;
 const int dstlen=32;
 const uart_cmd_t uart_cmd[] = 
 {
@@ -307,8 +306,8 @@ void RS232_USART_IRQHandler(void)
 				index = uart_cmd[SIMTEMP].len;
 				memset((void *)floatbuff,0,dstlen);
 				strncpy(floatbuff,(char *)&RxBuffer[index],RxCounter-index);
-				temper_usart=atof(floatbuff);
-				printf("%d\n",dev_info.pwmvalue);
+				dev_info.currentTemp=atof(floatbuff);
+				printf("%f\n",dev_info.currentTemp);
 			}
 			else if(strstr((char *)RxBuffer,uart_cmd[BUCHAGTEMP].cmd)) 	
 			{					
@@ -316,7 +315,7 @@ void RS232_USART_IRQHandler(void)
 				memset((void *)dst_vale,0,dstlen);
 				strncpy(dst_vale,(char *)&RxBuffer[index],RxCounter-index);
 				dev_info.valid_flag = true;
-				dev_info.compensatetemp = atoi(dst_vale);		
+				dev_info.flash_adjusttemp = atoi(dst_vale);		
 				printf("\r\n\r\ncompensatetemp value is set: \r\n------dec: %d\r\n",dev_info.compensatetemp);
 				
 			}	

@@ -38,7 +38,7 @@ void DeviceInfo_Init(void)
 		dev_info.biglanguagestatus = 1;
 		dev_info.flash_setvalue.modbus_tran_rate = 9600;
 		dev_info.flash_adjusttemp = 0;
-		dev_info.compensatetemp = 0;
+		dev_info.compensatetemp = 0;//do not use
 		dev_info.addup_testtime = 0;
 		dev_info.testTime=0;
 		dev_info.flash_setvalue.change_air_time=0;
@@ -100,7 +100,6 @@ void DeviceInfo_Init(void)
 			SetTextValueRTC(biglanguage_screen.BIG_ABNORMAL_POWEROFF,BIG_ABNORMAL_TIME,dev_info.timenow);
 			dev_info.runtomainscreenflag=0;
 		}
-		//dev_info.flash_adjusttemp=0;
 		dev_info.pwmscope=1000;
 		dev_info.runstatus=0;
 		dev_info.useKalman=1;
