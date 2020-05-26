@@ -60,10 +60,6 @@ const float32_t firCoeffs32[NUM_TAPS] = {0.001624,0.001716,0.001904,0.002194,0.0
 	PID.Kp=kp;
 	PID.Ki=ki;
 	PID.Kd=kd;
-
-//	PID.Kp=35;
-//	PID.Ki=0.0058;
-//	PID.Kd=44243;
 	
 	arm_pid_init_f32(&PID, 1);
 	errorSum=0;
@@ -486,7 +482,8 @@ FINISH:
 		}
 		printf("\n");
 		printf("e_time:%d\n",autoTuningParam.elapse_time);
-	
+		tbuffidx=0;
+		
 	return 0;
 
 }

@@ -53,7 +53,7 @@ void DeviceInfo_Init(void)
 		dev_info.pidvalue.PID_P=0;
 		dev_info.pidvalue.PID_I=0;
 		dev_info.pidvalue.PID_D=0;
-		dev_info.setTemp=0;
+		dev_info.setTemp=100;
 		dev_info.runtomainscreenflag=1;
 		autogeneratepassword();
 		writeFlash();
@@ -66,7 +66,7 @@ void DeviceInfo_Init(void)
 	}
 	else
 	{
-		printf("\r\n load flash");
+		printf("load flash\r\n ");
 		
 		readFlash();
 		//FLASH_Read_Nbytes((uint8_t *)FLASH_USER_START_ADDR,(uint8_t *)&dev_info,sizeof(dev_info_t));
@@ -99,6 +99,7 @@ void DeviceInfo_Init(void)
 			MySetScreen(biglanguage_screen.BIG_ABNORMAL_POWEROFF);
 			SetTextValueRTC(biglanguage_screen.BIG_ABNORMAL_POWEROFF,BIG_ABNORMAL_TIME,dev_info.timenow);
 			dev_info.runtomainscreenflag=0;
+			dev_info.dev_status_changed_flag=1;
 		}
 		dev_info.pwmscope=1000;
 		dev_info.runstatus=0;

@@ -198,33 +198,34 @@ void read_Holdingregister(void)
 //write Holding register
 void  write_Holdingregister(void)
 {
-	int idx=512;
+	int idx=513;
 	//////////////////////////////////////////////////////////////////////////////
 	//base address 0x300
 	//base address+usRegHoldingBuf[index]=modebus address
 	//////////////////////////////////////////////////////////////////////////////
 	if (!dev_info.runstatus)
 	{
-		dev_info.setTemp = (float)usRegHoldingBuf[idx++]/10;            										//0x300
+		dev_info.setTemp = (float)usRegHoldingBuf[512]/10;            										//0x300
 	}
-		dev_info.testTime = (float)usRegHoldingBuf[idx++]/10;		//031
-		dev_info.flash_setvalue.warning1_up = (float)usRegHoldingBuf[idx++]/10;//302
-		dev_info.flash_setvalue.warning2_up = (float)usRegHoldingBuf[idx++]/10;//303
-		dev_info.flash_setvalue.temp_backdiff = (float)usRegHoldingBuf[idx++]/10;	//304
-		IOStatus.blower=	usRegHoldingBuf[idx++];//305
-		IOStatus.sample_frame=usRegHoldingBuf[idx++];//306
-		IOStatus.heat_switch=usRegHoldingBuf[idx++];//307
+	
+		dev_info.testTime = (float)usRegHoldingBuf[513]/10;		//031
+		dev_info.flash_setvalue.warning1_up = (float)usRegHoldingBuf[514]/10;//302
+		dev_info.flash_setvalue.warning2_up = (float)usRegHoldingBuf[515]/10;//303
+		dev_info.flash_setvalue.temp_backdiff = (float)usRegHoldingBuf[516]/10;	//304
+		IOStatus.blower=	usRegHoldingBuf[517];//305
+		IOStatus.sample_frame=usRegHoldingBuf[518];//306
+		IOStatus.heat_switch=usRegHoldingBuf[519];//307
 
-		dev_info.runstatus=(int)usRegHoldingBuf[idx++];//308
+		dev_info.runstatus=(int)usRegHoldingBuf[520];//308
 	
-	uint8_t year=(uint8_t)usRegHoldingBuf[idx++];//
-	uint8_t month=(uint8_t)usRegHoldingBuf[idx++];//
-	uint8_t day=(uint8_t)usRegHoldingBuf[idx++];//
-	uint8_t hour=(uint8_t)usRegHoldingBuf[idx++];//
-	uint8_t minute=(uint8_t)usRegHoldingBuf[idx++];//
-	uint8_t second=(uint8_t)usRegHoldingBuf[idx++];//
+	uint8_t year=(uint8_t)usRegHoldingBuf[521];//
+	uint8_t month=(uint8_t)usRegHoldingBuf[522];//
+	uint8_t day=(uint8_t)usRegHoldingBuf[523];//
+	uint8_t hour=(uint8_t)usRegHoldingBuf[524];//
+	uint8_t minute=(uint8_t)usRegHoldingBuf[525];//
+	uint8_t second=(uint8_t)usRegHoldingBuf[526];//
 	
-	uint8_t f_set=(uint8_t)usRegHoldingBuf[idx++];//
+	uint8_t f_set=(uint8_t)usRegHoldingBuf[527];//
 	if(f_set)
 	{
 		SetRtcTime(second,minute,hour,day,'0',month,year);//
@@ -245,11 +246,6 @@ void read_Discreteregister(void)
 void modbus_register_init(void)
 {
 	uint8_t i = 0;
-	usRegHoldingBuf[0] = dev_info.setTemp * 10;
-	usRegHoldingBuf[1] = dev_info.testTime * 10;
-	usRegHoldingBuf[2] = dev_info.flash_setvalue.warning1_up*10;
-	usRegHoldingBuf[3] = dev_info.flash_setvalue.warning2_up*10;
-	usRegHoldingBuf[4] = dev_info.flash_setvalue.temp_backdiff*10;
 	
 	for(i = 0;i < TIMERECORDNUM;i++)
 	{
@@ -263,7 +259,7 @@ void modbus_register_init(void)
 	usRegHoldingBuf[517] = IOStatus.blower;
 	usRegHoldingBuf[518] = IOStatus.sample_frame;
 	usRegHoldingBuf[519] = IOStatus.heat_switch;
-
+	usRegHoldingBuf[520]=dev_info.runstatus;
 	for(i = 0;i < TIMERECORDNUM;i++)
 	{
 		memcpy(usRegHoldingBuf[19*i+525],savethermalbuff[i],sizeof(char)*38);

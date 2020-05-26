@@ -4,7 +4,7 @@
 #include "stdlib.h"
 #include "time.h"
 #include "main.h"
-
+#include "./flash/flash.h" 
 extern dev_info_t dev_info;
 extern TextValueTab  textvalue;			//text control_id buff 
 extern BIG_SCREEN_ID_TAB biglanguage_screen;
@@ -174,11 +174,13 @@ void mainShowScreenButton(uint16_t screen_id, uint16_t control_id, uint8_t  stat
 					IOStatus.heat_output = 0;
 					dev_info.runstatus = 0;
 					dev_info.lefttimeflag=0;
+					writeFlash();
 				}
 				else
 				{
 					IOStatus.heat_output = 1;
-					dev_info.runstatus = 1;			
+					dev_info.runstatus = 1;
+					dev_info.dev_status_changed_flag=1;
 				}
 				break;
 			default:
@@ -440,7 +442,7 @@ void menuSettingScreen(uint16_t control_id, uint8_t *str)
 			SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_TEST_TIME_VALUE,str_temp);
 			if(d_temp < 0.1 || d_temp >= 9999.9)
 			{
-				argSetErrorIcon.test_temp_set_fail=SHOW;
+				argSetErrorIcon.test_time_set_fail=SHOW;
 				MySetScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN1);
 			}
 			else 
@@ -856,6 +858,7 @@ void addup_testtime(void)
 		{
 			//shutdown action
 			starttime_addup.Year=0;
+			dev_info.dev_status_changed_flag = 1;
 		}
 	}
 }

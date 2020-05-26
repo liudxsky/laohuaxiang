@@ -137,6 +137,7 @@ int main( void )
 			runstatus_last=dev_info.runstatus;
 			Ktemperature=Max6675_Read_Tem();
 			temperFilter=getFilterTemper(Ktemperature);
+			//temperFilter=dev_info.currentTemp;
 			error=SetPoint-temperFilter;
 			if(dev_info.runstatus==1)
 			{
@@ -160,6 +161,7 @@ int main( void )
 					if(autoTuneParam.AutoTuneStatus>0)
 					{
 						//auto tune success
+						autoTuneParam.AutoTuneStatus=0;
 						PID.Kp=autoTuneParam.Kp_auto;
 						PID.Ki=autoTuneParam.Ki_auto;
 						PID.Kd=autoTuneParam.Kd_auto;
@@ -206,7 +208,7 @@ int main( void )
 			
 			ReadRtcTime();										//read current RTC time
 			start_endtime_set();								//start and end time setting
-			//dev_info.currentTemp=adj_display(temperFilter);
+			dev_info.currentTemp=adj_display(temperFilter);
 			Check_All_Status();	
 			update_dev_status();
 			display_temper();

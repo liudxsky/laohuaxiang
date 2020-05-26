@@ -41,7 +41,8 @@ void readFlash()
 	
 	__disable_irq(); 
 	FLASH_Read_Nbytes((uint8_t *)dev_info.flash_setvalue.flash_this_address,(uint8_t *)&dev_info,sizeof(dev_info_t));
-	__enable_irq();  
+	__enable_irq();
+	printf("read addr:%x\n", dev_info.flash_setvalue.flash_this_address);
 }
 void writeFlash()
 {
@@ -54,18 +55,16 @@ void writeFlash()
 		}
 	}
 	__disable_irq(); 
+
+		dev_info.flash_setvalue.flash_this_address=dev_info.flash_setvalue.flash_this_address+FLASH_BLOCK_SIZE;
+		dev_info.flash_setvalue.flash_write_cnt++;
 	if(dev_info.flash_setvalue.flash_this_address==FLASH_END_ADDR)
 	{
 		dev_info.flash_setvalue.flash_this_address=FLASH_START_ADDR;
 	}
-	else
-	{
-		dev_info.flash_setvalue.flash_this_address=dev_info.flash_setvalue.flash_this_address+FLASH_BLOCK_SIZE;
-		dev_info.flash_setvalue.flash_write_cnt++;
-	}
 	
 	FLASH_Write_Nbytes(dev_info.flash_setvalue.flash_this_address,(uint8_t *)&dev_info,sizeof(dev_info_t));	
-	//printf("write flash %x\n",dev_info.flash_setvalue.flash_this_address);
+	printf("write flash %x\n",dev_info.flash_setvalue.flash_this_address);
 	__enable_irq();  
 }
 void FLASH_Read_Nbytes(uint8_t *ReadAddress, uint8_t *ReadBuf, uint16_t Len) 

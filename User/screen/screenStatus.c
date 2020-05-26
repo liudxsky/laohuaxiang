@@ -168,10 +168,16 @@ void dev2modBus(void)
 	if(1)//(readholdingflag)
 	{
 		read_Holdingregister();
+	//	
 	}
 	if(writeholdingflag)
 	{
+		
 		write_Holdingregister();
+	}
+	else
+	{
+		modbus_register_init();
 	}
 }
 
@@ -200,7 +206,12 @@ void updater_editAirDoor(uint16_t screen_id)
 void updater_PIDScreen(uint16_t screen_id)
 {
 	if(dev_info.runstatus>0)
+	{
+		SetTextValueFloat(screen_id,BIG_P_VALUE_SET,999);
+		SetTextValueFloat(screen_id,BIG_I_VALUE_SET,999);
+		SetTextValueFloat(screen_id,BIG_D_VALUE_SET,999);	
 		return;
+	}
 	SetTextValueFloat(screen_id,BIG_P_VALUE_SET,dev_info.pidvalue.PID_P);
 	SetTextValueFloat(screen_id,BIG_I_VALUE_SET,dev_info.pidvalue.PID_I*10000);
 	SetTextValueFloat(screen_id,BIG_D_VALUE_SET,dev_info.pidvalue.PID_D);	
