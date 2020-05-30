@@ -22,6 +22,7 @@
 #include "pidcontroller.h"
 #include "crypto.h"
 #include "wdt.h"
+#include "mcp9600.h"
 uint16_t current_screen_id = 0;
 volatile uint32_t  timer_tick_count = 0; // tick timer
 
@@ -96,7 +97,7 @@ int main( void )
 	
 	TM_WATCHDOG_Reset();
 	
-	if (TM_WATCHDOG_Init(TM_WATCHDOG_Timeout_8s)) 
+	if (0)//TM_WATCHDOG_Init(TM_WATCHDOG_Timeout_8s)) 
 	{
 		// System was reset by watchdog 
 		dev_info.runstatus=0;
@@ -135,7 +136,7 @@ int main( void )
 				PIDInit(dev_info.pidvalue.PID_P,dev_info.pidvalue.PID_I,dev_info.pidvalue.PID_D,SetPoint);
 			}
 			runstatus_last=dev_info.runstatus;
-			Ktemperature=Max6675_Read_Tem();
+			//Ktemperature=Max6675_Read_Tem();
 			temperFilter=getFilterTemper(Ktemperature);
 			//temperFilter=dev_info.currentTemp;
 			error=SetPoint-temperFilter;
@@ -205,7 +206,7 @@ int main( void )
 		if(getMsCounter() - timer_tick_count > 1000)
 		{
 			timer_tick_count = getMsCounter();
-			
+				MCP9600init();
 			ReadRtcTime();										//read current RTC time
 			start_endtime_set();								//start and end time setting
 			dev_info.currentTemp=adj_display(temperFilter);
@@ -272,7 +273,8 @@ void System_Init(void)
 	Analog_Init();			//adc init						
 	DAC1_Init();			//dac init						
 	Dac_Select_Init();		//dac select
-	Max6675_Gpio_Init();	//thermocouple gpio init						
+	//Max6675_Gpio_Init();	//thermocouple gpio init						
+
 	control_mode_select();	//control mode select						
 	screen_init();			//screen data init						
 	modbus_register_init();

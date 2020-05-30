@@ -882,6 +882,16 @@
               <FileType>1</FileType>
               <FilePath>..\User\wdt.c</FilePath>
             </File>
+            <File>
+              <FileName>mcp9600.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\mcp9600.c</FilePath>
+            </File>
+            <File>
+              <FileName>softiic.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\softiic.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
