@@ -80,16 +80,23 @@ void updater_mainText(void)
 	SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_AIR_DOOR_ANGLE_INPUT_ID,mainPageText.open_angle);
 	SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_ADDUP_TIME_ID,mainPageText.addup_testtime);
 //	Dac1_Set_Vol(33*dev_info.airdooropenangle);
-	SetTextValueRTC(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_START_TIME_ID,dev_info.start_time);
-
-//	if(dev_info.end_time.Year==0)
-//		{
-//			SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_END_TIME_ID,"......");
-//		}
-//	else
-//		{
-//			SetTextValueRTC(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_END_TIME_ID,dev_info.end_time);
-//		}
+	if(dev_info.start_time.Day==0&&dev_info.start_time.Mon==0)
+	{
+		SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_START_TIME_ID,"N/A");
+	}
+	else
+	{
+		SetTextValueRTC(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_START_TIME_ID,dev_info.start_time);
+	}
+	if(mainPageText.warmend_time[0]==0)
+	{
+		SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_END_TIME_ID,"N/A");
+	}
+	else
+	{
+		SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_END_TIME_ID,mainPageText.warmend_time);
+	}
+	//SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_END_TIME_ID,mainPageText.warmend_time);
 	SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TIME_LEFT_HOUR_ID,mainPageText.left_time_hour);
 	SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TIME_LEFT_MIN_ID,mainPageText.left_time_min);
 }
@@ -205,7 +212,7 @@ void updater_editAirDoor(uint16_t screen_id)
 }
 void updater_PIDScreen(uint16_t screen_id)
 {
-	if(dev_info.runstatus>0)
+	if(dev_info.runstatus>1)
 	{
 		SetTextValueFloat(screen_id,BIG_P_VALUE_SET,999);
 		SetTextValueFloat(screen_id,BIG_I_VALUE_SET,999);

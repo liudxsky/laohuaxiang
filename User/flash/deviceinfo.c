@@ -90,7 +90,8 @@ void DeviceInfo_Init(void)
 		dev_info.passwordwrongflag=0;
 		dev_info.thermocouple_flag=0;
 		dev_info.runtomainscreenflag=1;
-		
+		dev_info.start_time.Day=0;
+		dev_info.start_time.Mon=0;
 
 		if(dev_info.runstatus>0)
 		{

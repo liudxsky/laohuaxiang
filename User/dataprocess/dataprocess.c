@@ -159,7 +159,7 @@ void read_Holdingregister(void)
 	usRegHoldingBuf[13]=dev_info.runstatus;
 	usRegHoldingBuf[14]=dev_info.flash_adjusttemp*10;
 	
-	usRegHoldingBuf[15]=dev_info.pidvalue.PID_P*10;
+	usRegHoldingBuf[15]=dev_info.pidvalue.PID_P;//*10
 	usRegHoldingBuf[16]=dev_info.pidvalue.PID_I*10000;
 	temp=(int)dev_info.pidvalue.PID_D>>16;
 	usRegHoldingBuf[17]=temp;
@@ -230,6 +230,7 @@ void  write_Holdingregister(void)
 	{
 		SetRtcTime(second,minute,hour,day,'0',month,year);//
 		f_set=0;
+		usRegHoldingBuf[527]=0;
 	}
 		dev_info.dev_status_changed_flag=1;
 	

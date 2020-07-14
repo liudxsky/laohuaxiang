@@ -137,7 +137,7 @@ int main( void )
 			runstatus_last=dev_info.runstatus;
 			Ktemperature=Max6675_Read_Tem();
 			temperFilter=getFilterTemper(Ktemperature);
-			//temperFilter=dev_info.currentTemp;
+			//temperFilter=dev_info.currentTemp;//uart temp
 			error=SetPoint-temperFilter;
 			if(dev_info.runstatus==1)
 			{

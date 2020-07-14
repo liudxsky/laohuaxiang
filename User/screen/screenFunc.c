@@ -181,6 +181,9 @@ void mainShowScreenButton(uint16_t screen_id, uint16_t control_id, uint8_t  stat
 					IOStatus.heat_output = 1;
 					dev_info.runstatus = 1;
 					dev_info.dev_status_changed_flag=1;
+					dev_info.start_time.Day=0;
+					dev_info.start_time.Mon=0;
+					mainPageText.warmend_time[0]=0;
 				}
 				break;
 			default:
@@ -791,7 +794,7 @@ void endtimecalcu(RtcTime starttime,float testtime)
 	char timebuff[25] = {0};
 	time_t currenttime = 946684800;
 	struct tm *timeinfo;
-	currenttime += to_day(starttime) + testtime*3600-120;
+	currenttime += to_day(starttime) + testtime*3600;//-120
 	strftime(timebuff,20,"%Y/%m/%d %H:%M:%S",localtime(&currenttime));
 	timeinfo=localtime(&currenttime);
 	dev_info.end_time.Year=timeinfo->tm_year-100;
@@ -802,6 +805,7 @@ void endtimecalcu(RtcTime starttime,float testtime)
 	dev_info.end_time.Sec=timeinfo->tm_sec;
 	memcpy(mainPageText.warmend_time,timebuff,16);
 	SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_END_TIME_ID,mainPageText.warmend_time);
+	
 }
 
 
@@ -899,6 +903,7 @@ void start_endtime_set(void)
 	{
 		steadytempcount = 0;
 	}
+
 	if((dev_info.runstatus==1)&&(dev_info.setTemp != 0)&&(dev_info.lefttimeflag == 0)&&(steadytempcount>=120))
 	{	
 		dev_info.lefttimeflag = 1;
@@ -919,6 +924,7 @@ void start_endtime_set(void)
 	if(dev_info.lefttimeflag == 1)
 	{
 		lefttimecalculate();
+		steadytempcount=0;
 	}
 }
 
