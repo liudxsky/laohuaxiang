@@ -149,8 +149,12 @@ GPIO_StructInit(&GPIO_InitStructure);
         while((!SCL1_READ) && i2c_clk_stretching_timer++<=I2C_CLK_STRETCHING_TIMEOUT);  
         I2C_delay();
         SCL1_L;
+			 I2C_delay(); 
+			
         return 1;
     }
+		 I2C_delay(); 
+		SCL1_L;
     return 0;
 }
  void I2C_SendByte(u8 SendByte) //MSB
@@ -176,10 +180,13 @@ GPIO_StructInit(&GPIO_InitStructure);
  u8 I2C_ReceiveByte(void) //MSB
 {
     u8 i = 8;
-	u8 m=0;
+		u8 m=0;
     u8 ReceiveByte = 0;
+					 I2C_delay(); 
+				 I2C_delay(); 
+				 I2C_delay(); 
     SDA1_H;
-    for(m=0;m<8;m++)
+    while(i--)
     {
         ReceiveByte <<= 1;
         SCL1_L;

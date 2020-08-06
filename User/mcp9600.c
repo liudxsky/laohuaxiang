@@ -206,7 +206,9 @@ err_t IIC_read_16bit(u8 start_reg, u16* value) {
 				I2C_Ack();
 				byte2=I2C_ReceiveByte();
 				*value+=*value+byte2;
+				
 				I2C_NoAck();
+								
 			I2C_Stop();
 				printf("h:%x,l:%x \n",byte1,byte2);
         return NO_ERROR;
@@ -275,9 +277,31 @@ err_t MCP9600init() {
     if (!ret) {
        printf("MCP9600 ver:%d",ver);
     }
-//    if (ret = MCP9600set_therm_type(THER_TYPE_K)) {
-//        return ret;
-//    }
+    if (!MCP9600set_therm_type(THER_TYPE_K)) {
+			return -1;
+		}
+    
+		if(!MCP9600set_filt_coefficients(FILT_MID))
+		{
+			return -2;
+		}
+		if(!MCP9600set_cold_junc_resolution(COLD_JUNC_RESOLUTION_0_25))
+		{
+			return -3;
+		}
+		if(!MCP9600set_ADC_meas_resolution(ADC_14BIT_RESOLUTION))
+		{
+			return -4;
+		}
+		
+		if(!MCP9600set_burst_mode_samp(BURST_32_SAMPLE))
+		{
+			return -5;
+		}
+		if(!		MCP9600set_sensor_mode(NORMAL_OPERATION))
+		{
+			return -6;
+		}
     return ret;
 }
 

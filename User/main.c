@@ -82,6 +82,7 @@ int main( void )
 	volatile uint32_t t_thread1h=0;
 	uint32_t t_thread1min=0;
 	uint16_t Ktemperature = 0;
+	float ftemper=0;
   eMBErrorCode    eStatus;
 
 	qsize  size = 0;
@@ -96,7 +97,7 @@ int main( void )
 	PIDInit(dev_info.pidvalue.PID_P,dev_info.pidvalue.PID_I,dev_info.pidvalue.PID_D,SetPoint);//need to be reset after chage setpoint
 	
 	TM_WATCHDOG_Reset();
-	
+	MCP9600init();
 	if (0)//TM_WATCHDOG_Init(TM_WATCHDOG_Timeout_8s)) 
 	{
 		// System was reset by watchdog 
@@ -137,7 +138,8 @@ int main( void )
 			}
 			runstatus_last=dev_info.runstatus;
 			//Ktemperature=Max6675_Read_Tem();
-			temperFilter=getFilterTemper(Ktemperature);
+			MCP9600read_hot_junc(&temperFilter);
+			//temperFilter=getFilterTemper(Ktemperature);
 			//temperFilter=dev_info.currentTemp;
 			error=SetPoint-temperFilter;
 			if(dev_info.runstatus==1)
@@ -206,7 +208,7 @@ int main( void )
 		if(getMsCounter() - timer_tick_count > 1000)
 		{
 			timer_tick_count = getMsCounter();
-				MCP9600init();
+			printf("%f\n",temperFilter);
 			ReadRtcTime();										//read current RTC time
 			start_endtime_set();								//start and end time setting
 			dev_info.currentTemp=adj_display(temperFilter);
