@@ -443,7 +443,7 @@ void menuSettingScreen(uint16_t control_id, uint8_t *str)
 			d_temp = atof(str_temp);
 			
 			SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_TEST_TIME_VALUE,str_temp);
-			if(d_temp < 0.1 || d_temp >= 9999.9)
+			if(d_temp < 0 || d_temp >= 9999.9)
 			{
 				argSetErrorIcon.test_time_set_fail=SHOW;
 				MySetScreen(biglanguage_screen.BIG_ARGUEMENT_SET_ERROR_SCREEN1);
@@ -462,7 +462,7 @@ void menuSettingScreen(uint16_t control_id, uint8_t *str)
 			memcpy(str_temp,str,sizeof(char)*COMMONSIZE);	
 			SetTextValue(biglanguage_screen.BIG_PARAM_SET_SCREEN,BIG_TEST_TEMP_VALUE,str);			
 			d_temp = atof(str_temp);			
-			if(d_temp < 50 || d_temp >= 400)//debug
+			if(d_temp < 50 || d_temp > dev_info.maxSetTemper)//debug
 			{
 //				dev_info.setTemp = 0;
 				argSetErrorIcon.test_temp_set_fail=SHOW;
@@ -736,6 +736,13 @@ void adjustScreenSetting(uint16_t control_id,uint8_t *str)
 			memcpy(textvalue.autotime.day,str,sizeof(char)*COMMONSIZE);
 			nopowertime.Day = atoi(textvalue.autotime.day);
 			break;	
+		case BIG_MAX_TEMPER_SET:
+			memset(textvalue.temp_adjust_value,0,sizeof(char)*COMMONSIZE);
+			memcpy(textvalue.temp_adjust_value,str,sizeof(char)*COMMONSIZE);
+			data_temp =  atof(textvalue.temp_adjust_value);
+		dev_info.maxSetTemper=data_temp;
+		dev_info.dev_status_changed_flag = 1;
+			break;
 	}
 	
 	if(diff_time(dev_info.timenow, nopowertime) > 0)
@@ -872,7 +879,7 @@ void lefttimecalculate(void)
 {
 		uint32_t elapsedTestTime;	
 	uint32_t  leftTime = 0;
-	if(dev_info.testTime != 0)
+	if(dev_info.testTime > 0.01)//testTime!=0
 	{
 		//already runed time span
 		elapsedTestTime = diff_time(dev_info.start_time, dev_info.timenow)/60;//min
@@ -909,7 +916,7 @@ void start_endtime_set(void)
 		dev_info.lefttimeflag = 1;
 		dev_info.start_time=dev_info.timenow;
 		SetTextValueRTC(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_START_TIME_ID,dev_info.start_time);
-		if(!dev_info.testTime)
+		if(dev_info.testTime>0.01)
 		{
 			SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_END_TIME_ID,"......");
 //			dev_info.end_time.Year=0;

@@ -176,11 +176,12 @@ typedef struct
 #define  BIG_YEAR_SET							6		//auto no power time -- year setting
 #define  BIG_MONTH_SET							7		//auto no power time -- month setting
 #define  BIG_DAY_SET							8		//auto no power time -- day setting
-
+#define  BIG_MAX_TEMPER_SET 12
 
 #define  BIG_NO_POWER_RETURN_BUTTON				9		//return button
 #define  BIG_EDIT_BUTTON						10		//to air times edit screen
 #define  BIG_PID_BUTTON							11		//to PID setting screen
+
 /*--------------------------------------------------------------------------*/
 
 

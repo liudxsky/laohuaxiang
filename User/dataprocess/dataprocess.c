@@ -186,6 +186,7 @@ void read_Holdingregister(void)
 	
 	usRegHoldingBuf[i++]=mainPageText.left_time_hour;
 	usRegHoldingBuf[i++]=mainPageText.left_time_min;
+	usRegHoldingBuf[i++]=dev_info.maxSetTemper;
 //	for(i = 0;i < TIMERECORDNUM;i++)
 //	{
 //		memcpy(usRegHoldingBuf[19*i+14],savethermalbuff[i],sizeof(char)*38);

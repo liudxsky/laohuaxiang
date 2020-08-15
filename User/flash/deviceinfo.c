@@ -55,6 +55,7 @@ void DeviceInfo_Init(void)
 		dev_info.pidvalue.PID_D=0;
 		dev_info.setTemp=100;
 		dev_info.runtomainscreenflag=1;
+		dev_info.maxSetTemper=250;
 		autogeneratepassword();
 		writeFlash();
 

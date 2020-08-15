@@ -53,6 +53,7 @@ typedef struct
 	uint8_t passwordwrongflag;
 	int runtomainscreenflag;
 	int useKalman;
+	int maxSetTemper;
 }dev_info_t;
 
 
