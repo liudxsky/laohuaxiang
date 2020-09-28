@@ -397,6 +397,8 @@
 
 #define  _BTN_S_ADJUSTMENU_BUTTON1                                            11
 
+#define  _TXT_DIS__S_ADJUSTMENU_TEXT_DISPLAY7                                 12
+
 //画面S_ErrorTime中图片Image1使用的图片
 #define  _IMG_S_ERRORTIME_IMAGE1                                              22
 
@@ -680,6 +682,8 @@
 #define  _BTN_E_ADJUSTMENU_BUTTON2                                             9
 
 #define  _BTN_E_ADJUSTMENU_BUTTON4                                            11
+
+#define  _TXT_DIS__E_ADJUSTMENU_TEXT_DISPLAY3                                 12
 
 //画面E_ErrorTime中图片Image1使用的图片
 #define  _IMG_E_ERRORTIME_IMAGE1                                              34

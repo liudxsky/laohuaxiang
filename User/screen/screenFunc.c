@@ -801,7 +801,7 @@ void endtimecalcu(RtcTime starttime,float testtime)
 	char timebuff[25] = {0};
 	time_t currenttime = 946684800;
 	struct tm *timeinfo;
-	currenttime += to_day(starttime) + testtime*3600;//-120
+	currenttime += to_day(starttime) + testtime*3600;//-120;
 	strftime(timebuff,20,"%Y/%m/%d %H:%M:%S",localtime(&currenttime));
 	timeinfo=localtime(&currenttime);
 	dev_info.end_time.Year=timeinfo->tm_year-100;
@@ -916,7 +916,7 @@ void start_endtime_set(void)
 		dev_info.lefttimeflag = 1;
 		dev_info.start_time=dev_info.timenow;
 		SetTextValueRTC(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_START_TIME_ID,dev_info.start_time);
-		if(dev_info.testTime>0.01)
+		if(dev_info.testTime<0.01)
 		{
 			SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_END_TIME_ID,"......");
 //			dev_info.end_time.Year=0;

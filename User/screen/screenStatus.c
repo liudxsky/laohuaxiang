@@ -291,6 +291,7 @@ void updater_adjScreen(uint16_t screen_id)
 	SetTextValue(screen_id,BIG_ADJUST_PASSWORD2,"");
 	SetTextValueInt32(screen_id,BIG_AIR_DOOR_ANGLE_SET,dev_info.airdooropenangle);
 	SetTextValueFloat(screen_id,BIG_TEMP_VALUE_REVUSE_SET,dev_info.flash_adjusttemp);
+	SetTextValueFloat(screen_id,BIG_MAX_TEMPER_SET,dev_info.maxSetTemper);
 	//SetTextValueInt32(screen_id,BIG_YEAR_SET,dev_info.autonopowertime.Year+2000);
 	//SetTextValueInt32(screen_id,BIG_MONTH_SET,dev_info.autonopowertime.Mon);
 	//SetTextValueInt32(screen_id,BIG_DAY_SET,dev_info.autonopowertime.Day);
