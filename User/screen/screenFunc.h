@@ -39,8 +39,6 @@ void addup_testtime(void);
 float myabs(float a,float b);
 int32_t diff_time(RtcTime starttime,RtcTime endtime);
 void endtimecalcu(RtcTime starttime,float testtime);
-void endtimecalcu(RtcTime starttime,float testtime);
-uint32_t to_day(RtcTime time);
 uint8_t DectoBCD(uint8_t Dec);
 uint8_t BcdToDec(uint8_t bcd);
 void  mergetimechar(RtcTime datetime);

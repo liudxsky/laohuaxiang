@@ -762,57 +762,49 @@ void adjustScreenSetting(uint16_t control_id,uint8_t *str)
 }
 
 
-
-//to time total what minutes,start time is : 2000\1\1 0:00
-uint32_t to_day(RtcTime time)
+time_t rtc2tm(RtcTime time,struct tm *thistm)
 {
-	uint8_t mon[] = {31,28,31,30,31,30,31,31,30,31,30,31};
-	uint16_t day = 0;
-	uint32_t hour = 0,minute = 0,seconds = 0;
-	uint16_t i;
-	time.Year = time.Year + 2000;
-//	printf("year is %d\n",time.Year);
-	for(i = 2000;i < time.Year; i++)
+	struct tm m_tm={0};
+	m_tm.tm_hour=time.Hour;
+	m_tm.tm_mday=time.Day;
+	m_tm.tm_min=time.Min;
+	m_tm.tm_mon=time.Mon-1;
+	m_tm.tm_sec=time.Sec;
+	m_tm.tm_year=time.Year+100;
+	if(thistm!=NULL)
 	{
-		day += (i%4 == 0 && i%100 != 0 || i%400 == 0)? 366:365;
+		memcpy(thistm,&m_tm,sizeof(m_tm));
+		return 0;
 	}
-	if(time.Year%4 == 0 && time.Year%100!=0 || time.Year%400 == 0) 
+	else
 	{
-		mon[1] = 29;
+		return mktime(&m_tm);
 	}
-
-	for(i = 0;i < time.Mon - 1;i++)
-	{
-		day += mon[i];
-	}
-	hour = (day+time.Day-1)*24 + time.Hour;
-
-	minute = hour * 60 + time.Min;
-
-	seconds = minute * 60 + time.Sec;
-	return seconds;
+	
 }
-
 
 //end time calculate
 void endtimecalcu(RtcTime starttime,float testtime)
 {
+	struct tm tm_startTime={0};
+	struct tm *tm_endTime;
+	char dispTimeBuff[25]={0};
+	char dispTimeBuff2[25]={0};
 	
-	char timebuff[25] = {0};
-	time_t currenttime = 946684800;
-	struct tm *timeinfo;
-	currenttime += to_day(starttime) + testtime*3600;//-120;
-	strftime(timebuff,20,"%Y/%m/%d %H:%M:%S",localtime(&currenttime));
-	timeinfo=localtime(&currenttime);
-	dev_info.end_time.Year=timeinfo->tm_year-100;
-	dev_info.end_time.Mon=timeinfo->tm_mon+1;
-	dev_info.end_time.Day=timeinfo->tm_mday;
-	dev_info.end_time.Hour=timeinfo->tm_hour;
-	dev_info.end_time.Min=timeinfo->tm_min;
-	dev_info.end_time.Sec=timeinfo->tm_sec;
-	memcpy(mainPageText.warmend_time,timebuff,16);
+	rtc2tm(starttime,&tm_startTime);
+	time_t t_startTime=mktime(&tm_startTime);
+	strftime(dispTimeBuff,25,"%Y/%m/%d %H:%M:%S",localtime(&t_startTime));
+	time_t t_endTime=t_startTime+((int)testtime)*3600;
+	strftime(dispTimeBuff2,25,"%Y/%m/%d %H:%M:%S",localtime(&t_endTime));
+	tm_endTime=localtime(&t_endTime);
+	dev_info.end_time.Year=tm_endTime->tm_year-100;
+	dev_info.end_time.Mon=tm_endTime->tm_mon+1;
+	dev_info.end_time.Day=tm_endTime->tm_mday;
+	dev_info.end_time.Hour=tm_endTime->tm_hour;
+	dev_info.end_time.Min=tm_endTime->tm_min;
+	dev_info.end_time.Sec=tm_endTime->tm_sec;
+	memcpy(mainPageText.warmend_time,dispTimeBuff2,16);
 	SetTextValue(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_END_TIME_ID,mainPageText.warmend_time);
-	
 }
 
 
@@ -820,12 +812,14 @@ void endtimecalcu(RtcTime starttime,float testtime)
 int32_t diff_time(RtcTime starttime,RtcTime endtime)
 {
 	int32_t diff=0;
-	diff=	to_day(endtime)-to_day(starttime);
+	//diff=	to_day(endtime)-to_day(starttime);
+	diff=rtc2tm(endtime,NULL)-rtc2tm(starttime,NULL);
 //printf("%4d/%2d/%2d,%2d:%2d:%2d\n",endtime.Year,endtime.Mon,endtime.Day,endtime.Hour,endtime.Min,endtime.Sec);
 	//printf("starttime is %d \n  end time is   %d\n",to_day(starttime),to_day(endtime));
-	//printf("diff is %d \n",diff);
+	printf("diff is %d \n",diff);
 	return diff;
 }
+
 
 
 float myabs(float a,float b)
