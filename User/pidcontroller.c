@@ -178,46 +178,10 @@ uint16_t pidCalc(float e)
 
 float getFilterTemper(float in)
 {
-	int i;
-	float outtemp1=0;
-	float outtemp2=0;
-	float ord2nd=-0.00024;
-	float ord1st=0.06;
-	
-	outtemp1=in*0.25-4;
-	outtemp2=outtemp1*outtemp1*ord2nd+outtemp1*ord1st+dev_info.flash_adjusttemp;
-	in=outtemp1-outtemp2+2;
-	if(in>205)
-		in=in-1;
-	if(in>235)
-		in=in-1;
-	memcpy(temperbuff,temperbuff+1,sizeof(float)*(T_BUFFLEN-1));
-	temperbuff[T_BUFFLEN-1]=in;
-
-	if(temperbuff[0]!=0)
-	{
-		arm_fir_f32(&S, temperbuff, outputF32 , T_BUFFLEN);
-	}
-	else
-	{
-		return in;
-	}
-	outtemp2=outputF32[T_BUFFLEN-1];
-	if(outtemp2>2000)
-		outtemp2=2000;
-	if(outtemp2<-2000)
-		outtemp2=-2000;
-	
-	//printf("%f,%f,%f\n",in,outtemp1,outtemp2);
-	if (dev_info.useKalman==1)
-	{
-		return outtemp2;
-	}
-	else
-	{
-		return in;
-	}
-	return outtemp2;
+	float a=-0.0104;
+	float b=3.562;
+	float outtemp2=in-(a*in+b);
+	return in;
 }
 
 

@@ -120,6 +120,8 @@ struct IOStatusStruct
 	uint8_t heat_output;
 	uint8_t temp_warnning1;
 	uint8_t temp_warnning2;
+	uint8_t thermo_safe;
+	
 };
 
 struct mainIconStruct
@@ -139,6 +141,8 @@ struct mainIconStruct
 	uint8_t ar2_work_status;
 	uint8_t fr_work_status;
 	uint8_t rr_work_status;
+	uint8_t interlock;
+	uint8_t thermo_safe;
 	
 };
 

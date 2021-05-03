@@ -71,13 +71,14 @@ typedef struct
 #define  BIG_RR_WORK_STATUS_ID					15		//sample RR
 
 #define	 BIG_RS485_COMMU_ID						33		//RS485 trans status icon
-
+#define BIG_INTERLOCK_ICON_ID 36
 //button
 #define  BIG_MENU_ID							16		//menu button
 #define  BIG_TIME_RECORD_ID						17		//time record button
 #define	 BIG_SAMPLE_FRAME_MENU_ID				18		//sample frame button
 #define  BIG_BLOWER_MENU_ID						19		//blower button
 #define  BIG_START_OR_PAUSE_ID					20		//start or pause warm button
+#define BIG_INTERLOCK_BTN_ID 							35
 /*--------------------------------------------------------------------------*/
 
 //menu password input screen

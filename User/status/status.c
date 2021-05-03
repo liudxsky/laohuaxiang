@@ -17,7 +17,7 @@ in this file,dev_info push device main status to other device
 #include "./flash/deviceinfo.h"
 #include "./dac/dac.h"
 #include "./screen/screenFunc.h"
-
+#include "mcp9600.h"
 extern BIG_SCREEN_ID_TAB bigchinese_screen ;
 extern BIG_SCREEN_ID_TAB bigenglish_screen; 
 extern BIG_SCREEN_ID_TAB biglanguage_screen;
@@ -212,21 +212,27 @@ void check_warning(void)
  
 void display_temper()
 {
+
 	if(dev_info.thermocouple_flag)
 	{
 		SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_CURRENT_TEMP_ID, 999);
 		SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_CURRENT_TEMP_DECIMAL_ID, 9);
-		mainIcon.trouble_indicate = SHOW;
+		
 	}
 	else
 	{	
-		mainIcon.trouble_indicate = HIDE;
 		SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_CURRENT_TEMP_ID,mainPageText.currentTempHi);
 		SetTextValueInt32(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_CURRENT_TEMP_DECIMAL_ID,mainPageText.currentTempLo);
 	}
 	
 }
-
+void thermo_safe_status()
+{
+	int value = GPIO_ReadInputDataBit(THERMO_SAFE_BANK,THERMO_SAFE_PIN);
+	IOStatus.thermo_safe=value;
+	printf("thermo safe:%d\n",value);
+	
+}
 void Check_All_Status(void)
 {
 	check_powertime();
@@ -235,6 +241,18 @@ void Check_All_Status(void)
 	check_warning();
 	Check_Rs485();
 	door_open_status();
+	thermo_safe_status();
+	u8 status;
+	MCP9600read_status(&status);
+	if((status&0x10)>0)
+	{
+		dev_info.thermocouple_flag=1;
+	}
+	else
+	{
+		dev_info.thermocouple_flag=0;
+	}
+	printf("disconnect:%d",dev_info.thermocouple_flag);
 }
 
 

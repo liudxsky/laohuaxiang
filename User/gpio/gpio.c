@@ -75,7 +75,16 @@ void door_gpio_init(void)
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;     
 	GPIO_Init(BOX_DOOR_GPIO_PORT, &GPIO_InitStructure);   
 }
-
+void Thermo_safe_init()
+{
+	GPIO_InitTypeDef  GPIO_InitStructure; 				
+	RCC_AHB1PeriphClockCmd(THERMO_SAFE_CLK, ENABLE);	 
+	GPIO_InitStructure.GPIO_Pin = THERMO_SAFE_PIN;      	 
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;         
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;   
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;     
+	GPIO_Init(THERMO_SAFE_BANK, &GPIO_InitStructure);  
+}
 
 
 void Gpio_Init(void)
@@ -83,6 +92,7 @@ void Gpio_Init(void)
 	led_init();
 	driver_gpio_init();
 	door_gpio_init();
+	Thermo_safe_init();
 }
 void ledBlinkThread()
 {

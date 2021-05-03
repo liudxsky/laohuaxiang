@@ -47,7 +47,10 @@
 #define  BOX_DOOR_GPIO_PORT    				GPIOC
 #define  BOX_DOOR_GPIO_CLK     				RCC_AHB1Periph_GPIOC
 
-
+//Thermo safe
+#define THERMO_SAFE_BANK GPIOB
+#define THERMO_SAFE_PIN GPIO_Pin_14
+#define THERMO_SAFE_CLK RCC_AHB1Periph_GPIOB
 /*-----------------------------------------------------------------------*/
 
 #define   ON     1

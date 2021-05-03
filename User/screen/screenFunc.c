@@ -24,7 +24,7 @@ void pidScreenButton(uint16_t screen_id, uint16_t control_id, uint8_t  state)
 	{
 		case BIG_SELF_ADJUST:							//self adjust
 			dev_info.runstatus=2;
-			MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);
+			//MySetScreen(biglanguage_screen.BIG_MAIN_SHOW_SCREEN);
 			break;
 		case BIG_PID_RETURN_BUTTON: 				
 			//this should be in dev_info or screen status
@@ -154,18 +154,16 @@ void mainShowScreenButton(uint16_t screen_id, uint16_t control_id, uint8_t  stat
 
 				break;
 			case BIG_BLOWER_MENU_ID:
-				if(state)
-				{
-					IOStatus.blower = 1;
-					mainIcon.fan_operation=SHOW;
-					mainIcon.fr_work_status=HIDE;
-				}
-				else
-				{
-					IOStatus.blower = 0;
-					mainIcon.fan_operation=HIDE;
-					mainIcon.fr_work_status=SHOW;	
-				}
+
+					IOStatus.blower = !IOStatus.blower;
+					mainIcon.fan_operation=!mainIcon.fan_operation;
+					mainIcon.fr_work_status=!mainIcon.fr_work_status;
+					
+					if(IOStatus.blower==0&&dev_info.interlock==1)
+					{
+						dev_info.runstatus=0;
+					}
+				
 				break;
 			case BIG_START_OR_PAUSE_ID:
 				if(dev_info.runstatus>0)
@@ -174,6 +172,7 @@ void mainShowScreenButton(uint16_t screen_id, uint16_t control_id, uint8_t  stat
 					IOStatus.heat_output = 0;
 					dev_info.runstatus = 0;
 					dev_info.lefttimeflag=0;
+					
 					writeFlash();
 				}
 				else
@@ -184,7 +183,27 @@ void mainShowScreenButton(uint16_t screen_id, uint16_t control_id, uint8_t  stat
 					dev_info.start_time.Day=0;
 					dev_info.start_time.Mon=0;
 					mainPageText.warmend_time[0]=0;
+					if(dev_info.interlock==1)
+					{
+						IOStatus.blower=1;
+					}
 				}
+				break;
+			case BIG_INTERLOCK_BTN_ID:
+				if(dev_info.runstatus==0)
+				{
+					if(state)
+					{
+						
+						dev_info.interlock=1;
+					}
+					else
+					{
+							
+							dev_info.interlock=0;
+					}
+				}
+				
 				break;
 			default:
 				break;

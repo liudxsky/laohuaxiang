@@ -54,6 +54,8 @@ typedef struct
 	int runtomainscreenflag;
 	int useKalman;
 	int maxSetTemper;
+	char interlock;
+	char overheat_input;
 }dev_info_t;
 
 

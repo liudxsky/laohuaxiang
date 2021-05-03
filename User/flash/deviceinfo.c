@@ -56,6 +56,7 @@ void DeviceInfo_Init(void)
 		dev_info.setTemp=100;
 		dev_info.runtomainscreenflag=1;
 		dev_info.maxSetTemper=250;
+		dev_info.interlock=0;
 		autogeneratepassword();
 		writeFlash();
 

@@ -187,6 +187,7 @@ void read_Holdingregister(void)
 	usRegHoldingBuf[i++]=mainPageText.left_time_hour;
 	usRegHoldingBuf[i++]=mainPageText.left_time_min;
 	usRegHoldingBuf[i++]=dev_info.maxSetTemper;
+	usRegHoldingBuf[i++]=dev_info.overheat_input;
 //	for(i = 0;i < TIMERECORDNUM;i++)
 //	{
 //		memcpy(usRegHoldingBuf[19*i+14],savethermalbuff[i],sizeof(char)*38);
@@ -234,7 +235,7 @@ void  write_Holdingregister(void)
 		usRegHoldingBuf[527]=0;
 	}
 		dev_info.dev_status_changed_flag=1;
-	
+	dev_info.interlock=(uint8_t)usRegHoldingBuf[528];
 		writeholdingflag = 0;
 	
 }

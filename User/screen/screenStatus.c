@@ -55,7 +55,7 @@ void updater_mainIcon(void)
 
 	AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_SAMPLE_FRAME_MOTOR_ID,mainIcon.sample_frame);
 
-	AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TROUBLE_INDICATE_ID,mainIcon.trouble_indicate);
+	AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_TROUBLE_INDICATE_ID,mainIcon.thermo_safe);
 
 	AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_AR1_WORK_STATUS_ID,mainIcon.ar1_work_status);
 
@@ -66,7 +66,7 @@ void updater_mainIcon(void)
 	AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_RR_WORK_STATUS_ID,mainIcon.rr_work_status);
 
 	AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_RS485_COMMU_ID,mainIcon.rs485_comm);
-
+	AnimationPlayFrame(biglanguage_screen.BIG_MAIN_SHOW_SCREEN,BIG_INTERLOCK_ICON_ID,mainIcon.interlock);
 	
 }
 
@@ -133,6 +133,7 @@ void dev2IOstatus()
 	{
 		IOStatus.heat_output=0;
 	}
+	
 	IOStatus.temp_warnning1=dev_info.temp_warnning1;
 	IOStatus.temp_warnning2=dev_info.temp_warnning2;
 	if(dev_info.runstatus>0&&dev_info.temp_warnning1==0)
@@ -168,6 +169,8 @@ void IOstatus2mainIcon()
 	mainIcon.temp_warnning2=!IOStatus.temp_warnning2;
 	mainIcon.ar2_work_status=!mainIcon.temp_warnning2;
 	mainIcon.rs485_comm = dev_info.Rs485Status;
+	mainIcon.interlock=!dev_info.interlock;
+	mainIcon.thermo_safe=!IOStatus.thermo_safe;
 	
 }
 void dev2modBus(void)
